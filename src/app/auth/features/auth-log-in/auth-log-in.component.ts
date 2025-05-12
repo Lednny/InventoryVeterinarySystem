@@ -3,11 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-auth-log-in',
   imports: [],
-  template: `
-    <p>
-      auth-log-in works!
-    </p>
-  `,
+  templateUrl: `./auth-log-in.html`,
   styleUrl: './auth-log-in.component.css'
 })
 export default class AuthLogInComponent {
