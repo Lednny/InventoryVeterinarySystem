@@ -37,7 +37,7 @@ export default class AuthSignUpComponent {
     });
 
     if (authResponse.error) throw authResponse.error;
-    alert('Verifica tu correo para activar tu cuenta');
+    alert('Verifica tu correo para la confirmación de tu cuenta.');
     } catch (error) {
       console.error('Error during sign up:', error);
     }

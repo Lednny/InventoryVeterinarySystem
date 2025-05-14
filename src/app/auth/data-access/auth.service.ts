@@ -7,8 +7,15 @@ export class AuthService {
 
 private _supabaseClient = inject(SupabaseService).supabaseClient;
 
-    session(){
+    constructor(){
+        this._supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('Auth event:', event)
+            console.log('Session:', session)
+        })
+    }
 
+    session(){
+        return this._supabaseClient.auth.getSession()
     }
 
     signUp(credentials: SignUpWithPasswordCredentials & {username: string}){
