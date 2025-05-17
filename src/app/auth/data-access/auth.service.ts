@@ -13,7 +13,6 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
             console.log('Session:', session)
         })
     }
-
     session(){
         return this._supabaseClient.auth.getSession()
     }

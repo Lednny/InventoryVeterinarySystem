@@ -40,7 +40,7 @@ export default class AuthLogInComponent {
       if (error) throw error;
       console.log('Login successful:', data);
 
-      this._router.navigateByUrl('/');
+      this._router.navigateByUrl('/dashboard');
       } catch (error) {
         if (error instanceof Error) {
           console.error('Error during login:', error.message);
