@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { environment } from '../../environments/environment'; 
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: "root"})
 export class SupabaseService {
-  private supabase: SupabaseClient;
+    supabaseClient: SupabaseClient;
 
-  constructor() { 
-      this.supabase = createClient('https://umphhhpeyguzpngdcyht.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVtcGhoaHBleWd1enBuZ2RjeWh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxMzA4OTgsImV4cCI6MjA2MTcwNjg5OH0.yglWzoHjNJOSe2CllUHD3MT941mUvPnfiWKBNqQ9GdM');
+    constructor() {
+        this.supabaseClient = createClient(environment.SUPABASE_URL, environment.SUPABASE_ANON_KEY);
     }
-  
-    getProducts() {
-      return this.supabase.from('productos').select('*');
+        async saveUsername(userId: string, username: string) {
+        return this.supabaseClient
+            .from('profiles') // Asegúrate de tener una tabla llamada 'profiles'
+            .insert({ id: userId, username });
     }
-  }
+    }
