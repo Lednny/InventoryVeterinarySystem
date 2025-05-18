@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, numberAttribute } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
@@ -22,32 +22,68 @@ export class InventarioService {
     IdAlmacen: number;
     stock: number;
   }) {
-    const { error } = await this.supabase.from('stock').insert([data]);
+    const { data: inserted, error } = await this.supabase
+    .from('stock')
+    .insert([data])
+    .select();
     if (error) throw error;
+    return inserted;
   }
 
   //Metodo crud READ
-  async getProductosBySucursal(IdSucursal: number) {
-    const { data, error } = await this.supabase
+  async getProductosBySucursal( 
+    // Obtener los productos de la sucursal especificada
+    IdSucursal: number,
+    page: number = 1,
+    pageSize: number = 10,
+    searchFilter: string = '',
+    IdAlmacen: number
+  ) {
+    let query = this.supabase
       .from('stock')
       .select('*, IdProducto(*), IdSucursal(*)')
-      .eq('IdSucursal', IdSucursal);
-    if (error) throw error;
+      .eq('IdSucursal', IdSucursal)
+
+      if(IdAlmacen !== undefined){
+        query = query.eq('IdAlmacen', IdAlmacen);
+      }
+
+      if (searchFilter) {
+        query = query.ilike('IdProducto.nombre', `%${searchFilter}%`);
+      }
+
+    const from = (page - 1) * pageSize;
+    const to = page * pageSize - 1;
+    query = query.range(from, to);
+
+    const { data, error } = await query;
+    if(error) throw error;
     return data;
   }
+   // const { data, error } = await this.supabase
+   //   .from('stock')
+   //   .select('*, IdProducto(*), IdSucursal(*)')
+   //   .eq('IdSucursal', IdSucursal);
+   // if (error) throw error;
+   // return data;
 
   //Metodo crud UPDATE
   async updateStock(id: number, newStock: number) {
-    const { error } = await this.supabase
+    const { data: updated, error } = await this.supabase
       .from('stock')
       .update({ stock: newStock })
-      .eq('IdProducto', id);
+      .eq('id', id);
     if (error) throw error;
+    return updated;
   }
 
   //Metodo crud DELETE
   async deleteRegistros(id: number) {
-    const { error } = await this.supabase.from('stock').delete().eq('id', id);
+    const { data: deleted, error } = await this.supabase
+      .from('stock')
+      .delete()
+      .eq('id', id);
     if (error) throw error;
+    return deleted;
   }
 }
