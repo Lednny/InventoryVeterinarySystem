@@ -6,8 +6,12 @@ export default [
     loadComponent: () => import('../dashboard-list/dashboard-list.component').then(m => m.default),
 },
 {
-    path: 'almacen',
-    loadComponent: () => import('../dashboard-almacen/dashboard-almacen.component').then(m => m.DashboardAlmacenComponent),
+    path: 'almacen1',
+    loadComponent: () => import('../dashboard-almacen/dashboard-almacen1/dashboard-almacen.component').then(m => m.DashboardAlmacenComponent),
+},
+{
+    path: 'almacen2',
+    loadComponent: () => import('../dashboard-almacen/dashboard-almacen2/dashboard-almacen2.component').then(m => m.DashboardAlmacen2Component),
 },
 {
     path: 'tareas',

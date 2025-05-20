@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DashboardAlmacenComponent } from './dashboard-almacen.component';
+import { DashboardAlmacenComponent } from '../dashboard-almacen1/dashboard-almacen.component';
 
 describe('DashboardAlmacenComponent', () => {
   let component: DashboardAlmacenComponent;

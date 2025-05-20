@@ -34,7 +34,6 @@
     <img src="" alt="User" class="rounded-full w-8 h-8 border-2 border-gray-600" />
     </div>
 </nav>
-
 <!-- Tabs -->
 <div class="flex items center justify-center mt-4">
     <div class="flex gap-10 border-b border-gray-700 w-[700px] justify-center">
@@ -44,11 +43,22 @@
     routerLinkActive="text-blue-400 border-blue-400"
     [routerLinkActiveOptions]="{ exact: true }"
     >Overview</a>
+    <div class="relative group">
+    <button
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition">
+    Almacén</button>
+    <div
+    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-md w-40 z-10">
     <a
-    routerLink="/dashboard/almacen"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
-    routerLinkActive="text-blue-400 border-blue-400"
-    >Almacén</a>
+    routerLink="/dashboard/almacen1"
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+    >Almacén Central</a>
+    <a
+    routerLink="/dashboard/almacen2"
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+    >Almacén Operativo</a>
+    </div>
+    </div>
     <a
     routerLink="/dashboard/tareas"
     class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
