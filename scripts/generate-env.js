@@ -13,23 +13,23 @@ const envInfo = [
     // Development
     path: `${targetDir}/environment.ts`,
     envConfig: `\
-    export const environment = {
-      production: true,
-      SUPABASE_URL: '${process.env.SUPABASE_URL}',
-      SUPABASE_ANON_KEY: '${process.env.SUPABASE_ANON_KEY}'
-    };
-    `,
+export const environment = {
+  production: true,
+  SUPABASE_URL: '${process.env.SUPABASE_URL}',
+  SUPABASE_ANON_KEY: '${process.env.SUPABASE_ANON_KEY}'
+};
+`,
   },
   {
     // Production
     path: `${targetDir}/environment.development.ts`,
     envConfig: `\
-    export const environment = {
-      production: false,
-      SUPABASE_URL: '${process.env.SUPABASE_URL}',
-      SUPABASE_ANON_KEY: '${process.env.SUPABASE_ANON_KEY}'
-    };
-    `,
+export const environment = {
+  production: false,
+  SUPABASE_URL: '${process.env.SUPABASE_URL}',
+  SUPABASE_ANON_KEY: '${process.env.SUPABASE_ANON_KEY}'
+};
+`,
   },
 ];
 
