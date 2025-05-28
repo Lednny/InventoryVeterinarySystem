@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+#Environmenrts con claves privadas
+src/environments/environment.secret.ts
