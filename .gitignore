@@ -43,3 +43,5 @@ Thumbs.db
 
 #Environmenrts con claves privadas
 src/environments/environment.secret.ts
+src/environments/environment.ts
+src/environments/environment.development.ts
