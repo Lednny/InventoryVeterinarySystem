@@ -15,24 +15,46 @@
     />
     </div>
     <!-- Icons -->
-    <div class="flex-1 flex items-center justify-end gap-6">
+<div class="flex-1 flex items-center justify-end gap-6">
     <!-- ícono de Campana -->
-    <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    <div class="relative">
+    <button class="hover:text-blue-400" (click)="toggleNotificaciones()">
+        <!-- Heroicon: Bell -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
         </svg>
     </button>
+    </div>
     <!-- Grid Icon -->
     <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
+        <!-- Heroicon: View Grid -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
         </svg>
     </button>
     <!-- User Avatar -->
-    <img src="" alt="User" class="rounded-full w-8 h-8 border-2 border-gray-600" />
+    <div class="relative" (mouseleave)="showDropdown = false">
+        <img
+            src=""
+            alt="avatarUrl"
+            class="rounded-full w-8 h-8 border-2 border-gray-600 cursor-pointer"
+            (click)="showDropdown = !showDropdown"
+        />
+        <div
+            *ngIf="showDropdown"
+            class="absolute right-0 mt-0 w-40 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-20"
+        >
+            <button
+                class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition"
+                (click)="signOut()"
+            >
+                Cerrar sesión
+            </button>
+        </div>
     </div>
+</div>
 </nav>
 
 <!-- Tabs -->
@@ -99,27 +121,38 @@
         </form>
         </div>
         <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
-        <button type="button" class="flex items-center justify-center px-2 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">
-            <svg class="h-3.5 w-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <button type="button" class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" (click)="agregarTarea()">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewbox="1 1 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
             </svg>
             Añadir Tareas
         </button>
+        <!-- Dropdown para acciones -->
         <div class="flex items-center w-full space-x-3 md:w-auto">
-            <button id="actionsDropdownButton" data-dropdown-toggle="actionsDropdown" class="flex items-center justify-center w-full px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-            <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
+            <button
+            type="button"
+            class="flex items-center justify-center w-full px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            (click)="mostrarDropdownActions = !mostrarDropdownActions"
+            >
+            <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
             Actions
             </button>
-            <div id="actionsDropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
+            <div
+            *ngIf="mostrarDropdownActions"
+            class="absolute mt-2 z-10 bg-white divide-y divide-gray-100 rounded shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
+            (mouseleave)="mostrarDropdownActions = false"
+            >
+            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
                 <li>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mass Edit</a>
+                    <a href="#" (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black">
+                        Edición Masiva
+                    </a>
                 </li>
             </ul>
             <div class="py-1">
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Delete all</a>
+                <a href="#" (click)="abrirModalEliminarTodas(); $event.preventDefault()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                    Eliminación Masiva
+                </a>
             </div>
             </div>
             <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" class="flex items-center justify-center w-full px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
@@ -195,27 +228,199 @@
             </tr>
         </thead>
         <tbody>
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white text">
-                    Apple MacBook Pro 17"
-                </th>
-                <td class="px-6 py-4 text-center">
-                    Silver
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                <td class="px-6 py-4">
-                    <div class="flex justify-start items-center gap-4">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underlinem ">Modificar</a>
-                    <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Eliminar</a>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
+<tr *ngFor="let tarea of tareasPaginadas; let i = index">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+        #{{ i + 1 }}
+    </th>
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16">
+        {{ tarea.titulo }}
+    </td>
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16">
+        {{ tarea.descripcion }}
+    </td>
+    <td class="px-6 py-4">
+        <div class="flex justify-start items-center gap-4">
+            <button
+            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            (click)="abrirModalActualizar(tarea)">
+            Modificar
+            </button>
+            <!--Ventana para la modificación de la tarea-->
+            <!-- Modal de actualización de tarea -->
+<div *ngIf="mostrarModalActualizar" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Modificar tarea
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    (click)="cerrarModalActualizar()">
+                    <svg class="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Cerrar modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5" (ngSubmit)="guardarActualizacionTarea()">
+                <div class="mb-4">
+                    <label for="titulo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Título</label>
+                    <input
+                        type="text"
+                        id="titulo"
+                        [(ngModel)]="tareaAActualizar.titulo"
+                        name="titulo"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Título de la tarea"
+                        required
+                    >
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                    <textarea
+                        id="descripcion"
+                        [(ngModel)]="tareaAActualizar.descripcion"
+                        name="descripcion"
+                        rows="4"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Descripción de la tarea"
+                    ></textarea>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button
+                        type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                        Guardar cambios
+                    </button>
+                    <button
+                        type="button"
+                        (click)="cerrarModalActualizar()"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+            <button class="font-medium text-red-600 dark:text-red-500 hover:underline"
+        (click)="abrirModalEliminar(tarea.id)">
+        Eliminar
+</button>
+<!-- Modal de confirmación para eliminar -->
+<div *ngIf="mostrarModalEliminar" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+<div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div class="text-center">
+    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" fill="none" viewBox="0 0 20 20">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+    </svg>
+    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Seguro que deseas eliminar esta tarea?</h3>
+    <button (click)="confirmarEliminarTarea()" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+        Sí, eliminar
+    </button>
+    <button (click)="mostrarModalEliminar = false" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+        No, cancelar
+    </button>
+    </div>
+</div>
+</div>
+        </div>
+    </td>
+</tr>
+</tbody>
     </table>
 </div>
 </div>
 </div>
+<!-- Modal de edición masiva -->
+<div *ngIf="mostrarModalEdicionMasiva" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 mb-3 text-gray-500 dark:text-black-400 font-italic">
+    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-2xl">
+        <h3 class="mb-5 text-lg font-normal text-gray-400 dark:text-gray-200">
+            Edición masiva de tareas
+        </h3>
+        <form (ngSubmit)="guardarEdicionMasiva()">
+            <div class="overflow-y-auto max-h-94 h-96">
+                <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                    Puedes editar múltiples tareas a la vez. Asegúrate de que los cambios sean correctos antes de guardar.
+                <!-- AQUÍ -->
+                <div *ngFor="let tarea of tareasEdicionMasiva; let i = index" class="mb-10 border-b pb-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-300 ">Título</label>
+                    <input
+                        [(ngModel)]="tarea.titulo"
+                        name="titulo{{i}}"
+                        class="w-5/6 mb-6 p-2 rounded border border-gray-500 bg-gray-500 text-white placeholder-gray-400 focus:border-blue-400"
+                    />
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Descripción</label>
+                    <textarea
+                        [(ngModel)]="tarea.descripcion"
+                        name="descripcion{{i}}"
+                        class="w-5/6 mb-6 p-2 rounded border border-gray-500 bg-gray-500 text-white placeholder-gray-400 focus:border-blue-400"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Guardar cambios
+                </button>
+                <button type="button" (click)="cerrarModalEdicionMasiva()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de eliminar todas -->
+<div *ngIf="mostrarModalEliminarTodas" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-md">
+        <div class="text-center">
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                ¿Seguro que deseas eliminar <b>todas</b> las tareas?
+            </h3>
+            <button (click)="confirmarEliminarTodas()" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                Sí, eliminar todas
+            </button>
+            <button (click)="mostrarModalEliminarTodas = false" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+    <nav aria-label="Page navigation" class="flex justify-center mt-4">
+<ul class="flex items-center -space-x-px h-8 text-sm">
+    <li>
+    <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1"
+        class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Previous</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
+    </button>
+    </li>
+    <li *ngFor="let page of [].constructor(totalPages); let idx = index">
+    <button (click)="cambiarPagina(idx + 1)"
+        [ngClass]="{'z-10 text-blue-600 border-blue-300 bg-blue-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white': currentPage === idx + 1,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': currentPage !== idx + 1}"
+        class="flex items-center justify-center px-3 h-8 leading-tight border">
+        {{ idx + 1 }}
+    </button>
+    </li>
+    <li>
+    <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages"
+        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Next</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+    </button>
+    </li>
+</ul>
+</nav>
 </section>
 
