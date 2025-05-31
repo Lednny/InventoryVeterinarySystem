@@ -5,8 +5,8 @@ import { TareaService } from '../../../services/tarea.services';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
-
-
+import { PostgrestError } from '@supabase/supabase-js';
+import { ElementRef, HostListener, ViewChild } from '@angular/core';
 @Component({
   selector: 'app-dashboard-tareas',
   standalone: true,
@@ -23,7 +23,7 @@ export class DashboardTareasComponent implements OnInit {
   private supabaseClient = inject(SupabaseService).supabaseClient;
   mostrarModalEliminar = false;
   tareaAEliminar: number | null = null;
-  tareaAActualizar: any = null;
+  tareaActualizar: any = null;
 
   //Variables para función de botón de Acciones
   mostrarModalActualizar = false;
@@ -43,11 +43,15 @@ export class DashboardTareasComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
+  
+
   constructor(
     private tareasService: TareaService,
     private router: Router,
     private authService: AuthService
   ) {}
+
+  
 
   async ngOnInit() {
     await this.ensureUsuario();
@@ -116,6 +120,25 @@ export class DashboardTareasComponent implements OnInit {
       console.error('Error al agregar tarea:', error);
     }
   }
+  async toggleDropdownActions() {
+    this.mostrarDropdownActions = !this.mostrarDropdownActions;
+  }
+
+@ViewChild('actionsDropdown') actionsDropdown!: ElementRef;
+@ViewChild('actionsBtn') actionsBtn!: ElementRef;
+
+@HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) {
+  const dropdown = this.actionsDropdown?.nativeElement;
+  const btn = this.actionsBtn?.nativeElement;
+  if (!dropdown || !btn) return;
+  if (
+    !dropdown.contains(event.target) &&
+    !btn.contains(event.target)
+  ) {
+    this.mostrarDropdownActions = false;
+  }
+}
 
   abrirModalEliminar(id: number) {
     this.tareaAEliminar = id;
@@ -150,21 +173,21 @@ export class DashboardTareasComponent implements OnInit {
 
   abrirModalActualizar(tarea: any) {
   // Clona la tarea para no modificar el array original hasta guardar
-  this.tareaAActualizar = { ...tarea };
+  this.tareaActualizar = { ...tarea };
   this.mostrarModalActualizar = true;
 }
 
 cerrarModalActualizar() {
-  this.tareaAActualizar = null;
+  this.tareaActualizar = null;
   this.mostrarModalActualizar = false;
 }
 
 async guardarActualizacionTarea() {
-  if (this.tareaAActualizar && this.tareaAActualizar.id) {
+  if (this.tareaActualizar && this.tareaActualizar.id) {
     try {
-      await this.tareasService.updateTarea(this.tareaAActualizar.id, {
-        titulo: this.tareaAActualizar.titulo,
-        descripcion: this.tareaAActualizar.descripcion
+      await this.tareasService.updateTarea(this.tareaActualizar.id, {
+        titulo: this.tareaActualizar.titulo,
+        descripcion: this.tareaActualizar.descripcion
       });
       await this.cargarTareas();
       this.cerrarModalActualizar();
@@ -214,8 +237,7 @@ async confirmarEliminarTodas() {
   }
 }
 
-  async signOut() {
-    this.showDropdown = false;
+  async signOut() {    // Cierra el menú de acciones si está abierto
     await this.authService.signOut();
     this.router.navigate(['auth/log-in']);
   }
@@ -250,7 +272,6 @@ async obtenerAvatarUrl(event: any) {
 
   toggleNotificaciones() {
     this.mostrarNotificaciones = !this.mostrarNotificaciones;
-    this.mostrarMenuGrid = false; // Cierra el menú de notificaciones si estaba abierto
   }
 
   toggleMenuGrid() {
@@ -273,4 +294,6 @@ async obtenerAvatarUrl(event: any) {
     if (pagina < 1 || pagina > this.totalPages) return;
     this.currentPage = pagina;
   }
-}
+}  
+
+
