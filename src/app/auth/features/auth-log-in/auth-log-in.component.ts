@@ -45,6 +45,8 @@ export default class AuthLogInComponent {
         if (error instanceof Error) {
           console.error('Error during login:', error.message);
       }
+      alert('Error al iniciar sesión, verifique sus datos.');
+      this.form.reset();
     }
   }
 }

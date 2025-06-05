@@ -15,7 +15,16 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
   styles: ``
 })
 export class DashboardTareasComponent implements OnInit {
+  @ViewChild('notificacionesDropdown') notificacionesDropdown!: ElementRef;
+  @ViewChild('notificacionesBtn') notificacionesBtn!: ElementRef;
+  @ViewChild('menuGridDropdown') menuGridDropdown!: ElementRef;
+  @ViewChild('menuGridBtn') menuGridBtn!: ElementRef;
+  @ViewChild('actionsDropdown') actionsDropdown!: ElementRef;
+  @ViewChild('actionsBtn') actionsBtn!: ElementRef;
+  @ViewChild('UserDropdown') UserDropdown!: ElementRef;
+  @ViewChild('UserBtn') UserBtn!: ElementRef;
   //Varriables para Funcionalidades de la aplicación
+  
   // Variables para las operaciones CRUD de tareas
   tareas: any[] = [];
   userId: string = '';
@@ -33,7 +42,11 @@ export class DashboardTareasComponent implements OnInit {
   mostrarDropdownActions = false;
 
   // Variables para el avatar del usuario
-  avatarUrl: string = "";
+  avatarUrl: string = '';
+  firstName = '';
+  email = '';
+  mostrarUserDropdown = false;
+
 
   //Variables para Dropdown de botones de Notificaciones y GRID
   mostrarNotificaciones = false;
@@ -42,8 +55,6 @@ export class DashboardTareasComponent implements OnInit {
   //Variables para la paginación 
   currentPage: number = 1;
   itemsPerPage: number = 15;
-
-  
 
   constructor(
     private tareasService: TareaService,
@@ -56,6 +67,7 @@ export class DashboardTareasComponent implements OnInit {
   async ngOnInit() {
     await this.ensureUsuario();
     await this.init();
+    await this.cargarDatosUsuario();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -124,21 +136,57 @@ export class DashboardTareasComponent implements OnInit {
     this.mostrarDropdownActions = !this.mostrarDropdownActions;
   }
 
-@ViewChild('actionsDropdown') actionsDropdown!: ElementRef;
-@ViewChild('actionsBtn') actionsBtn!: ElementRef;
-
 @HostListener('document:click', ['$event'])
 onDocumentClick(event: MouseEvent) {
-  const dropdown = this.actionsDropdown?.nativeElement;
-  const btn = this.actionsBtn?.nativeElement;
-  if (!dropdown || !btn) return;
+  // Notificaciones
+  const notificacionesDropdown = this.notificacionesDropdown?.nativeElement;
+  const notificacionesBtn = this.notificacionesBtn?.nativeElement;
   if (
-    !dropdown.contains(event.target) &&
-    !btn.contains(event.target)
+    this.mostrarNotificaciones &&
+    notificacionesDropdown && notificacionesBtn &&
+    !notificacionesDropdown.contains(event.target) &&
+    !notificacionesBtn.contains(event.target)
+  ) {
+    this.mostrarNotificaciones = false;
+  }
+
+  // Menu Grid
+  const menuGridDropdown = this.menuGridDropdown?.nativeElement;
+  const menuGridBtn = this.menuGridBtn?.nativeElement;
+  if (
+    this.mostrarMenuGrid &&
+    menuGridDropdown && menuGridBtn &&
+    !menuGridDropdown.contains(event.target) &&
+    !menuGridBtn.contains(event.target)
+  ) {
+    this.mostrarMenuGrid = false;
+  }
+
+  // Actions
+  const actionsDropdown = this.actionsDropdown?.nativeElement;
+  const actionsBtn = this.actionsBtn?.nativeElement;
+  if (
+    this.mostrarDropdownActions &&
+    actionsDropdown && actionsBtn &&
+    !actionsDropdown.contains(event.target) &&
+    !actionsBtn.contains(event.target)
   ) {
     this.mostrarDropdownActions = false;
   }
+
+  // User Dropdown
+  const userDropdown = this.UserDropdown?.nativeElement;
+  const userBtn = this.UserBtn?.nativeElement;
+  if (
+    this.mostrarUserDropdown &&
+    userDropdown && userBtn &&
+    !userDropdown.contains(event.target) &&
+    !userBtn.contains(event.target)
+  ) {
+    this.mostrarUserDropdown = false;
+  }
 }
+
 
   abrirModalEliminar(id: number) {
     this.tareaAEliminar = id;
@@ -279,6 +327,10 @@ async obtenerAvatarUrl(event: any) {
     this.mostrarNotificaciones = false; // Cierra el menú del GRID si estaba abierto
   }
 
+  toggleDropdownUser() {
+    this.mostrarUserDropdown = !this.mostrarUserDropdown;
+  }
+
   // Funciones para la paginación
 
   get totalPages(): number {
@@ -294,6 +346,25 @@ async obtenerAvatarUrl(event: any) {
     if (pagina < 1 || pagina > this.totalPages) return;
     this.currentPage = pagina;
   }
-}  
+
+  //Se actualiza el avatar del usuario
+  private async cargarDatosUsuario() {
+    const session = await this.authService.session();
+    const user = session.data.session?.user;
+    if (!user) return;
+
+    const { data } = await this.supabaseClient
+      .from('usuarios')
+      .select('nombre, email, avatar_url')
+      .eq('user_id', user.id)
+      .single();
+
+    if (data) {
+      this.firstName = data.nombre || '';
+      this.email = data.email || '';
+      this.avatarUrl = data.avatar_url || '';
+    }
+  }
+}
 
 
