@@ -5,6 +5,8 @@ import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit} from '@angular/core';
+import Chart from 'chart.js/auto';
 @Component({
   selector: 'app-dashboard-list',
   standalone: true,
@@ -12,7 +14,7 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
   templateUrl: './dashboard-list.component.html',
   styles: ``
 })
-export default class DashboardListComponent implements OnInit {
+export default class DashboardListComponent implements OnInit , AfterViewInit {
   @ViewChild('notificacionesDropdown') notificacionesDropdown!: ElementRef;
   @ViewChild('notificacionesBtn') notificacionesBtn!: ElementRef;
   @ViewChild('menuGridDropdown') menuGridDropdown!: ElementRef;
@@ -158,5 +160,47 @@ async signOut() {
       window.location.reload();
     }
 
-
+      ngAfterViewInit() {
+    new Chart('salesAreaChart', {
+      type: 'line',
+      data: {
+        labels: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
+        datasets: [{
+          label: 'Revenue',
+          data: [6300, 6200, 6250, 6550, 6356, 6200, 6050],
+          fill: true,
+          backgroundColor: 'rgba(6, 182, 212, 0.2)', // cyan-500 con opacidad
+          borderColor: '#06b6d4', // cyan-500
+          tension: 0.4,
+          pointBackgroundColor: '#06b6d4',
+          pointBorderColor: '#fff',
+          pointRadius: 5,
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return ` Revenue: $${context.parsed.y}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8' }
+          },
+          y: {
+            beginAtZero: false,
+            ticks: { color: '#94a3b8' },
+            grid: { color: '#334155' }
+          }
+        }
+      }
+    });
+  }
 }
+

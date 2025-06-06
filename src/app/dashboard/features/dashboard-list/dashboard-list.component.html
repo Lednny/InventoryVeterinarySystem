@@ -171,56 +171,105 @@
 </div>
 </div>
 <!-- Contenido Principal de las alertas y gráficas sobre el estados de las ventas en el mes, o en el día -->
-<section class="bg-gray-50 dark:bg-gray-900 py-14">
-    <!-- Contenedor centrado y ancho limitado -->
-    <div class="max-w-lg w-full mx-auto">
-        <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                <span class="font-medium">Info alert!</span> Change a few things up and try submitting again.
+<section class="bg-gray-50 dark:bg-gray-900 py-12 px-2 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <!-- Columna de alertas -->
+            <div class="flex flex-col gap-4 justify-center h-full">
+                <div class="flex items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">Danger alert!</span> Change a few things up and try submitting again.
+                    </div>
+                </div>
+                <div class="flex items-center p-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
+                    <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                    <span class="sr-only">Info</span>
+                    <div>
+                        <span class="font-medium">Warning alert!</span> Change a few things up and try submitting again.
+                    </div>
+                </div>
+                <div class="flex-1"></div>
             </div>
-        </div>
-        <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                <span class="font-medium">Danger alert!</span> Change a few things up and try submitting again.
-            </div>
-        </div>
-        <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                <span class="font-medium">Success alert!</span> Change a few things up and try submitting again.
-            </div>
-        </div>
-        <div class="flex items-center p-4 mb-4 text-sm text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                <span class="font-medium">Warning alert!</span> Change a few things up and try submitting again.
-            </div>
-        </div>
-        <div class="flex items-center p-4 text-sm text-gray-800 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                <span class="font-medium">Dark alert!</span> Change a few things up and try submitting again.
+            <!-- Columna de gráfica y tabla -->
+            <div class="flex flex-col gap-8 h-full">
+                <!-- Gráfica -->
+                <div class="bg-gray-800 shadow rounded-lg p-4 sm:p-6 xl:p-8 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex-shrink-0">
+                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">$45,385</span>
+                            <h3 class="text-base font-normal text-white">Ventas del año</h3>
+                        </div>
+                        <div class="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
+                            12.5%
+                            <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="relative w-full">
+                        <canvas id="salesAreaChart" height="180"></canvas>
+                    </div>
+                </div>
+                <!-- Tabla -->
+                <div class="bg-gray-800 shadow rounded-lg p-4 sm:p-6 xl:p-8 flex flex-col">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1 text-left uppercase">Últimas ventas de la semana</h3>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <a href="#" class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2">Visualizar todas</a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mt-4">
+                        <div class="overflow-x-auto rounded-lg">
+                            <div class="align-middle inline-block min-w-full">
+                                <div class="shadow overflow-hidden sm:rounded-lg">
+                                    <table class="min-w-full bg-gray-800 text-white divide-y divide-gray-700">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-2 text-center text-sm font-normal text-white uppercase">Venta</th>
+                                                <th class="px-4 py-2 text-center text-sm font-normal text-white uppercase">Fecha</th>
+                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-200 uppercase">Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-700">
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
+                                                    Payment from <span class="font-semibold">John Doe</span>
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
+                                                    Apr 21, 2021
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
+                                                    $1500
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
+                                                    Payment from <span class="font-semibold">Bonnie Green</span>
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
+                                                    Apr 23, 2021
+                                                </td>
+                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
+                                                    $2300
+                                                </td>
+                                            </tr>
+                                            <!-- Más filas aquí -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
-
-
-    
