@@ -49,53 +49,59 @@ export class MenuProfileComponent implements OnInit {
     private authService: AuthService
   ) {}
 
-async ngOnInit() {
-  const session = await this.authService.session();
-  const user = session.data.session?.user;
-  if (!user) {
-    console.error('No se encontró el usuario en la sesión');
-   window.location.href = '/auth/log-in'; // Redirige al login si no hay usuario
-    return;}
+  async ngOnInit() {
+    const session = await this.authService.session();
+    const user = session.data.session?.user;
+    if (!user) {
+      console.error('No se encontró el usuario en la sesión');
+      window.location.href = '/auth/log-in';
+      return;
+    }
 
-  // 1. Verifica si el usuario ya existe en la tabla usuarios
-  let { data } = await this.supabaseClient
-    .from('usuarios')
-    .select('user_id, nombre, email, avatar_url')
-    .eq('user_id', user.id)
-    .single();
+    // Usa el método ensureUsuario
+    const data = await this.ensureUsuario(user);
 
-  // 2. Si no existe, lo insertas y vuelves a consultar
-  if (!data) {
-    await this.supabaseClient
-      .from('usuarios')
-      .insert([{
-        user_id: user.id,
-        nombre: user.user_metadata?.['nombre'] || '',
-        email: user.email,
-        avatar_url: user.user_metadata?.['avatar_url'] || ''
-      }]);
-    // Espera a que el registro esté disponible
-    let retry = 0;
-    while (!data && retry < 5) {
-      await new Promise(res => setTimeout(res, 300));
-      const result = await this.supabaseClient
-        .from('usuarios')
-        .select('user_id, nombre, email, avatar_url')
-        .eq('user_id', user.id)
-        .single();
-      data = result.data;
-      retry++;
+    // Asigna los datos a las variables del componente
+    if (data) {
+      this.userId = data.user_id;
+      this.firstName = data.nombre || '';
+      this.email = data.email || '';
+      this.avatarUrl = data.avatar_url || '';
     }
   }
 
-  // 3. Asigna los datos a las variables del componente
-  if (data) {
-    this.userId = data.user_id;
-    this.firstName = data.nombre || '';
-    this.email = data.email || '';
-    this.avatarUrl = data.avatar_url || '';
+  // Método para asegurar que el usuario existe en la base de datos
+  private async ensureUsuario(user: any): Promise<any> {
+    let { data } = await this.supabaseClient
+      .from('usuarios')
+      .select('user_id, nombre, email, avatar_url')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!data) {
+      await this.supabaseClient
+        .from('usuarios')
+        .insert([{
+          user_id: user.id,
+          nombre: user.user_metadata?.['nombre'] || '',
+          email: user.email,
+          avatar_url: user.user_metadata?.['avatar_url'] || ''
+        }]);
+      // Espera a que el registro esté disponible
+      let retry = 0;
+      while (!data && retry < 5) {
+        await new Promise(res => setTimeout(res, 300));
+        const result = await this.supabaseClient
+          .from('usuarios')
+          .select('user_id, nombre, email, avatar_url')
+          .eq('user_id', user.id)
+          .single();
+        data = result.data;
+        retry++;
+      }
+    }
+    return data;
   }
-}
 
 @HostListener('document:click', ['$event'])
 onDocumentClick(event: MouseEvent) {
@@ -276,6 +282,7 @@ async actualizarUsuario() {
   const updates: any = {};
   if (this.email) updates.email = this.email;
   if (this.password) updates.password = this.password;
+  alert('Verifique su correo electrónico para confirmar el cambio de email');
 
   const { error } = await this.supabaseClient.auth.updateUser(updates);
   if (error) {
@@ -324,10 +331,7 @@ async confirmarEliminarCuenta() {
       fecha: new Date().toISOString()
     }]);
 
-  // 2. Cierra sesión
-  await this.supabaseClient.auth.signOut();
-
-  // 3. Elimina el usuario de la tabla usuarios
+  // 2. Elimina el usuario de la tabla usuarios
   const { error } = await this.supabaseClient
     .from('usuarios')
     .delete()
@@ -337,7 +341,11 @@ async confirmarEliminarCuenta() {
     alert('Error al eliminar usuario: ' + error.message);
   } else {
     alert('Usuario eliminado correctamente');
+            // 3. Cierra sesión
+  await this.supabaseClient.auth.signOut();
     this.router.navigate(['auth/log-in']);
+        // 3. Cierra sesión
+  await this.supabaseClient.auth.signOut();
   }
 }
 }

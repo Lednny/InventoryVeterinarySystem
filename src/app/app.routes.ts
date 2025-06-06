@@ -23,4 +23,8 @@ export const routes: Routes = [
     path: 'dashboard',
     loadChildren: () => import('./dashboard/features/dashboard-shell/dashboard-routing')
 },
+{
+    path: 'auth/reset',
+    loadComponent: () => import('./auth/features/auth-reset/auth-reset.component').then(m => m.AuthResetComponent),
+}
 ];

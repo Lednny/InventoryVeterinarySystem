@@ -1,0 +1,69 @@
+<div class="min-h-screen bg-gray-900 text-white justify text-center">
+    <!-- Header -->
+    <nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
+        <!-- Logo -->
+        <div class="flex-1 flex items-center gap-3">
+            <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
+            <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
+        </div>
+    </nav>
+<section class="bg-gray-50 dark:bg-gray-900 py-3">
+    <!-- Panel centrado tipo tarjeta para Update User -->
+    <div class="flex justify-center items-start mt-20 mb-10">
+        <div class="w-full max-w-md bg-gray-800 border border-gray-800 shadow-xl rounded-xl p-8">
+            <h2 class="text-lg font-semibold text-gray-200 uppercase tracking-wide mb-6 text-center">
+                Usuario
+            </h2>
+            <form class="flex flex-col gap-4" (ngSubmit)="actualizarUsuario()">
+                <!-- User Fields -->
+                <div>
+                </div>
+                <div class="relative">
+                    <label class="block mb-1 text-sm font-medium text-gray-300">Password</label>
+                    <input
+                        [type]="showPassword ? 'text' : 'password'"
+                        class="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 focus:ring-blue-500 focus:border-blue-500 pr-10"
+                        [(ngModel)]="password"
+                        name="password"
+                    >
+                    <button type="button"
+                        class="absolute right-3 top-8 text-gray-400"
+                        (click)="showPassword = !showPassword"
+                        tabindex="-1">
+                        <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <!-- Ícono de ocultar -->
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <!-- Ícono de ver -->
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.62 6.62A9.953 9.953 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.293 5.95M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3l18 18" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="relative">
+                    <label class="block mb-1 text-sm font-medium text-gray-300">Confirm password</label>
+                    <input
+                        [type]="showConfirmPassword ? 'text' : 'password'"
+                        class="w-full px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-100 focus:ring-blue-500 focus:border-blue-500 pr-10"
+                        [(ngModel)]="confirmPassword"
+                        name="confirmPassword"
+                    >
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex gap-2 mt-4">
+                    <button type="submit"
+                        class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg px-5 py-2.5">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+</div>
+</section>
+

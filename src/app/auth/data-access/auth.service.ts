@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { SupabaseService } from "../../services/supabase.service";
-import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials } from "@supabase/supabase-js";
+import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/supabase-js";
 
 @Injectable({providedIn: "root"})
 export class AuthService {
@@ -28,5 +28,11 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
 
     signOut(){
         return this._supabaseClient.auth.signOut()
+    }
+
+    resetPassword(email: string){
+        return this._supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/auth/reset'
+        })
     }
 }
