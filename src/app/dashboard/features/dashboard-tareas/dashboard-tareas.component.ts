@@ -5,7 +5,6 @@ import { TareaService } from '../../../services/tarea.services';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
-import { PostgrestError } from '@supabase/supabase-js';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 @Component({
   selector: 'app-dashboard-tareas',

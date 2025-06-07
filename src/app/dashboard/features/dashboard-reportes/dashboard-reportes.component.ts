@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
-import { TareaService } from '../../../services/tarea.services';
+import { ReporteService } from '../../../services/reporte.services';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
-import { PostgrestError } from '@supabase/supabase-js';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 @Component({
   selector: 'app-dashboard-reportes',
@@ -26,18 +25,18 @@ export class DashboardReportesComponent implements OnInit {
   //Varriables para Funcionalidades de la aplicación
   
   // Variables para las operaciones CRUD de tareas
-  tareas: any[] = [];
+  reportes: any[] = [];
   userId: string = '';
   showDropdown = false;
   private supabaseClient = inject(SupabaseService).supabaseClient;
   mostrarModalEliminar = false;
-  tareaAEliminar: number | null = null;
-  tareaActualizar: any = null;
+  reporteEliminar: number | null = null;
+  reporteActualizar: any = null;
 
   //Variables para función de botón de Acciones
   mostrarModalActualizar = false;
   mostrarModalEdicionMasiva = false;
-  tareasEdicionMasiva: any[] = [];
+  reportesEdicionMasiva: any[] = [];
   mostrarModalEliminarTodas = false;
   mostrarDropdownActions = false;
 
@@ -57,7 +56,7 @@ export class DashboardReportesComponent implements OnInit {
   itemsPerPage: number = 15;
 
   constructor(
-    private tareasService: TareaService,
+    private reportesService: ReporteService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -106,30 +105,30 @@ export class DashboardReportesComponent implements OnInit {
         return;
       }
       this.userId = userId;
-      await this.cargarTareas();
+      await this.cargarReportes();
     } catch (error) {
       console.error('Error al obtener la sesión:', error);
     }
   }
 
-  async cargarTareas() {
+  async cargarReportes() {
     try {
-      this.tareas = await this.tareasService.getTareasByUserId(this.userId);
+      this.reportes = await this.reportesService.getReportesByUserId(this.userId);
     } catch (error) {
-      console.error('Error al cargar tareas:', error);
+      console.error('Error al cargar reportes:', error);
     }
   }
 
-  async agregarTarea() {
+  async agregarReporte() {
     try {
-      await this.tareasService.addTarea({
-        titulo: 'Nueva tarea',
-        descripcion: 'Descripción de la tarea',
+      await this.reportesService.addReporte({
+        titulo: 'Nuevo reporte',
+        descripcion: 'Descripción del reporte',
         user_id: this.userId
       });
-      await this.cargarTareas();
+      await this.cargarReportes();
     } catch (error) {
-      console.error('Error al agregar tarea:', error);
+      console.error('Error al agregar reporte:', error);
     }
   }
   async toggleDropdownActions() {
@@ -189,81 +188,81 @@ onDocumentClick(event: MouseEvent) {
 
 
   abrirModalEliminar(id: number) {
-    this.tareaAEliminar = id;
+    this.reporteEliminar = id;
     this.mostrarModalEliminar = true;
   }
 
-  async confirmarEliminarTarea() {
-    if (this.tareaAEliminar !== null) {
-      await this.eliminarTarea(this.tareaAEliminar);
-      this.tareaAEliminar = null;
+  async confirmarEliminarReporte() {
+    if (this.reporteEliminar !== null) {
+      await this.eliminarReporte(this.reporteEliminar);
+      this.reporteEliminar = null;
       this.mostrarModalEliminar = false;
     }
   }
 
-  async eliminarTarea(id: number) {
+  async eliminarReporte(id: number) {
     try {
-      await this.tareasService.deleteTarea(id);
-      await this.cargarTareas();
+      await this.reportesService.deleteReporte(id);
+      await this.cargarReportes();
     } catch (error) {
       console.error('Error al eliminar tarea:', error);
     }
   }
   // ...
-  async actualizarTarea(id: number, tarea: { titulo?: string; descripcion?: string }) {
+  async actualizarReporte(id: number, reporte: { titulo?: string; descripcion?: string }) {
     try {
-      await this.tareasService.updateTarea(id, tarea);
-      await this.cargarTareas();
+      await this.reportesService.updateReporte(id, reporte);
+      await this.cargarReportes();
     } catch (error) {
-      console.error('Error al actualizar tarea:', error);
+      console.error('Error al actualizar reporte:', error);
     }
   }
 
   abrirModalActualizar(tarea: any) {
   // Clona la tarea para no modificar el array original hasta guardar
-  this.tareaActualizar = { ...tarea };
+  this.reporteActualizar = { ...tarea };
   this.mostrarModalActualizar = true;
 }
 
 cerrarModalActualizar() {
-  this.tareaActualizar = null;
+  this.reporteActualizar = null;
   this.mostrarModalActualizar = false;
 }
 
-async guardarActualizacionTarea() {
-  if (this.tareaActualizar && this.tareaActualizar.id) {
+async guardarActualizacionReporte() {
+  if (this.reporteActualizar && this.reporteActualizar.id) {
     try {
-      await this.tareasService.updateTarea(this.tareaActualizar.id, {
-        titulo: this.tareaActualizar.titulo,
-        descripcion: this.tareaActualizar.descripcion
+      await this.reportesService.updateReporte(this.reporteActualizar.id, {
+        titulo: this.reporteActualizar.titulo,
+        descripcion: this.reporteActualizar.descripcion
       });
-      await this.cargarTareas();
+      await this.cargarReportes();
       this.cerrarModalActualizar();
     } catch (error) {
-      console.error('Error al actualizar tarea:', error);
+      console.error('Error al actualizar reporte:', error);
     }
   }
 }
 
 abrirModalEdicionMasiva(){
-  this.tareasEdicionMasiva = this.tareas.map(t => ({ ...t }));
+  this.reportesEdicionMasiva = this.reportes.map(t => ({ ...t }));
   this.mostrarModalEdicionMasiva = true;
 }
 
   cerrarModalEdicionMasiva() {
-    this.tareasEdicionMasiva = [];
+    this.reportesEdicionMasiva = [];
     this.mostrarModalEdicionMasiva = false;
   }
 
   async guardarEdicionMasiva() {
     try {
-      for (const tarea of this.tareasEdicionMasiva) {
-        await this.tareasService.updateTarea(tarea.id, {
-          titulo: tarea.titulo,
-          descripcion: tarea.descripcion
+      for (const reporte of this.reportesEdicionMasiva) {
+        await this.reportesService.updateReporte(reporte.id, {
+          titulo: reporte.titulo,
+          descripcion: reporte.descripcion
         });
       }
-      await this.cargarTareas();
+      await this.cargarReportes();
       this.cerrarModalEdicionMasiva();
     } catch (error) {
       console.error('Error al actualizar tareas en edición masiva:', error);
@@ -277,11 +276,11 @@ abrirModalEliminarTodas() {
 
 async confirmarEliminarTodas() {
   try {
-    await this.tareasService.deleteAllTareas(this.userId);
-    await this.cargarTareas();
+    await this.reportesService.deleteAllReportes(this.userId);
+    await this.cargarReportes();
     this.mostrarModalEliminarTodas = false;
   } catch (error) {
-    console.error('Error al eliminar todas las tareas:', error);
+    console.error('Error al eliminar todos lo reportes:', error);
   }
 }
 
@@ -334,12 +333,12 @@ async obtenerAvatarUrl(event: any) {
   // Funciones para la paginación
 
   get totalPages(): number {
-    return Math.ceil(this.tareas.length / this.itemsPerPage);
+    return Math.ceil(this.reportes.length / this.itemsPerPage);
   }
 
-  get tareasPaginadas(): any[] {
+  get reportesPaginadas(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.tareas.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.reportes.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   cambiarPagina(pagina: number) {
