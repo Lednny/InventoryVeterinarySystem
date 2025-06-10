@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MenuSettingsComponent } from './menu-settings.component';
+import { FormsModule } from '@angular/forms';
 
 describe('MenuSettingsComponent', () => {
   let component: MenuSettingsComponent;
@@ -8,7 +9,7 @@ describe('MenuSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MenuSettingsComponent]
+      imports: [FormsModule],
     })
     .compileComponents();
 

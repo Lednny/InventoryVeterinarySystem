@@ -1,0 +1,92 @@
+/* Contenedor principal */
+.settings-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Título */
+.settings-container h2 {
+  margin-bottom: 25px;
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* Cada grupo de formulario */
+.form-group {
+  margin-bottom: 18px;
+}
+
+/* Etiquetas */
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Inputs y selects */
+input[type="text"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease-in-out;
+}
+
+/* Focus en inputs y selects */
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: #2980b9;
+  box-shadow: 0 0 5px rgba(41, 128, 185, 0.5);
+}
+
+/* Botón guardar */
+button[type="submit"] {
+  background-color: #2980b9;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #1c5980;
+}
+
+/* Mensajes de error */
+.error-message {
+  color: #e74c3c;
+  background-color: #fdecea;
+  border: 1px solid #e74c3c;
+  padding: 12px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Mensaje de carga */
+.loading-message {
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  margin-bottom: 20px;
+}

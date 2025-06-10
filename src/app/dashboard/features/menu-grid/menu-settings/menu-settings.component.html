@@ -1,1 +1,45 @@
-<p>menu-settings works!</p>
+<div class="settings-container">
+  <h2>Configuración general del sistema</h2>
+
+  <!-- Nombre de sucursal -->
+  <div class="form-group">
+    <label for="branchName">Establecer nombre de sucursal:</label>
+    <input
+      id="branchName"
+      type="text"
+      #branchNameInput
+      (input)="settings.branch_name = branchNameInput.value"
+    />
+  </div>
+
+  <!-- Zona horaria -->
+  <div class="form-group">
+    <label for="timezone">Zona horaria:</label>
+    <select
+      id="timezone"
+      #timezoneSelect
+      (change)="settings.timezone = timezoneSelect.value"
+    >
+      <option value="America/Mexico_City">Ciudad de México</option>
+      <option value="America/Bogota">Bogotá</option>
+      <option value="America/Argentina/Buenos_Aires">Buenos Aires</option>
+      <option value="Europe/Madrid">Madrid</option>
+      <option value="UTC">UTC</option>
+    </select>
+  </div>
+
+  <!-- Formato de hora -->
+  <div class="form-group">
+    <label for="timeFormat">Formato de hora:</label>
+    <select
+      id="timeFormat"
+      #timeFormatSelect
+      (change)="settings.time_format = timeFormatSelect.value"
+    >
+      <option value="12">12 horas (AM/PM)</option>
+      <option value="24">24 horas</option>
+    </select>
+  </div>
+
+  <button (click)="saveSettings()">Guardar configuración</button>
+</div>
