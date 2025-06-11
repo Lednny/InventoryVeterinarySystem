@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 
-// Define la interfaz Tarea
+// Define la interfaz Reporte
 interface Reporte {
     id?: number;
     titulo: string;
