@@ -21,7 +21,7 @@ export class MenuProfileComponent implements OnInit {
   @ViewChild('UserBtn') UserBtn!: ElementRef;
   //Varriables para Funcionalidades de la aplicación
   
-  // Variables para las operaciones CRUD de tareas
+  // Variables para las operaciones CRUD
 
   userId: string = '';
   private supabaseClient = inject(SupabaseService).supabaseClient;

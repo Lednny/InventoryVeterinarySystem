@@ -124,6 +124,7 @@ export class DashboardAlmacenComponent implements OnInit {
       await this.almacen1Service.addAlmacen1({
         producto: 'Nuevo Producto',
         categoria: '',
+        codigo: '',
         marca: '',
         cantidad: 0,
         precio_venta: 0,
@@ -243,6 +244,7 @@ async guardarActualizacionAlmacen1() {
     try {
       await this.almacen1Service.updateAlmacen1(this.almacen1Actualizar.id, {
         producto: this.almacen1Actualizar.producto,
+        codigo: this.almacen1Actualizar.codigo,
         categoria: this.almacen1Actualizar.categoria,
         marca: this.almacen1Actualizar.marca,
         cantidad: this.almacen1Actualizar.cantidad,
@@ -275,6 +277,7 @@ abrirModalEdicionMasiva(){
       for (const tarea of this.almacen1EdicionMasiva) {
         await this.almacen1Service.updateAlmacen1(tarea.id, {
         producto: this.almacen1Actualizar.producto,
+        codigo: this.almacen1Actualizar.codigo,
         categoria: this.almacen1Actualizar.categoria,
         marca: this.almacen1Actualizar.marca,
         cantidad: this.almacen1Actualizar.cantidad,
@@ -386,6 +389,10 @@ async obtenerAvatarUrl(event: any) {
       this.email = data.email || '';
       this.avatarUrl = data.avatar_url || '';
     }
+  }
+
+    getNumeroProducto(index: number): number {
+      return (this.currentPage - 1) * this.itemsPerPage + index + 1;
   }
 }
 

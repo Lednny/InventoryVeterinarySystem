@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
-import { TareaService } from '../../../../services/tarea.services';
+import { Almacen2Service } from '../../../../services/almacen2.services';
 import { AuthService } from '../../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
-import { PostgrestError } from '@supabase/supabase-js';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 @Component({
   selector: 'app-dashboard-almacen2',
@@ -26,18 +25,18 @@ export class DashboardAlmacen2Component implements OnInit {
   //Varriables para Funcionalidades de la aplicación
   
   // Variables para las operaciones CRUD de tareas
-  tareas: any[] = [];
+  almacen2: any[] = [];
   userId: string = '';
   showDropdown = false;
   private supabaseClient = inject(SupabaseService).supabaseClient;
   mostrarModalEliminar = false;
-  tareaAEliminar: number | null = null;
-  tareaActualizar: any = null;
+  almacen2Eliminar: number | null = null;
+  almacen2Actualizar: any = null;
 
   //Variables para función de botón de Acciones
   mostrarModalActualizar = false;
   mostrarModalEdicionMasiva = false;
-  tareasEdicionMasiva: any[] = [];
+  almacen2EdicionMasiva: any[] = [];
   mostrarModalEliminarTodas = false;
   mostrarDropdownActions = false;
 
@@ -57,7 +56,7 @@ export class DashboardAlmacen2Component implements OnInit {
   itemsPerPage: number = 15;
 
   constructor(
-    private tareasService: TareaService,
+    private almacen2Service: Almacen2Service,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -106,30 +105,38 @@ export class DashboardAlmacen2Component implements OnInit {
         return;
       }
       this.userId = userId;
-      await this.cargarTareas();
+      await this.cargarAlmacen2();
     } catch (error) {
       console.error('Error al obtener la sesión:', error);
     }
   }
 
-  async cargarTareas() {
+  async cargarAlmacen2() {
     try {
-      this.tareas = await this.tareasService.getTareasByUserId(this.userId);
+      this.almacen2 = await this.almacen2Service.getAlmacen2ByUserId(this.userId);
     } catch (error) {
       console.error('Error al cargar tareas:', error);
     }
   }
 
-  async agregarTarea() {
+  async agregarAlmacen2() {
     try {
-      await this.tareasService.addTarea({
-        titulo: 'Nueva tarea',
-        descripcion: 'Descripción de la tarea',
-        user_id: this.userId
+      await this.almacen2Service.addAlmacen2({
+        producto: 'Nuevo Producto',
+        categoria: '',
+        codigo: '',
+        marca: '',
+        cantidad: 0,
+        precio_venta: 0,
+        lote: '',
+        caducidad: new Date(),
+        user_id: this.userId,
+        vendido: false,
+        fecha_ingreso: new Date()
       });
-      await this.cargarTareas();
+      await this.cargarAlmacen2();
     } catch (error) {
-      console.error('Error al agregar tarea:', error);
+      console.error('Error al agregar producto nuevo:', error);
     }
   }
   async toggleDropdownActions() {
@@ -189,84 +196,102 @@ onDocumentClick(event: MouseEvent) {
 
 
   abrirModalEliminar(id: number) {
-    this.tareaAEliminar = id;
+    this.almacen2Eliminar = id;
     this.mostrarModalEliminar = true;
   }
 
-  async confirmarEliminarTarea() {
-    if (this.tareaAEliminar !== null) {
-      await this.eliminarTarea(this.tareaAEliminar);
-      this.tareaAEliminar = null;
+  async confirmarEliminarAlmacen2() {
+    if (this.almacen2Eliminar !== null) {
+      await this.eliminarAlmacen2(this.almacen2Eliminar);
+      this.almacen2Eliminar = null;
       this.mostrarModalEliminar = false;
     }
   }
 
-  async eliminarTarea(id: number) {
-    try {
-      await this.tareasService.deleteTarea(id);
-      await this.cargarTareas();
-    } catch (error) {
-      console.error('Error al eliminar tarea:', error);
-    }
+async eliminarAlmacen2(id: number) {
+  try {
+    await this.almacen2Service.deleteAlmacen2(id);
+    await this.cargarAlmacen2();
+  } catch (error: any) {
+    console.error('Error al eliminar producto:', error?.message || error);
+    alert('Error al eliminar: ' + (error?.message || JSON.stringify(error)));
   }
+}
+
   // ...
-  async actualizarTarea(id: number, tarea: { titulo?: string; descripcion?: string }) {
+  async actualizarAlmacen2(id: number, almacen2: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date}) {
     try {
-      await this.tareasService.updateTarea(id, tarea);
-      await this.cargarTareas();
+      await this.almacen2Service.updateAlmacen2(id, almacen2);
+      await this.cargarAlmacen2();
     } catch (error) {
-      console.error('Error al actualizar tarea:', error);
+      console.error('Error al actualizar producto:', error);
     }
   }
 
-  abrirModalActualizar(tarea: any) {
+  abrirModalActualizar(almacen2: any) {
   // Clona la tarea para no modificar el array original hasta guardar
-  this.tareaActualizar = { ...tarea };
+  this.almacen2Actualizar = { ...almacen2 };
   this.mostrarModalActualizar = true;
 }
 
 cerrarModalActualizar() {
-  this.tareaActualizar = null;
+  this.almacen2Actualizar = null;
   this.mostrarModalActualizar = false;
 }
 
-async guardarActualizacionTarea() {
-  if (this.tareaActualizar && this.tareaActualizar.id) {
+async guardarActualizacionAlmacen2() {
+  if (this.almacen2Actualizar && this.almacen2Actualizar.id) {
     try {
-      await this.tareasService.updateTarea(this.tareaActualizar.id, {
-        titulo: this.tareaActualizar.titulo,
-        descripcion: this.tareaActualizar.descripcion
+      await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, {
+        producto: this.almacen2Actualizar.producto,
+        codigo: this.almacen2Actualizar.codigo,
+        categoria: this.almacen2Actualizar.categoria,
+        marca: this.almacen2Actualizar.marca,
+        cantidad: this.almacen2Actualizar.cantidad,
+        precio_venta: this.almacen2Actualizar.precio_venta,
+        lote: this.almacen2Actualizar.lote,
+        caducidad: this.almacen2Actualizar.caducidad,
+        vendido: this.almacen2Actualizar.vendido,
+        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso
       });
-      await this.cargarTareas();
+      await this.cargarAlmacen2();
       this.cerrarModalActualizar();
     } catch (error) {
-      console.error('Error al actualizar tarea:', error);
+      console.error('Error al actualizar almacen2:', error);
     }
   }
 }
 
 abrirModalEdicionMasiva(){
-  this.tareasEdicionMasiva = this.tareas.map(t => ({ ...t }));
+  this.almacen2EdicionMasiva = this.almacen2.map(t => ({ ...t }));
   this.mostrarModalEdicionMasiva = true;
 }
 
   cerrarModalEdicionMasiva() {
-    this.tareasEdicionMasiva = [];
+    this.almacen2EdicionMasiva = [];
     this.mostrarModalEdicionMasiva = false;
   }
 
   async guardarEdicionMasiva() {
     try {
-      for (const tarea of this.tareasEdicionMasiva) {
-        await this.tareasService.updateTarea(tarea.id, {
-          titulo: tarea.titulo,
-          descripcion: tarea.descripcion
+      for (const tarea of this.almacen2EdicionMasiva) {
+        await this.almacen2Service.updateAlmacen2(tarea.id, {
+        producto: this.almacen2Actualizar.producto,
+        codigo: this.almacen2Actualizar.codigo,
+        categoria: this.almacen2Actualizar.categoria,
+        marca: this.almacen2Actualizar.marca,
+        cantidad: this.almacen2Actualizar.cantidad,
+        precio_venta: this.almacen2Actualizar.precio_venta,
+        lote: this.almacen2Actualizar.lote,
+        caducidad: this.almacen2Actualizar.caducidad,
+        vendido: this.almacen2Actualizar.vendido,
+        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso
         });
       }
-      await this.cargarTareas();
+      await this.cargarAlmacen2();
       this.cerrarModalEdicionMasiva();
     } catch (error) {
-      console.error('Error al actualizar tareas en edición masiva:', error);
+      console.error('Error al actualizar productos en edición masiva:', error);
     }
   }
 
@@ -277,11 +302,11 @@ abrirModalEliminarTodas() {
 
 async confirmarEliminarTodas() {
   try {
-    await this.tareasService.deleteAllTareas(this.userId);
-    await this.cargarTareas();
+    await this.almacen2Service.deleteAllAlmacen2(this.userId);
+    await this.cargarAlmacen2();
     this.mostrarModalEliminarTodas = false;
   } catch (error) {
-    console.error('Error al eliminar todas las tareas:', error);
+    console.error('Error al eliminar todos los productos:', error);
   }
 }
 
@@ -334,12 +359,12 @@ async obtenerAvatarUrl(event: any) {
   // Funciones para la paginación
 
   get totalPages(): number {
-    return Math.ceil(this.tareas.length / this.itemsPerPage);
+    return Math.ceil(this.almacen2.length / this.itemsPerPage);
   }
 
-  get tareasPaginadas(): any[] {
+  get almacen2Paginadas(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.tareas.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.almacen2.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   cambiarPagina(pagina: number) {
@@ -364,6 +389,10 @@ async obtenerAvatarUrl(event: any) {
       this.email = data.email || '';
       this.avatarUrl = data.avatar_url || '';
     }
+  }
+
+    getNumeroProducto(index: number): number {
+      return (this.currentPage - 1) * this.itemsPerPage + index + 1;
   }
 }
 

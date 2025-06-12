@@ -6,6 +6,7 @@ import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AfterViewInit} from '@angular/core';
+import { InventarioService } from '../../../services/inventario.service';
 import Chart from 'chart.js/auto';
 @Component({
   selector: 'app-dashboard-list',
@@ -39,19 +40,25 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
   mostrarMenuGrid = false;
   mostrarUserDropdown = false;
 
+  // Variables para lasalertas y notificaciones
+  notificaciones: any[] = [];
+  notificaciones1: any[] = [];
+  supabase: any[] = [];
+
     constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private inventarioService: InventarioService
   ) {}
 
-    async ngOnInit() {
-    const session = await this.authService.session();
-    const user = session.data.session?.user;
-    if (!user) {
-      console.error('No se encontró el usuario en la sesión');
-      window.location.href = '/auth/log-in';
-      return;
-    }
+async ngOnInit() {
+  const session = await this.authService.session();
+  const user = session.data.session?.user;
+  if (!user) {
+    console.error('No se encontró el usuario en la sesión');
+    window.location.href = '/auth/log-in';
+    return;
+  }
 
     // Usa el método ensureUsuario
     const data = await this.ensureUsuario(user);
@@ -63,7 +70,22 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
       this.email = data.email || '';
       this.avatarUrl = data.avatar_url || '';
     }
+
+try {
+    // Obtén productos de ambos almacenes
+    const almacen1 = await this.inventarioService.getProductos();
+    const almacen2 = await this.inventarioService.getProductosAlmacen2();
+
+    // Genera alertas para ambos almacenes
+    const alertasAlmacen1 = this.getAlertasPorTiempo(almacen1);
+    const alertasAlmacen2 = this.getAlertasPorTiempo(almacen2);
+
+    // Une ambos arrays de notificaciones
+    this.notificaciones = [...alertasAlmacen1, ...alertasAlmacen2];
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
   }
+}
 
   // Método para asegurar que el usuario existe en la base de datos
   private async ensureUsuario(user: any): Promise<any> {
@@ -159,6 +181,50 @@ async signOut() {
     recargarPagina() {
       window.location.reload();
     }
+
+    getAlertasPorTiempo(productos: any[]): any[] {
+  const hoy = new Date();
+  return productos.map(producto => {
+    const fechaIngreso = new Date(producto.fecha_ingreso);
+    const meses = (hoy.getFullYear() - fechaIngreso.getFullYear()) * 12 + (hoy.getMonth() - fechaIngreso.getMonth());
+    if (meses >= 6) {
+      return {
+        alerta: 'roja',
+        mensaje: `¡ALERTA! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 6 meses sin venderse`,
+        producto
+      };
+    } else if (meses >= 3) {
+      return {
+        alerta: 'amarilla',
+        mensaje: `¡Alerta! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 3 meses sin venderse.`,
+        producto
+      };
+    }
+    return null;
+  }).filter(Boolean);
+}
+
+    getAlertas1PorTiempo(productos: any[]): any[] {
+  const hoy = new Date();
+  return productos.map(producto => {
+    const fechaIngreso = new Date(producto.fecha_ingreso);
+    const meses = (hoy.getFullYear() - fechaIngreso.getFullYear()) * 12 + (hoy.getMonth() - fechaIngreso.getMonth());
+    if (meses >= 6) {
+      return {
+        alerta: 'roja',
+        mensaje1: `¡ALERTA! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 6 meses sin venderse`,
+        producto
+      };
+    } else if (meses >= 3) {
+      return {
+        alerta: 'amarilla',
+        mensaje1: `¡Alerta! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 3 meses sin venderse.`,
+        producto
+      };
+    }
+    return null;
+  }).filter(Boolean);
+}
 
       ngAfterViewInit() {
     new Chart('salesAreaChart', {

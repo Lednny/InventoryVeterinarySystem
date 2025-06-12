@@ -1,8 +1,8 @@
 import { Injectable, inject } from "@angular/core";
 import { SupabaseService } from "./supabase.service";
 
-//Define la interfaz Almacen1
-interface Almacen1 {
+//Define la interfaz Almacen2
+interface Almacen2 {
     id?: number;
     codigo?: string;
     created_at?: string;
@@ -19,11 +19,11 @@ interface Almacen1 {
 }
 
 @Injectable({ providedIn: 'root' })
-export class Almacen1Service {
+export class Almacen2Service {
     private supabaseClient = inject(SupabaseService).supabaseClient;
 
     // CREAR
-    async addAlmacen1(almacen1: {
+    async addAlmacen2(almacen2: {
         producto: string;
         codigo?: string;
         categoria: string;
@@ -37,8 +37,8 @@ export class Almacen1Service {
         fecha_ingreso?: Date;
     }) {
         const { data, error } = await this.supabaseClient
-            .from('almacen1')
-            .insert([almacen1])
+            .from('almacen2')
+            .insert([almacen2])
             .select()
             .single();
 
@@ -47,9 +47,9 @@ export class Almacen1Service {
     }
 
     // LEER
-    async getAlmacen1ByUserId(userId: string): Promise<Almacen1[]> {
+    async getAlmacen2ByUserId(userId: string): Promise<Almacen2[]> {
         const { data, error } = await this.supabaseClient
-            .from('almacen1')
+            .from('almacen2')
             .select('*')
             .eq('user_id', userId)
             .order('created_at', { ascending: false });
@@ -59,7 +59,7 @@ export class Almacen1Service {
     }
 
     // ACTUALIZAR
-    async updateAlmacen1(id: number, almacen1: {
+    async updateAlmacen2(id: number, almacen2: {
         producto?: string;
         codigo?: string;
         categoria?: string;
@@ -72,8 +72,8 @@ export class Almacen1Service {
         fecha_ingreso?: Date;
     }) {
         const { data, error } = await this.supabaseClient
-            .from('almacen1')
-            .update(almacen1)
+            .from('almacen2')
+            .update(almacen2)
             .eq('id', id)
             .select()
             .single();
@@ -83,18 +83,18 @@ export class Almacen1Service {
     }
 
     // ELIMINAR
-async deleteAlmacen1(id: number) {
+async deleteAlmacen2(id: number) {
 const { error } = await this.supabaseClient
-    .from('almacen1')
+    .from('almacen2')
     .delete()
     .eq('id', id);
     if (error) throw error;
 }
 
     // ELIMINACIÓN MASIVA
-    async deleteAllAlmacen1(userId: string) {
+    async deleteAllAlmacen2(userId: string) {
         const { error } = await this.supabaseClient
-            .from('almacen1')
+            .from('almacen2')
             .delete()
             .eq('user_id', userId);
 
