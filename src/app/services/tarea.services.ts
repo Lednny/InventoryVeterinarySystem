@@ -7,7 +7,7 @@ interface Tarea {
     titulo: string;
     descripcion: string;
     user_id: string;
-    created_at?: string;
+    fecha_creacion?: Date;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -32,7 +32,7 @@ export class TareaService {
             .from('tareas')
             .select('*')
             .eq('user_id', userId)
-            .order('created_at', { ascending: false });
+            .order('fecha_creacion', { ascending: false });
         
         if (error) throw error;
         return data || [];

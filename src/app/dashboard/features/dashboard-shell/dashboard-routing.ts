@@ -30,14 +30,6 @@ export default [
     loadComponent: () => import('../menu-grid/menu-profile/menu-profile.component').then(m => m.MenuProfileComponent)
 },
 {
-    path: 'users',
-    loadComponent: () => import('../menu-grid/menu-users/menu-users.component').then(m => m.MenuUsersComponent)
-},
-{
-    path: 'settings',
-    loadComponent: () => import('../menu-grid/menu-settings/menu-settings.component').then(m => m.MenuSettingsComponent)
-},
-{
     path: '**',
     redirectTo: '',
 }

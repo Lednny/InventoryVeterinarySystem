@@ -235,8 +235,8 @@ async signOut() {
           label: 'Revenue',
           data: [6300, 6200, 6250, 6550, 6356, 6200, 6050],
           fill: true,
-          backgroundColor: 'rgba(6, 182, 212, 0.2)', // cyan-500 con opacidad
-          borderColor: '#06b6d4', // cyan-500
+          backgroundColor: 'rgba(6, 182, 212, 0.2)', 
+          borderColor: '#06b6d4', 
           tension: 0.4,
           pointBackgroundColor: '#06b6d4',
           pointBorderColor: '#fff',

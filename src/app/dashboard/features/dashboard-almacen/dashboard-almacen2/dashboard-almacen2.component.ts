@@ -239,29 +239,6 @@ cerrarModalActualizar() {
   this.mostrarModalActualizar = false;
 }
 
-async guardarActualizacionAlmacen2() {
-  if (this.almacen2Actualizar && this.almacen2Actualizar.id) {
-    try {
-      await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, {
-        producto: this.almacen2Actualizar.producto,
-        codigo: this.almacen2Actualizar.codigo,
-        categoria: this.almacen2Actualizar.categoria,
-        marca: this.almacen2Actualizar.marca,
-        cantidad: this.almacen2Actualizar.cantidad,
-        precio_venta: this.almacen2Actualizar.precio_venta,
-        lote: this.almacen2Actualizar.lote,
-        caducidad: this.almacen2Actualizar.caducidad,
-        vendido: this.almacen2Actualizar.vendido,
-        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso
-      });
-      await this.cargarAlmacen2();
-      this.cerrarModalActualizar();
-    } catch (error) {
-      console.error('Error al actualizar almacen2:', error);
-    }
-  }
-}
-
 abrirModalEdicionMasiva(){
   this.almacen2EdicionMasiva = this.almacen2.map(t => ({ ...t }));
   this.mostrarModalEdicionMasiva = true;
@@ -394,6 +371,32 @@ async obtenerAvatarUrl(event: any) {
     getNumeroProducto(index: number): number {
       return (this.currentPage - 1) * this.itemsPerPage + index + 1;
   }
+
+async guardarActualizacionAlmacen2() {
+  if (this.almacen2Actualizar && this.almacen2Actualizar.id) {
+    // Validación: solo permitir marcar como vendido si cantidad es 0
+    if (this.almacen2Actualizar.vendido && this.almacen2Actualizar.cantidad > 0) {
+      alert('No puedes marcar como vendido si la cantidad no es 0.');
+      return;
+    }
+    try {
+      await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, {
+        producto: this.almacen2Actualizar.producto,
+        codigo: this.almacen2Actualizar.codigo,
+        categoria: this.almacen2Actualizar.categoria,
+        marca: this.almacen2Actualizar.marca,
+        cantidad: this.almacen2Actualizar.cantidad,
+        precio_venta: this.almacen2Actualizar.precio_venta,
+        lote: this.almacen2Actualizar.lote,
+        caducidad: this.almacen2Actualizar.caducidad,
+        vendido: this.almacen2Actualizar.vendido,
+        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso
+      });
+      await this.cargarAlmacen2();
+      this.cerrarModalActualizar();
+    } catch (error) {
+      console.error('Error al actualizar almacen2:', error);
+    }
+  }
 }
-
-
+}
