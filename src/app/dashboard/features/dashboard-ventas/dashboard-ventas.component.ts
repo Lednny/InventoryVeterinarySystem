@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Component, OnInit, inject } from '@angular/core';
-import { TareaService } from '../../../services/tarea.services';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { VentasService } from '../../../services/ventas.services';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
-import { PostgrestError } from '@supabase/supabase-js';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Subscription } from 'rxjs';
+
 @Component({
   selector: 'app-dashboard-ventas',
   standalone: true,
@@ -14,7 +15,7 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
   templateUrl: './dashboard-ventas.component.html',
   styles: ``
 })
-export class DashboardVentasComponent implements OnInit {
+export class DashboardVentasComponent implements OnInit, OnDestroy {
   @ViewChild('notificacionesDropdown') notificacionesDropdown!: ElementRef;
   @ViewChild('notificacionesBtn') notificacionesBtn!: ElementRef;
   @ViewChild('menuGridDropdown') menuGridDropdown!: ElementRef;
@@ -26,18 +27,19 @@ export class DashboardVentasComponent implements OnInit {
   //Varriables para Funcionalidades de la aplicación
   
   // Variables para las operaciones CRUD de tareas
-  tareas: any[] = [];
+  ventas: any[] = [];
+  private ventasSub!: Subscription;
   userId: string = '';
   showDropdown = false;
   private supabaseClient = inject(SupabaseService).supabaseClient;
   mostrarModalEliminar = false;
-  tareaAEliminar: number | null = null;
-  tareaActualizar: any = null;
+  ventasEliminar: number | null = null;
+  ventasActualizar: any = null;
 
   //Variables para función de botón de Acciones
   mostrarModalActualizar = false;
   mostrarModalEdicionMasiva = false;
-  tareasEdicionMasiva: any[] = [];
+  ventasEdicionMasiva: any[] = [];
   mostrarModalEliminarTodas = false;
   mostrarDropdownActions = false;
 
@@ -57,7 +59,7 @@ export class DashboardVentasComponent implements OnInit {
   itemsPerPage: number = 15;
 
   constructor(
-    private tareasService: TareaService,
+    private ventasService: VentasService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -68,6 +70,14 @@ export class DashboardVentasComponent implements OnInit {
     await this.ensureUsuario();
     await this.init();
     await this.cargarDatosUsuario();
+    this.cargarVentas();
+    this.ventasSub = this.ventasService.ventasActualizadas$.subscribe(() => {
+    this.cargarVentas();
+    });
+  }
+
+    ngOnDestroy() {
+    if (this.ventasSub) this.ventasSub.unsubscribe();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -99,37 +109,45 @@ export class DashboardVentasComponent implements OnInit {
   private async init() {
     try {
       const session = await this.authService.session();
-      const userId = session.data.session?.user?.id;
-      if (!userId) {
+      const user_id = session.data.session?.user?.id;
+      if (!user_id) {
         console.error('No hay usuario autenticado');
         // Aquí podrías redirigir al login si lo deseas
         return;
       }
-      this.userId = userId;
-      await this.cargarTareas();
+      this.userId = user_id;
+      await this.cargarVentas();
     } catch (error) {
       console.error('Error al obtener la sesión:', error);
     }
   }
 
-  async cargarTareas() {
-    try {
-      this.tareas = await this.tareasService.getTareasByUserId(this.userId);
-    } catch (error) {
-      console.error('Error al cargar tareas:', error);
-    }
+async cargarVentas() {
+  try {
+    this.ventas = await this.ventasService.getTodasLasVentas();
+  } catch (error) {
+    console.error('Error al cargar ventas:', error);
   }
+}
 
-  async agregarTarea() {
+  async agregarVentas() {
     try {
-      await this.tareasService.addTarea({
-        titulo: 'Nueva tarea',
-        descripcion: 'Descripción de la tarea',
-        user_id: this.userId
+      await this.ventasService.addVentas({
+        producto: 'Nuevo Producto',
+        categoria: '',
+        codigo: '',
+        marca: '',
+        cantidad: 0,
+        precio_venta: 0,
+        lote: '',
+        caducidad: new Date(),
+        user_id: this.userId,
+        vendido: false,
+        fecha_ingreso: new Date()
       });
-      await this.cargarTareas();
+      await this.cargarVentas();
     } catch (error) {
-      console.error('Error al agregar tarea:', error);
+      console.error('Error al agregar producto nuevo:', error);
     }
   }
   async toggleDropdownActions() {
@@ -189,101 +207,49 @@ onDocumentClick(event: MouseEvent) {
 
 
   abrirModalEliminar(id: number) {
-    this.tareaAEliminar = id;
+    this.ventasEliminar = id;
     this.mostrarModalEliminar = true;
   }
 
-  async confirmarEliminarTarea() {
-    if (this.tareaAEliminar !== null) {
-      await this.eliminarTarea(this.tareaAEliminar);
-      this.tareaAEliminar = null;
+  async confirmarEliminarVentas() {
+    if (this.ventasEliminar !== null) {
+      await this.eliminarVentas(this.ventasEliminar);
+      this.ventasEliminar = null;
       this.mostrarModalEliminar = false;
     }
   }
 
-  async eliminarTarea(id: number) {
-    try {
-      await this.tareasService.deleteTarea(id);
-      await this.cargarTareas();
-    } catch (error) {
-      console.error('Error al eliminar tarea:', error);
-    }
+  async eliminarVentas(id: number) {
+  try {
+    await this.ventasService.deleteVentas(id);
+    await this.cargarVentas();
+  } catch (error: any) {
+    console.error('Error al eliminar producto:', error?.message || error);
+    alert('Error al eliminar: ' + (error?.message || JSON.stringify(error)));
   }
+}
+
   // ...
-  async actualizarTarea(id: number, tarea: { titulo?: string; descripcion?: string }) {
+  async actualizarVentas(id: number, ventas: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date}) {
     try {
-      await this.tareasService.updateTarea(id, tarea);
-      await this.cargarTareas();
+      await this.ventasService.updateVentas(id, ventas);
+      await this.cargarVentas();
     } catch (error) {
-      console.error('Error al actualizar tarea:', error);
+      console.error('Error al actualizar producto:', error);
     }
   }
 
-  abrirModalActualizar(tarea: any) {
+  abrirModalActualizar(ventas: any) {
   // Clona la tarea para no modificar el array original hasta guardar
-  this.tareaActualizar = { ...tarea };
+  this.ventasActualizar = { ...ventas };
   this.mostrarModalActualizar = true;
 }
 
 cerrarModalActualizar() {
-  this.tareaActualizar = null;
+  this.ventasActualizar = null;
   this.mostrarModalActualizar = false;
 }
 
-async guardarActualizacionTarea() {
-  if (this.tareaActualizar && this.tareaActualizar.id) {
-    try {
-      await this.tareasService.updateTarea(this.tareaActualizar.id, {
-        titulo: this.tareaActualizar.titulo,
-        descripcion: this.tareaActualizar.descripcion
-      });
-      await this.cargarTareas();
-      this.cerrarModalActualizar();
-    } catch (error) {
-      console.error('Error al actualizar tarea:', error);
-    }
-  }
-}
-
-abrirModalEdicionMasiva(){
-  this.tareasEdicionMasiva = this.tareas.map(t => ({ ...t }));
-  this.mostrarModalEdicionMasiva = true;
-}
-
-  cerrarModalEdicionMasiva() {
-    this.tareasEdicionMasiva = [];
-    this.mostrarModalEdicionMasiva = false;
-  }
-
-  async guardarEdicionMasiva() {
-    try {
-      for (const tarea of this.tareasEdicionMasiva) {
-        await this.tareasService.updateTarea(tarea.id, {
-          titulo: tarea.titulo,
-          descripcion: tarea.descripcion
-        });
-      }
-      await this.cargarTareas();
-      this.cerrarModalEdicionMasiva();
-    } catch (error) {
-      console.error('Error al actualizar tareas en edición masiva:', error);
-    }
-  }
-
-
-abrirModalEliminarTodas() {
-  this.mostrarModalEliminarTodas = true;
-}
-
-async confirmarEliminarTodas() {
-  try {
-    await this.tareasService.deleteAllTareas(this.userId);
-    await this.cargarTareas();
-    this.mostrarModalEliminarTodas = false;
-  } catch (error) {
-    console.error('Error al eliminar todas las tareas:', error);
-  }
-}
 
   async signOut() {    // Cierra el menú de acciones si está abierto
     await this.authService.signOut();
@@ -334,12 +300,12 @@ async obtenerAvatarUrl(event: any) {
   // Funciones para la paginación
 
   get totalPages(): number {
-    return Math.ceil(this.tareas.length / this.itemsPerPage);
+    return Math.ceil(this.ventas.length / this.itemsPerPage);
   }
 
-  get tareasPaginadas(): any[] {
+  get ventasPaginadas(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.tareas.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.ventas.slice(startIndex, startIndex + this.itemsPerPage);
   }
 
   cambiarPagina(pagina: number) {
@@ -365,6 +331,42 @@ async obtenerAvatarUrl(event: any) {
       this.avatarUrl = data.avatar_url || '';
     }
   }
+
+    getNumeroProducto(index: number): number {
+      return (this.currentPage - 1) * this.itemsPerPage + index + 1;
+  }
+
+  getTotalVentas(): number {
+  return this.ventas.reduce((total, venta) => total + (venta.precio_venta * venta.cantidad), 0);
+}
+
+  async guardarActualizacionVentas() {
+  if (this.ventasActualizar && this.ventasActualizar.id) {
+    // Validación: solo permitir marcar como vendido si cantidad es 0
+    if (this.ventasActualizar.vendido && this.ventasActualizar.cantidad > 0) {
+      alert('No puedes marcar como vendido si la cantidad no es 0.');
+      return;
+    }
+    try {
+      await this.ventasService.updateVentas(this.ventasActualizar.id, {
+        producto: this.ventasActualizar.producto,
+        codigo: this.ventasActualizar.codigo,
+        categoria: this.ventasActualizar.categoria,
+        marca: this.ventasActualizar.marca,
+        cantidad: this.ventasActualizar.cantidad,
+        precio_venta: this.ventasActualizar.precio_venta,
+        lote: this.ventasActualizar.lote,
+        caducidad: this.ventasActualizar.caducidad,
+        vendido: this.ventasActualizar.vendido,
+        fecha_ingreso: this.ventasActualizar.fecha_ingreso
+      });
+      await this.cargarVentas();
+      this.cerrarModalActualizar();
+    } catch (error) {
+      console.error('Error al actualizar almacen2:', error);
+    }
+  }
+}
 }
 
 

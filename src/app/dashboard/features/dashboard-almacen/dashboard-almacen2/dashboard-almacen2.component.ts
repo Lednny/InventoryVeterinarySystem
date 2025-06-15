@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { Almacen2Service } from '../../../../services/almacen2.services';
+import { VentasService } from '../../../../services/ventas.services';
 import { AuthService } from '../../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -55,9 +56,13 @@ export class DashboardAlmacen2Component implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
+    // Variable para la ventas
+  cantidadVenta: number = 0;
+
   constructor(
     private almacen2Service: Almacen2Service,
     private router: Router,
+    private ventasService: VentasService,
     private authService: AuthService
   ) {}
 
@@ -251,8 +256,8 @@ abrirModalEdicionMasiva(){
 
   async guardarEdicionMasiva() {
     try {
-      for (const tarea of this.almacen2EdicionMasiva) {
-        await this.almacen2Service.updateAlmacen2(tarea.id, {
+      for (const almacen2 of this.almacen2EdicionMasiva) {
+        await this.almacen2Service.updateAlmacen2(almacen2.id, {
         producto: this.almacen2Actualizar.producto,
         codigo: this.almacen2Actualizar.codigo,
         categoria: this.almacen2Actualizar.categoria,
@@ -398,5 +403,37 @@ async guardarActualizacionAlmacen2() {
       console.error('Error al actualizar almacen2:', error);
     }
   }
+}
+
+async realizarVenta() {
+  if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen2Actualizar.cantidad) return;
+
+  // 1. Restar la cantidad vendida
+  this.almacen2Actualizar.cantidad -= this.cantidadVenta;
+
+  // 2. Guardar cambios en el almacén
+  await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, {
+    ...this.almacen2Actualizar
+  });
+
+  // 3. Registrar la venta en la tabla de ventas
+  await this.ventasService.addVenta({
+    producto: this.almacen2Actualizar.producto,
+    categoria: this.almacen2Actualizar.categoria,
+    marca: this.almacen2Actualizar.marca,
+    cantidad: this.cantidadVenta,
+    precio_venta: this.almacen2Actualizar.precio_venta,
+    lote: this.almacen2Actualizar.lote,
+    caducidad: this.almacen2Actualizar.caducidad,
+    user_id: this.almacen2Actualizar.user_id,
+    fecha_ingreso: new Date(),
+    vendido: true,
+    almacen: 'Operativo',
+  });
+
+  // 4. Refrescar datos y limpiar campo
+  await this.cargarAlmacen2();
+  this.cantidadVenta = 0;
+  alert('Venta registrada correctamente');
 }
 }

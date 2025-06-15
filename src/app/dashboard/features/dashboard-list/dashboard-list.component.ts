@@ -8,6 +8,8 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AfterViewInit} from '@angular/core';
 import { InventarioService } from '../../../services/inventario.service';
 import Chart from 'chart.js/auto';
+import { Almacen1Service } from '../../../services/almacen1.services';
+import { Almacen2Service } from '../../../services/almacen2.services';
 @Component({
   selector: 'app-dashboard-list',
   standalone: true,
@@ -190,13 +192,13 @@ async signOut() {
     if (meses >= 6) {
       return {
         alerta: 'roja',
-        mensaje: `¡ALERTA! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 6 meses sin venderse`,
+        mensaje: `¡ALERTA! El producto "${producto.producto}" con codigo "${producto.codigo}" del Almacén Central lleva más de 6 meses sin venderse`,
         producto
       };
     } else if (meses >= 3) {
       return {
         alerta: 'amarilla',
-        mensaje: `¡Alerta! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 3 meses sin venderse.`,
+        mensaje: `¡Alerta! El producto "${producto.producto}" con codigo "${producto.codigo}" del Almacén Central lleva más de 3 meses sin venderse.`,
         producto
       };
     }
@@ -212,13 +214,13 @@ async signOut() {
     if (meses >= 6) {
       return {
         alerta: 'roja',
-        mensaje1: `¡ALERTA! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 6 meses sin venderse`,
+        mensaje1: `¡ALERTA! El producto "${producto.producto}" con codigo ${producto.codigo}" del Almacén Operativo más de 6 meses sin venderse`,
         producto
       };
     } else if (meses >= 3) {
       return {
         alerta: 'amarilla',
-        mensaje1: `¡Alerta! El producto "${producto.producto}" con codigo de producto "${producto.codigo}" lleva más de 3 meses sin venderse.`,
+        mensaje1: `¡Alerta! El producto "${producto.producto}" con codigo "${producto.codigo}" del Almacén Operativo lleva más de 3 meses sin venderse.`,
         producto
       };
     }

@@ -16,6 +16,7 @@ interface Almacen1 {
     user_id: string;
     vendido: boolean;
     fecha_ingreso: Date;
+    almacen?: String;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -35,6 +36,7 @@ export class Almacen1Service {
         user_id: string;
         vendido?: boolean;
         fecha_ingreso?: Date;
+        almacen?: String;
     }) {
         const { data, error } = await this.supabaseClient
             .from('almacen1')
@@ -70,6 +72,7 @@ export class Almacen1Service {
         caducidad?: Date;
         vendido?: boolean;
         fecha_ingreso?: Date;
+        almacen?: String;
     }) {
         const { data, error } = await this.supabaseClient
             .from('almacen1')
