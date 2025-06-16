@@ -45,6 +45,25 @@ export default class AuthLogInComponent {
         if (error instanceof Error) {
           console.error('Error during login:', error.message);
       }
+      alert('Error al iniciar sesión, verifique su correo electrónico y/o contraseña.');
+      this.form.controls.password.reset();
+    }
+  }
+
+  async resetPassword() {
+    if (this.form.value.email) {
+      try {
+        const { error } = await this._authService.resetPassword(this.form.value.email);
+        if (error) throw error;
+        alert('Se ha enviado un enlace de restablecimiento de contraseña a su correo electrónico.');
+      } catch (error) {
+        console.error('Error al enviar el enlace de restablecimiento de contraseña:', error);
+        alert('Error al enviar el enlace de restablecimiento de contraseña. Por favor, inténtelo de nuevo más tarde.');
+      }
+    } else {
+      (this.form.value.email === null || this.form.value.email === undefined) &&
+      console.error('Email is required for password reset.');
+      alert('Por favor, ingrese su correo electrónico para restablecer la contraseña.');
     }
   }
 }

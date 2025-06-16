@@ -1,4 +1,4 @@
-import { Injectable, numberAttribute } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
@@ -60,12 +60,6 @@ export class InventarioService {
     if(error) throw error;
     return data;
   }
-   // const { data, error } = await this.supabase
-   //   .from('stock')
-   //   .select('*, IdProducto(*), IdSucursal(*)')
-   //   .eq('IdSucursal', IdSucursal);
-   // if (error) throw error;
-   // return data;
 
   //Metodo crud UPDATE
   async updateStock(id: number, newStock: number) {
@@ -86,4 +80,28 @@ export class InventarioService {
     if (error) throw error;
     return deleted;
   }
+
+async getProductos() {
+  const { data, error } = await this.supabase
+    .from('almacen1')
+    .select('*');
+  if (error) throw error;
+  return data;
+}
+
+async getProductosAlmacen2() {
+  const { data, error } = await this.supabase
+    .from('almacen2')
+    .select('*');
+  if (error) throw error;
+  return data;
+}
+
+async getVentas() {
+  const { data, error } = await this.supabase
+    .from('ventas')
+    .select('*');
+  if (error) throw error;
+  return data;
+}
 }

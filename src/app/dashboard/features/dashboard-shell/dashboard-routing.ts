@@ -26,6 +26,10 @@ export default [
     loadComponent: () => import('../dashboard-ventas/dashboard-ventas.component').then(m => m.DashboardVentasComponent),
 },
 {
+    path: 'profile',
+    loadComponent: () => import('../menu-grid/menu-profile/menu-profile.component').then(m => m.MenuProfileComponent)
+},
+{
     path: '**',
     redirectTo: '',
 }

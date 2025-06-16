@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
 
-// Define la interfaz Tarea
-interface Tarea {
+// Define la interfaz Reporte
+interface Reporte {
     id?: number;
     titulo: string;
     descripcion: string;
@@ -11,14 +11,14 @@ interface Tarea {
 }
 
 @Injectable({ providedIn: 'root' })
-export class TareaService {
+export class ReporteService {
     private supabaseClient = inject(SupabaseService).supabaseClient;
 
     // CREAR
-    async addTarea(tarea: { titulo: string; descripcion: string; user_id: string }) {
+    async addReporte(reporte: { titulo: string; descripcion: string; user_id: string }) {
         const { data, error } = await this.supabaseClient
-            .from('tareas')
-            .insert([tarea])
+            .from('reportes')
+            .insert([reporte])
             .select()
             .single();
         
@@ -27,9 +27,9 @@ export class TareaService {
     }
 
     // LEER
-    async getTareasByUserId(userId: string): Promise<Tarea[]> {
+    async getReportesByUserId(userId: string): Promise<Reporte[]> {
         const { data, error } = await this.supabaseClient
-            .from('tareas')
+            .from('reportes')
             .select('*')
             .eq('user_id', userId)
             .order('fecha_creacion', { ascending: false });
@@ -39,10 +39,10 @@ export class TareaService {
     }
 
     // ACTUALIZAR
-    async updateTarea(id: number, tarea: { titulo?: string; descripcion?: string }) {
+    async updateReporte(id: number, reporte: { titulo?: string; descripcion?: string }) {
         const { data, error } = await this.supabaseClient
-            .from('tareas')
-            .update(tarea)
+            .from('reportes')
+            .update(reporte)
             .eq('id', id)
             .select()
             .single();
@@ -52,9 +52,9 @@ export class TareaService {
     }
 
     // ELIMINAR
-    async deleteTarea(id: number) {
+    async deleteReporte(id: number) {
         const { error } = await this.supabaseClient
-            .from('tareas')
+            .from('reportes')
             .delete()
             .eq('id', id);
         
@@ -62,9 +62,9 @@ export class TareaService {
     }
 
     // ELIMINACIÓN MASIVA
-    async deleteAllTareas(userId: string) {
+    async deleteAllReportes(userId: string) {
         const { error } = await this.supabaseClient
-            .from('tareas')
+            .from('reportes')
             .delete()
             .eq('user_id', userId);
         

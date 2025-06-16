@@ -1,80 +1,655 @@
 <div class="min-h-screen bg-gray-900 text-white justify text-center">
-<!-- Header -->
-<nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
-    <!-- Logo -->
-    <div class="flex-1 flex items-center gap-3">
-    <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
-    <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
-    </div>
-    <!-- Barra de Búsqueda -->
-    <div class="flex-2 flex justify-left ">
-    <input
-        type="text"
-        placeholder="Search"
-        class="w-[380px] px-4 py-2 rounded bg-gray-700 border border-gray-600 text-sm focus:outline-none"
-    />
-    </div>
-    <!-- Icons -->
-    <div class="flex-1 flex items-center justify-end gap-6">
-    <!-- ícono de Campana -->
-    <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-    </button>
-    <!-- Grid Icon -->
-    <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
-        </svg>
-    </button>
-    <!-- User Avatar -->
-    <img src="" alt="User" class="rounded-full w-8 h-8 border-2 border-gray-600" />
-    </div>
-</nav>
+    <!-- Header -->
+    <nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
+        <!-- Logo -->
+        <div class="flex-1 flex items-center gap-3">
+            <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
+            <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
+        </div>
+        <!-- Icons -->
+        <div class="flex-1 flex items-center justify-end gap-6 relative">
+            <!-- Apps -->
+            <button #menuGridBtn type="button" class="p-4 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleMenuGrid()">
+                <span class="sr-only">Ver apps</span>
+                <!-- Icon -->
+                <svg class="w-6 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                    <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div *ngIf="mostrarMenuGrid" #menuGridDropdown class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
+                <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    Apps
+                </div>
+                <div class="grid grid-cols-2 gap-2 p-4">
+                    <a
+                    routerLink="/dashboard/profile"
+                    class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Profile</div>
+                    </a>
+                    <button class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group" (click)="signOut()">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Logout</div>
+                    </button>
+                </div>
+            </div>
+            <!-- User Avatar -->
+            <button
+                #UserBtn
+                type="button"
+                class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 flex items-center justify-center p-0 border-0 focus:outline-none"
+                (click)="toggleDropdownUser()"
+            >
+                <ng-container *ngIf="avatarUrl; else defaultUserIcon">
+                    <img
+                        [src]="avatarUrl"
+                        alt="Avatar"
+                        class="absolute w-10 h-10 rounded-full object-cover border-2 border-gray-400"
+                    />
+                </ng-container>
+                <ng-template #defaultUserIcon>
+                    <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 -2 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </ng-template>
+            </button>
+            <!-- Dropdown de usuario -->
+            <div *ngIf="mostrarUserDropdown" #UserDropdown  id="mostrarUserDropdown" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-full right-1 mt-2">
+                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                            <div class="font-semibold break-all">{{ firstName }}</div>
+                            <div class="font-italic break-all">{{ email }}</div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
 <!-- Tabs -->
 <div class="flex items center justify-center mt-4">
     <div class="flex gap-10 border-b border-gray-700 w-[700px] justify-center">
     <a
     routerLink="/dashboard"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     [routerLinkActiveOptions]="{ exact: true }"
     >Overview</a>
-    <div class="relative group">
+    <div class="relative group ">
     <button
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition">
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition rounded-lg"     
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
     Almacén</button>
     <!-- Submenú -->
     <div
-    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-md w-40 z-10">
+    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-lg w-40 z-10">
     <a
     routerLink="/dashboard/almacen1"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Central</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
+    Almacén Central</a>
     <a
     routerLink="/dashboard/almacen2"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Operativo</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg" 
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
+    Almacén Operativo</a>
     </div>
     </div>
-
     <a
     routerLink="/dashboard/tareas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Tareas</a>
     <a
     routerLink="/dashboard/reportes"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Reportes</a>
-    <a
+        <a
     routerLink="/dashboard/ventas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Ventas</a>
 </div>
+</div>
+<!-- Contenido Principal -->
+<section class="bg-gray-50 dark:bg-gray-900 py-14">
+<div class="max-w-4xl px-4 mx-auto lg:px-6 w-full">
+    <!-- Start coding here -->
+    <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+    <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+        <div class="w-full md:w-1/2">
+        <form class="flex items-center" (submit)="$event.preventDefault()">
+            <label for="simple-search" class="sr-only">Search</label>
+            <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <input
+            type="text"
+            id="simple-search"
+            name="searchTerm"
+            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            placeholder="Buscar producto, marca, categoría, etc."
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="buscar()"
+            />
+            </div>
+            <button type="button" (click)="buscar()" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Buscar
+            </button>
+        </form>
+        </div>
+        <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+        <button type="button" class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" (click)="agregarAlmacen1()">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewbox="1 1 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+            </svg>
+            Añadir Producto
+        </button>
+        <!-- Dropdown para acciones -->
+        <div class="flex items-center w-full space-x-3 md:w-auto relative">
+            <div
+            *ngIf="mostrarDropdownActions"
+            #actionsDropdown
+            class="absolute top-full left-0 mt-0 border-white divide-y divide-gray-100 rounded-lg shadow w-56 z-50 dark:bg-gray-700 dark:divide-gray-100"
+            >
+            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200 ">
+                <li>
+                    <a href="#" (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black rounded-lg">
+                        Edición Masiva
+                    </a>
+                </li>
+            </ul>
+            <div class="py-1">
+                <a href="#" (click)="abrirModalEliminarTodas(); $event.preventDefault()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-lg">
+                    Eliminación Masiva
+                </a>
+            </div>
+            </div>
+            
+            <!-- Dropdown menu -->
+            <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+                Category
+            </h6>
+            <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+                <li class="flex items-center">
+                <input id="apple" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Apple (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="fitbit" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Fitbit (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="dell" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="dell" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Dell (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="asus" type="checkbox" value="" checked
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="asus" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Asus (97)
+                </label>
+                </li>
+            </ul>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Contenedor principal mejorado -->
+<div class="container mx-auto px-4 py-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
+        <!-- Header de la tabla -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white text-center">
+                Almacén Central
+            </h2>
+        </div>
+        
+        <!-- Contenedor de la tabla con scroll horizontal -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-gray-700 dark:text-gray-300 min-w-[1200px]">
+                <thead class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">
+                    <tr>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            ID
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[150px]">
+                            Producto
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[120px]">
+                            Marca
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[100px]">
+                            Categoría
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Cantidad
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Precio
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Lote
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Codigo de Producto
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            F. Ingreso
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Caducidad
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Vendido
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[160px]">
+                            Acciones
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                     <tr *ngFor="let almacen1 of (resultadosBusqueda !== null ? resultadosBusqueda : almacen1Paginadas); let i = index"
+                        class="hover:bg-gray-600 transition-all duration-300 hover:shadow-md">
+                        
+                        <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">
+                            #{{ getNumeroProducto(i) }}
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <div class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]" 
+                                [title]="almacen1.producto">
+                                {{ almacen1.producto }}
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <div class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" 
+                                [title]="almacen1.marca">
+                                {{ almacen1.marca }}
+                            </div>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900       dark:text-purple-300">
+                                {{ almacen1.categoria }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                {{ almacen1.cantidad }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <span class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
+                                {{ almacen1.precio_venta | currency:'$':'symbol':'1.2-2' }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">
+                                {{ almacen1.lote }}
+                            </code>
+                        </td>
+
+                        <td class="px-4 py-4 text-center">
+                            <code class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" >
+                                {{ almacen1.codigo }}
+                            </code>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center text-sm font-medium text-gray-600 dark:text-gray-400">
+                            {{ almacen1.fecha_ingreso | date:'dd/MM/yyyy' }}
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center text-sm font-medium">
+                            <span class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
+                                {{ almacen1.caducidad | date:'dd/MM/yyyy' }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <span [ngClass]="{
+                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': !almacen1.vendido,
+                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': almacen1.vendido
+                            }" 
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                                {{ almacen1.vendido ? '✅ Sí' : '❌ No' }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center">
+                            <div class="flex justify-center items-center gap-2">
+                                <button
+                                    class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5"
+                                    (click)="abrirModalActualizar(almacen1)"
+                                    title="Modificar producto">
+                                    Modificar
+                                </button>
+                                <button 
+                                    class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5"
+                                    (click)="abrirModalEliminar(almacen1.id)"
+                                    title="Eliminar producto">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Si hay búsqueda y no hay resultados, muestra mensaje -->
+                    <tr *ngIf="resultadosBusqueda !== null && resultadosBusqueda.length === 0">
+                    <td colspan="12" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                    No se encontraron resultados para "{{ searchTerm }}"
+                    </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de actualización mejorado -->
+<div *ngIf="mostrarModalActualizar" 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="relative bg-white rounded-2xl shadow-2xl dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <!-- Modal header mejorado -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-t-2xl">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    ✏️ Modificar Producto
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm w-10 h-10 flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white transition-all duration-200"
+                    (click)="cerrarModalActualizar()">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal body mejorado -->
+            <form class="p-6 space-y-6" (ngSubmit)="guardarActualizacionAlmacen1()">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <label for="producto" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Producto *
+                        </label>
+                        <input
+                            type="text"
+                            id="producto"
+                            [(ngModel)]="almacen1Actualizar.producto"
+                            name="producto"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="Nombre del producto"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="categoria" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Categoría
+                        </label>
+                        <input
+                            type="text"
+                            id="categoria"
+                            [(ngModel)]="almacen1Actualizar.categoria"
+                            name="categoria"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="Categoría del producto"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="marca" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Marca
+                        </label>
+                        <input
+                            type="text"
+                            id="marca"
+                            [(ngModel)]="almacen1Actualizar.marca"
+                            name="marca"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="Marca del producto"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="cantidad" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Cantidad
+                        </label>
+                        <input
+                            type="number"
+                            id="cantidad"
+                            [(ngModel)]="almacen1Actualizar.cantidad"
+                            name="cantidad"
+                            min="0"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="0"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="precio" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Precio de Venta (MXN)
+                        </label>
+                        <input
+                            type="number"
+                            id="precio"
+                            [(ngModel)]="almacen1Actualizar.precio_venta"
+                            name="precio"
+                            step="0.01"
+                            min="0"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="0.00"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="lote" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Lote
+                        </label>
+                        <input
+                            type="text"
+                            id="lote"
+                            [(ngModel)]="almacen1Actualizar.lote"
+                            name="lote"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="LOT001"
+                        >
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="lote" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Còdigo de Producto
+                        </label>
+                        <input
+                            type="text"
+                            id="Codigo"
+                            [(ngModel)]="almacen1Actualizar.codigo"
+                            name="lote"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                            placeholder="LOT001"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="fechaIngreso" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Fecha de Ingreso
+                        </label>
+                        <input
+                            type="date"
+                            id="fechaIngreso"
+                            [(ngModel)]="almacen1Actualizar.fecha_ingreso"
+                            name="fechaIngreso"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="caducidad" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Fecha de Caducidad
+                        </label>
+                        <input
+                            type="date"
+                            id="caducidad"
+                            [(ngModel)]="almacen1Actualizar.caducidad"
+                            name="caducidad"
+                            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                        >
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Estado de Venta
+                        </label>
+                        <div class="flex items-center space-x-4">
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    [(ngModel)]="almacen1Actualizar.vendido"
+                                    name="vendido"
+                                    [value]="false"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">No vendido</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input
+                                    type="radio"
+                                    [(ngModel)]="almacen1Actualizar.vendido"
+                                    name="vendido"
+                                    [value]="true"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">✅ Vendido</span>
+                            </label>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Botones del modal mejorados -->
+                <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" 
+                        (click)="cerrarModalActualizar()"
+                        class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                        class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
+                        Guardar Cambios
+                    </button>
+                      <div class="space-y-2">
+    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+      Ventas por:
+    </label>
+    <input
+      type="number"
+      min="1"
+      [max]="almacen1Actualizar.cantidad"
+      [(ngModel)]="cantidadVenta"
+      name="cantidadVenta"
+      class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl p-3"
+      placeholder="Cantidad a vender"
+    />
+    <button type="button"
+      class="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg"
+      (click)="realizarVenta()"
+      [disabled]="!cantidadVenta || cantidadVenta < 1 || cantidadVenta > almacen1Actualizar.cantidad">
+      Vender
+    </button>
+  </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal de confirmación para eliminar mejorado -->
+<div *ngIf="mostrarModalEliminar" 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-200 dark:border-gray-700">
+        <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 dark:bg-red-900 mb-4">
+                <svg class="h-8 w-8 text-red-600 dark:text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h3 class="mb-6 text-xl font-bold text-gray-900 dark:text-white">
+                Confirmar Eliminación
+            </h3>
+            <p class="mb-8 text-base text-gray-600 dark:text-gray-400">
+                ¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.
+            </p>
+            <div class="flex justify-center gap-4">
+                <button 
+                    (click)="confirmarEliminarAlmacen1()" 
+                    class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-xl hover:from-red-700 hover:to-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
+                    Sí, eliminar
+                </button>
+                <button 
+                    (click)="mostrarModalEliminar = false" 
+                    class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <nav *ngIf="resultadosBusqueda === null" aria-label="Page navigation" class="flex justify-center mt-4">
+<ul class="flex items-center -space-x-px h-8 text-sm">
+    <li>
+    <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1"
+        class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Previous</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
+    </button>
+    </li>
+    <li *ngFor="let page of [].constructor(totalPages); let idx = index">
+    <button (click)="cambiarPagina(idx + 1)"
+        [ngClass]="{'z-10 text-blue-600 border-blue-300 bg-blue-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white': currentPage === idx + 1,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': currentPage !== idx + 1}"
+        class="flex items-center justify-center px-3 h-8 leading-tight border">
+        {{ idx + 1 }}
+    </button>
+    </li>
+    <li>
+    <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages"
+        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Next</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+    </button>
+    </li>
+</ul>
+</nav>
+

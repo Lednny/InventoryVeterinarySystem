@@ -1,97 +1,217 @@
 <div class="min-h-screen bg-gray-900 text-white justify text-center">
-<!-- Header -->
-<nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
-    <!-- Logo -->
-    <div class="flex-1 flex items-center gap-3">
-    <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
-    <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
-    </div>
-    <!-- Barra de Búsqueda -->
-    <div class="flex-2 flex justify-left ">
-    <input
-        type="text" 
-        placeholder="Search"
-        class="w-[380px] px-4 py-2 rounded bg-gray-700 border border-gray-600 text-sm focus:outline-none"
-    />
-    </div>
-    <!-- Icons -->
-<div class="flex-1 flex items-center justify-end gap-6">
-    <!-- ícono de Campana -->
-    <button class="hover:text-blue-400">
-        <!-- Heroicon: Bell -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-        </svg>
-    </button>
-    <!-- Grid Icon -->
-    <button class="hover:text-blue-400">
-        <!-- Heroicon: View Grid -->
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/>
-        </svg>
-    </button>
-    <!-- User Avatar -->
-    <div class="relative" (mouseleave)="showDropdown = false">
-        <img
-            src=""
-            alt="User"
-            class="rounded-full w-8 h-8 border-2 border-gray-600 cursor-pointer"
-            (click)="showDropdown = !showDropdown"
-        />
-        <div
-            *ngIf="showDropdown"
-            class="absolute right-0 mt-0 w-40 bg-gray-800 border border-gray-700 rounded-md shadow-lg z-20"
-        >
-            <button
-                class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition"
-                (click)="signOut()"
-            >
-                Cerrar sesión
-            </button>
+    <!-- Header -->
+    <nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
+        <!-- Logo -->
+        <div class="flex-1 flex items-center gap-3">
+            <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
+            <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
         </div>
-    </div>
-</div>
-</nav>
+        <!-- Icons -->
+        <div class="flex-1 flex items-center justify-end gap-6 relative">
+            <!-- Apps -->
+            <button #menuGridBtn type="button" class="p-4 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleMenuGrid()">
+                <span class="sr-only">Ver apps</span>
+                <!-- Icon -->
+                <svg class="w-6 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                    <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div *ngIf="mostrarMenuGrid" #menuGridDropdown class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
+                <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    Apps
+                </div>
+                <div class="grid grid-cols-2 gap-2 p-4">
+                    <a
+                    routerLink="/dashboard/profile"
+                    class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Profile</div>
+                    </a>
+                    <button class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group" (click)="signOut()">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Logout</div>
+                    </button>
+                </div>
+            </div>
+            <!-- User Avatar -->
+            <button
+                #UserBtn
+                type="button"
+                class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 flex items-center justify-center p-0 border-0 focus:outline-none"
+                (click)="toggleDropdownUser()"
+            >
+                <ng-container *ngIf="avatarUrl; else defaultUserIcon">
+                    <img
+                        [src]="avatarUrl"
+                        alt="Avatar"
+                        class="absolute w-10 h-10 rounded-full object-cover border-2 border-gray-400"
+                    />
+                </ng-container>
+                <ng-template #defaultUserIcon>
+                    <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 -2 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </ng-template>
+            </button>
+            <!-- Dropdown de usuario -->
+            <div *ngIf="mostrarUserDropdown" #UserDropdown  id="mostrarUserDropdown" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-full right-1 mt-2">
+                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                            <div class="font-semibold break-all">{{ firstName }}</div>
+                            <div class="font-italic break-all">{{ email }}</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
 <!-- Tabs -->
 <div class="flex items center justify-center mt-4">
     <div class="flex gap-10 border-b border-gray-700 w-[700px] justify-center">
     <a
     routerLink="/dashboard"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: true }"
-    >Overview</a>
-    <div class="relative group">
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400">Overview</a>
+    <div class="relative group ">
     <button
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition">
-    Almacén</button>
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition rounded-lg"     
+    routerLinkActive="text-blue-400 border-blue-400">Almacén</button>
+    <!-- Submenú -->
     <div
-    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-md w-40 z-10">
+    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-lg w-40 z-10">
     <a
     routerLink="/dashboard/almacen1"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Central</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400">
+    Almacén Central</a>
     <a
     routerLink="/dashboard/almacen2"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Operativo</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg" 
+    routerLinkActive="text-blue-400 border-blue-400">
+    Almacén Operativo</a>
     </div>
     </div>
     <a
     routerLink="/dashboard/tareas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     >Tareas</a>
     <a
     routerLink="/dashboard/reportes"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     >Reportes</a>
-    <a
+        <a
     routerLink="/dashboard/ventas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     >Ventas</a>
 </div>
+</div>
+<!-- Contenido Principal de las alertas y gráficas sobre el estados de las ventas en el mes, o en el día -->
+<section class="bg-gray-50 dark:bg-gray-900 py-12 px-2 min-h-screen">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+            <!-- Columna de alertas -->
+            <div class="flex flex-col gap-4 justify-center h-full">
+                <ng-container *ngFor="let notificacion of notificaciones">
+                    <div
+                        *ngIf="notificacion.alerta === 'roja'" 
+                        class="flex items-center p-4 text-center text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 mb-4" 
+                        role="alert">
+                        <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only"></span> 
+                        {{ notificacion.mensaje }}
+                        <div>
+                        </div>
+                    </div>
+                    <div
+                        *ngIf="notificacion.alerta === 'amarilla'" 
+                        class="flex items-center p-4 text text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-800 mb-4" 
+                        role="alert">
+                        <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span> {{ notificacion.mensaje }}
+                        <div>
+                        </div>
+                    </div>
+                </ng-container>
+                <div class="flex-1"></div>
+            </div>
+            <!-- Columna de gráfica y tabla -->
+            <div class="flex flex-col gap-8 h-full">
+                <!-- Gráfica -->
+                <div class="bg-gray-800 shadow rounded-lg p-4 sm:p-6 xl:p-8 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex-shrink-0">
+                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">{{ totalProductosVendidosAnio }}</span>
+                            <h3 class="text-base font-normal text-white">Ventas del año</h3>
+                        </div>
+                        <div class="flex-shrink-0 items-center justify-end flex-1 font-bold">
+                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">{{ totalVentasAnio | currency:'$':'symbol':'1.2-2' }}</span>
+                            <h3 class="text-base font-normal text-white">Ventas Totales</h3>
+                        </div>
+                        <div class="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
+                            {{ porcentajeCrecimientoProductos | number:'1.1-2' }}%
+                            <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="relative w-full">
+                        <canvas id="salesAreaChart" height="180"></canvas>
+                    </div>
+                </div>
+                <!-- Tabla -->
+                <div class="bg-gray-800 shadow rounded-lg p-4 sm:p-6 xl:p-8 flex flex-col">
+                    <div class="mb-4 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-1 text-left uppercase">Últimas ventas de la semana</h3>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <a class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2"></a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col mt-4">
+                        <div class="overflow-x-auto rounded-lg">
+                            <div class="align-middle inline-block min-w-full">
+                                <div class="shadow overflow-hidden sm:rounded-lg">
+                                    <table class="min-w-full bg-gray-800 text-white divide-y divide-gray-700">
+                                        <thead>
+                                            <tr>
+                                                <th class="px-4 py-2 text-center text-sm font-normal text-white uppercase">Venta</th>
+                                                <th class="px-4 py-2 text-center text-sm font-normal text-white uppercase">Fecha</th>
+                                                <th class="px-4 py-2 text-center text-xs font-medium text-gray-200 uppercase">Monto</th>
+                                            </tr>
+                                        </thead>
+                                    <tbody class="divide-y divide-gray-700">
+                                      <tr *ngFor="let venta of ventas | slice:0:5">
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
+                                        Venta de <span class="font-semibold">{{ venta.producto }}</span>
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
+                                        {{ venta.fecha_ingreso | date:'dd/MM/yyyy' }}
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
+                                          {{ venta.precio_venta * venta.cantidad | currency:'$':'symbol':'1.2-2' }}
+                                        </td>
+                                    </tr>
+                                      <tr *ngIf="ventas.length === 0">
+                                        <td colspan="3" class="text-center text-gray-400 py-4">No hay ventas registradas</td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

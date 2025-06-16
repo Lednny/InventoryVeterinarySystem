@@ -18,7 +18,7 @@ trigger('routeAnimations', [
     ]),
     group([
         query(':leave', [
-        animate('300ms ease', style({ left: '-100%', opacity: 0 }))
+        animate('300ms ease', style({ left: '100%', opacity: 0 }))
         ]),
         query(':enter', [
         animate('300ms ease', style({ left: '0%', opacity: 1 }))

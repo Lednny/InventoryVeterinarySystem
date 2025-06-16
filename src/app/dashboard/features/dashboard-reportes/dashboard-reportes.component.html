@@ -1,80 +1,460 @@
 <div class="min-h-screen bg-gray-900 text-white justify text-center">
-<!-- Header -->
-<nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
-    <!-- Logo -->
-    <div class="flex-1 flex items-center gap-3">
-    <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
-    <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
-    </div>
-    <!-- Barra de Búsqueda -->
-    <div class="flex-2 flex justify-left ">
-    <input
-        type="text"
-        placeholder="Search"
-        class="w-[380px] px-4 py-2 rounded bg-gray-700 border border-gray-600 text-sm focus:outline-none"
-    />
-    </div>
-    <!-- Icons -->
-    <div class="flex-1 flex items-center justify-end gap-6">
-    <!-- ícono de Campana -->
-    <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-        </svg>
-    </button>
-    <!-- Grid Icon -->
-    <button class="hover:text-blue-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 6h4v4H4V6zm6 0h4v4h-4V6zm6 0h4v4h-4V6zM4 14h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
-        </svg>
-    </button>
-    <!-- User Avatar -->
-    <img src="" alt="User" class="rounded-full w-8 h-8 border-2 border-gray-600" />
-    </div>
-</nav>
+    <!-- Header -->
+    <nav class="flex items-center px-8 py-4 bg-gray-800 border-b border-gray-700">
+        <!-- Logo -->
+        <div class="flex-1 flex items-center gap-3">
+            <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
+            <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
+        </div>
+        <!-- Icons -->
+        <div class="flex-1 flex items-center justify-end gap-6 relative">
+            <!-- Apps -->
+            <button #menuGridBtn type="button" class="p-4 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleMenuGrid()">
+                <span class="sr-only">Ver apps</span>
+                <!-- Icon -->
+                <svg class="w-6 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                    <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <div *ngIf="mostrarMenuGrid" #menuGridDropdown class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
+                <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    Apps
+                </div>
+                <div class="grid grid-cols-2 gap-2 p-4">
+                    <a
+                    routerLink="/dashboard/profile"
+                    class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Profile</div>
+                    </a>
+                    <button class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group" (click)="signOut()">
+                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"/>
+                        </svg>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">Logout</div>
+                    </button>
+                </div>
+            </div>
+            <!-- User Avatar -->
+            <button
+                #UserBtn
+                type="button"
+                class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 flex items-center justify-center p-0 border-0 focus:outline-none"
+                (click)="toggleDropdownUser()"
+            >
+                <ng-container *ngIf="avatarUrl; else defaultUserIcon">
+                    <img
+                        [src]="avatarUrl"
+                        alt="Avatar"
+                        class="absolute w-10 h-10 rounded-full object-cover border-2 border-gray-400"
+                    />
+                </ng-container>
+                <ng-template #defaultUserIcon>
+                    <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 -2 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </ng-template>
+            </button>
+            <!-- Dropdown de usuario -->
+            <div *ngIf="mostrarUserDropdown" #UserDropdown  id="mostrarUserDropdown" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-full right-1 mt-2">
+                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                            <div class="font-semibold break-all">{{ firstName }}</div>
+                            <div class="font-italic break-all">{{ email }}</div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
 <!-- Tabs -->
 <div class="flex items center justify-center mt-4">
     <div class="flex gap-10 border-b border-gray-700 w-[700px] justify-center">
     <a
     routerLink="/dashboard"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     [routerLinkActiveOptions]="{ exact: true }"
     >Overview</a>
-    <div class="relative group">
+    <div class="relative group ">
     <button
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition">
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition rounded-lg"     
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
     Almacén</button>
     <!-- Submenú -->
     <div
-    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-md w-40 z-10">
+    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-lg w-40 z-10">
     <a
     routerLink="/dashboard/almacen1"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Central</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
+    Almacén Central</a>
     <a
     routerLink="/dashboard/almacen2"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
-    >Almacén Operativo</a>
+    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg" 
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }">
+    Almacén Operativo</a>
     </div>
     </div>
-
     <a
     routerLink="/dashboard/tareas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Tareas</a>
     <a
     routerLink="/dashboard/reportes"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Reportes</a>
-    <a
+        <a
     routerLink="/dashboard/ventas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
     >Ventas</a>
 </div>
+</div>
+<!-- Contenido Principal -->
+<section class="bg-gray-50 dark:bg-gray-900 py-14">
+<div class="max-w-4xl px-4 mx-auto lg:px-6 w-full">
+    <!-- Start coding here -->
+    <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+    <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
+        <div class="w-full md:w-1/2">
+        <form class="flex items-center" (submit)="$event.preventDefault()">
+            <label for="simple-search" class="sr-only">Search</label>
+            <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <input
+            type="text"
+            id="simple-search"
+            name="searchTerm"
+            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            placeholder="Buscar producto, marca, categoría, etc."
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="buscar()"
+            />
+            </div>
+            <button type="button" (click)="buscar()" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Buscar
+            </button>
+        </form>
+        </div>
+        <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
+        <button type="button" class="flex items-center justify-center px-3 py-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800" (click)="agregarReporte()">
+            <svg class="h-5 w-5 mr-2" fill="currentColor" viewbox="1 1 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+            </svg>
+            Añadir Tareas
+        </button>
+        <!-- Dropdown para acciones -->
+        <div class="flex items-center w-full space-x-3 md:w-auto relative">
+            <button
+            #actionsBtn
+            type="button"
+            class="flex items-center justify-center w-full px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            (click)="toggleDropdownActions()"
+            >
+            <svg class="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" /></svg>
+            Actions
+            </button>
+            <div
+            *ngIf="mostrarDropdownActions"
+            #actionsDropdown
+            class="absolute top-full left-0 mt-0 border-white divide-y divide-gray-100 rounded-lg shadow w-56 z-50 dark:bg-gray-700 dark:divide-gray-100"
+            >
+            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200 ">
+                <li>
+                    <a href="#" (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black rounded-lg">
+                        Edición Masiva
+                    </a>
+                </li>
+            </ul>
+            <div class="py-1">
+                <a href="#" (click)="abrirModalEliminarTodas(); $event.preventDefault()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-lg">
+                    Eliminación Masiva
+                </a>
+            </div>
+            </div>
+            
+            <!-- Dropdown menu -->
+            <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
+            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+                Category
+            </h6>
+            <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
+                <li class="flex items-center">
+                <input id="apple" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Apple (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="fitbit" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Fitbit (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="dell" type="checkbox" value=""
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="dell" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Dell (56)
+                </label>
+                </li>
+                <li class="flex items-center">
+                <input id="asus" type="checkbox" value="" checked
+                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
+                <label for="asus" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                    Asus (97)
+                </label>
+                </li>
+            </ul>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- Table Section -->
+<div class="flex justify-center mt-2">
+<div class="w-full max-w-4xl px-4 mx-auto lg:px-6">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    ID
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Título 
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Descripción
+                </th>
+                <th scope="col" class="px-6 py-3 pl-10">
+                    Fecha de Creación                
+                </th>
+                <th scope="col" class="px-6 py-3 pl-16">
+                    Acción 
+                </th>
+            </tr>
+                        <!-- Si hay búsqueda y no hay resultados, muestra mensaje -->
+                    <tr *ngIf="resultadosBusqueda !== null && resultadosBusqueda.length === 0">
+                    <td colspan="12" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                    No se encontraron resultados para "{{ searchTerm }}"
+                    </td>
+                    </tr>
+        </thead>
+        <tbody>
+<tr  *ngFor="let reportes of (resultadosBusqueda !== null ? resultadosBusqueda : reportesPaginadas); let i = index">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+        #{{ i + 1 }}
+    </th>
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-3">
+        {{ reportes.titulo }}
+    </td>
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-3">
+        {{ reportes.descripcion }}
+    </td>
+        <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-16">
+        {{ reportes.fecha_creacion| date:'dd/MM/yyyy' }}
+    </td>
+    <td class="px-6 py-4">
+        <div class="flex justify-start items-center gap-4">
+            <button
+            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+            (click)="abrirModalActualizar(reportes)">
+            Modificar
+            </button>
+            <!--Ventana para la modificación de la tarea-->
+            <!-- Modal de actualización de tarea -->
+<div *ngIf="mostrarModalActualizar" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Modificar reporte
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    (click)="cerrarModalActualizar()">
+                    <svg class="w-3 h-3" aria-hidden="true" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Cerrar modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5" (ngSubmit)="guardarActualizacionReporte()">
+                <div class="mb-4">
+                    <label for="titulo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Título</label>
+                    <input
+                        type="text"
+                        id="titulo"
+                        [(ngModel)]="reporteActualizar.titulo"
+                        name="titulo"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                        placeholder="Título de la tarea"
+                        required
+                    >
+                </div>
+                <div class="mb-4">
+                    <label for="descripcion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                    <textarea
+                        id="descripcion"
+                        [(ngModel)]="reporteActualizar.descripcion"
+                        name="descripcion"
+                        rows="4"
+                        class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Descripción de la tarea"
+                    ></textarea>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button
+                        type="submit"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                        Guardar cambios
+                    </button>
+                    <button
+                        type="button"
+                        (click)="cerrarModalActualizar()"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+            <button class="font-medium text-red-600 dark:text-red-500 hover:underline"
+        (click)="abrirModalEliminar(reportes.id)">
+        Eliminar
+</button>
+<!-- Modal de confirmación para eliminar -->
+<div *ngIf="mostrarModalEliminar" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+<div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div class="text-center">
+    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" fill="none" viewBox="0 0 20 20">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+    </svg>
+    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">¿Seguro que deseas eliminar este reporte?</h3>
+    <button (click)="confirmarEliminarReporte()" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+        Sí, eliminar
+    </button>
+    <button (click)="mostrarModalEliminar = false" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+        No, cancelar
+    </button>
+    </div>
+</div>
+</div>
+        </div>
+    </td>
+</tr>
+</tbody>
+    </table>
+</div>
+</div>
+</div>
+<!-- Modal de edición masiva -->
+<div *ngIf="mostrarModalEdicionMasiva" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 mb-3 text-gray-500 dark:text-black-400 font-italic">
+    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-2xl">
+        <h3 class="mb-5 text-lg font-normal text-gray-400 dark:text-gray-200">
+            Edición masiva de reportes
+        </h3>
+        <form (ngSubmit)="guardarEdicionMasiva()">
+            <div class="overflow-y-auto max-h-94 h-96">
+                <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                    Puedes editar múltiples tareas a la vez. Asegúrate de que los cambios sean correctos antes de guardar.
+                <!-- AQUÍ -->
+                <div *ngFor="let reportes of reportesEdicionMasiva; let i = index" class="mb-10 border-b pb-4">
+                    <label class="block mb-2 text-sm font-medium text-gray-300 ">Título</label>
+                    <input
+                        [(ngModel)]="reportes.titulo"
+                        name="titulo{{i}}"
+                        class="w-5/6 mb-6 p-2 rounded border border-gray-500 bg-gray-500 text-white placeholder-gray-400 focus:border-blue-400"
+                    />
+                    <label class="block mb-2 text-sm font-medium text-gray-300">Descripción</label>
+                    <textarea
+                        [(ngModel)]="reportes.descripcion"
+                        name="descripcion{{i}}"
+                        class="w-5/6 mb-6 p-2 rounded border border-gray-500 bg-gray-500 text-white placeholder-gray-400 focus:border-blue-400"
+                    ></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-4">
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Guardar cambios
+                </button>
+                <button type="button" (click)="cerrarModalEdicionMasiva()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal de eliminar todas -->
+<div *ngIf="mostrarModalEliminarTodas" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 w-full max-w-md">
+        <div class="text-center">
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                ¿Seguro que deseas eliminar <b>todos</b> las reportes?
+            </h3>
+            <button (click)="confirmarEliminarTodas()" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5">
+                Sí, eliminar todas
+            </button>
+            <button (click)="mostrarModalEliminarTodas = false" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+    <nav *ngIf="resultadosBusqueda === null" aria-label="Page navigation" class="flex justify-center mt-4">
+<ul class="flex items-center -space-x-px h-8 text-sm">
+    <li>
+    <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1"
+        class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Previous</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+        </svg>
+    </button>
+    </li>
+    <li *ngFor="let page of [].constructor(totalPages); let idx = index">
+    <button (click)="cambiarPagina(idx + 1)"
+        [ngClass]="{'z-10 text-blue-600 border-blue-300 bg-blue-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white': currentPage === idx + 1,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': currentPage !== idx + 1}"
+        class="flex items-center justify-center px-3 h-8 leading-tight border">
+        {{ idx + 1 }}
+    </button>
+    </li>
+    <li>
+    <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages"
+        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <span class="sr-only">Next</span>
+        <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+        </svg>
+    </button>
+    </li>
+</ul>
+</nav>
+</section>
+

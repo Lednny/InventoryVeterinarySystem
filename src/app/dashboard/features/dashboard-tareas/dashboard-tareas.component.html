@@ -6,52 +6,10 @@
             <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
             <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
         </div>
-        <!-- Barra de Búsqueda -->
-        <div class="flex-2 flex justify-left ">
-            <input
-                type="text"
-                placeholder="Search"
-                class="w-[380px] px-4 py-2 rounded bg-gray-700 border border-gray-600 text-sm focus:outline-none"
-            />
-        </div>
         <!-- Icons -->
         <div class="flex-1 flex items-center justify-end gap-6 relative">
-            <!-- ícono de Campana -->
-            <button type="button" data-dropdown-toggle="notification-dropdown" class="p-1 mr-1 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleNotificaciones()">
-                <span class="sr-only">Notificaciones</span>
-                <!-- Bell icon -->
-                <svg class="w-4 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
-                    <path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/>
-                </svg>
-            </button>
-            <!-- Dropdown de notificaciones -->
-            <div *ngIf="mostrarNotificaciones" class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
-                <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    Notifications
-                </div>
-                <div>
-                    <a href="#" class="flex py-3 px-4 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600">
-                        <div class="flex-shrink-0 relative">
-                            <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="Bonnie Green avatar">
-                            <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 rounded-full border border-white bg-primary-700 dark:border-gray-700">
-                                <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
-                                    <path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/>
-                                    <path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="pl-3 w-full">
-                            <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">
-                                New message from <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>: "Hey, what's up? All set for the presentation?"
-                            </div>
-                            <div class="text-xs font-medium text-primary-700 dark:text-primary-400">a few moments ago</div>
-                        </div>
-                    </a>
-                    <!-- Puedes agregar más notificaciones aquí -->
-                </div>
-            </div>
             <!-- Apps -->
-            <button type="button" class="p-4 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleMenuGrid()">
+            <button #menuGridBtn type="button" class="p-4 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" (click)="toggleMenuGrid()">
                 <span class="sr-only">Ver apps</span>
                 <!-- Icon -->
                 <svg class="w-6 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
@@ -59,29 +17,18 @@
                 </svg>
             </button>
             <!-- Dropdown menu -->
-            <div *ngIf="mostrarMenuGrid" class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
+            <div *ngIf="mostrarMenuGrid" #menuGridDropdown class="absolute top-full right-0 mt-2 w-60 bg-white text-black rounded shadow-lg z-50 p-4 dark:bg-gray-700">
                 <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     Apps
                 </div>
                 <div class="grid grid-cols-2 gap-2 p-4">
-                    <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
-                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 19">
-                            <path d="M14.5 0A3.987 3.987 0 0 0 11 2.1a4.977 4.977 0 0 1 3.9 5.858A3.989 3.989 0 0 0 14.5 0ZM9 13h2a4 4 0 0 1 4 4v2H5v-2a4 4 0 0 1 4-4Z"/>
-                            <path d="M5 19h10v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2ZM5 7a5.008 5.008 0 0 1 4-4.9 3.988 3.988 0 1 0-3.9 5.859A4.974 4.974 0 0 1 5 7Zm5 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm5-1h-.424a5.016 5.016 0 0 1-1.942 2.232A6.007 6.007 0 0 1 17 17h2a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5ZM5.424 9H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h2a6.007 6.007 0 0 1 4.366-5.768A5.016 5.016 0 0 1 5.424 9Z"/>
-                        </svg>
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">Users</div>
-                    </a>
-                    <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
+                    <a
+                    routerLink="/dashboard/profile"
+                    class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
                         <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"/>
                         </svg>
                         <div class="text-sm font-medium text-gray-900 dark:text-white">Profile</div>
-                    </a>
-                    <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group">
-                        <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M18 7.5h-.423l-.452-1.09.3-.3a1.5 1.5 0 0 0 0-2.121L16.01 2.575a1.5 1.5 0 0 0-2.121 0l-.3.3-1.089-.452V2A1.5 1.5 0 0 0 11 .5H9A1.5 1.5 0 0 0 7.5 2v.423l-1.09.452-.3-.3a1.5 1.5 0 0 0-2.121 0L2.576 3.99a1.5 1.5 0 0 0 0 2.121l.3.3L2.423 7.5H2A1.5 1.5 0 0 0 .5 9v2A1.5 1.5 0 0 0 2 12.5h.423l.452 1.09-.3.3a1.5 1.5 0 0 0 0 2.121l1.415 1.413a1.5 1.5 0 0 0 2.121 0l.3-.3 1.09.452V18A1.5 1.5 0 0 0 9 19.5h2a1.5 1.5 0 0 0 1.5-1.5v-.423l1.09-.452.3.3a1.5 1.5 0 0 0 2.121 0l1.415-1.414a1.5 1.5 0 0 0 0-2.121l-.3-.3.452-1.09H18a1.5 1.5 0 0 0 1.5-1.5V9A1.5 1.5 0 0 0 18 7.5Zm-8 6a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/>
-                        </svg>
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">Settings</div>
                     </a>
                     <button class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group" (click)="signOut()">
                         <svg class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
@@ -92,13 +39,31 @@
                 </div>
             </div>
             <!-- User Avatar -->
-            <div class="relative" (mouseleave)="showDropdown = false">
-                <img
-                    src=""
-                    alt="avatarUrl"
-                    class="rounded-full w-8 h-8 border-2 border-gray-600 cursor-pointer"
-                    (click)="showDropdown = !showDropdown"
-                />
+            <button
+                #UserBtn
+                type="button"
+                class="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600 flex items-center justify-center p-0 border-0 focus:outline-none"
+                (click)="toggleDropdownUser()"
+            >
+                <ng-container *ngIf="avatarUrl; else defaultUserIcon">
+                    <img
+                        [src]="avatarUrl"
+                        alt="Avatar"
+                        class="absolute w-10 h-10 rounded-full object-cover border-2 border-gray-400"
+                    />
+                </ng-container>
+                <ng-template #defaultUserIcon>
+                    <svg class="absolute w-10 h-10 text-gray-400" fill="currentColor" viewBox="0 -2 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </ng-template>
+            </button>
+            <!-- Dropdown de usuario -->
+            <div *ngIf="mostrarUserDropdown" #UserDropdown  id="mostrarUserDropdown" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600 absolute top-full right-1 mt-2">
+                <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
+                            <div class="font-semibold break-all">{{ firstName }}</div>
+                            <div class="font-italic break-all">{{ email }}</div>
+                </div>
             </div>
         </div>
     </nav>
@@ -146,7 +111,7 @@
     class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     [routerLinkActiveOptions]="{ exact: false }"
-    >Reportes</a>
+    >Reportes</a>    
     <a
     routerLink="/dashboard/ventas"
     class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
@@ -162,7 +127,7 @@
     <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
     <div class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:space-y-0 md:space-x-4">
         <div class="w-full md:w-1/2">
-        <form class="flex items-center">
+        <form class="flex items-center" (submit)="$event.preventDefault()">
             <label for="simple-search" class="sr-only">Search</label>
             <div class="relative w-full">
             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -170,8 +135,19 @@
                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                 </svg>
             </div>
-            <input type="text" id="simple-search" class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Search" required="">
+            <input
+            type="text"
+            id="simple-search"
+            name="searchTerm"
+            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            placeholder="Buscar producto, marca, categoría, etc."
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="buscar()"
+            />
             </div>
+            <button type="button" (click)="buscar()" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Buscar
+            </button>
         </form>
         </div>
         <div class="flex flex-col items-stretch justify-end flex-shrink-0 w-full space-y-2 md:w-auto md:flex-row md:space-y-0 md:items-center md:space-x-3">
@@ -199,7 +175,7 @@
             >
             <ul class="py-1 text-sm text-gray-700 dark:text-gray-200 ">
                 <li>
-                    <a href="#" (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black rounded-lg">
+                    <a (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black rounded-lg">
                         Edición Masiva
                     </a>
                 </li>
@@ -209,16 +185,7 @@
                     Eliminación Masiva
                 </a>
             </div>
-            </div>
-            <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown" class="flex items-center justify-center w-full px-2 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg md:w-auto focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="w-4 h-4 mr-2 text-gray-400" viewbox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
-            </svg>
-            Filter
-            <svg class="-mr-1 ml-1.5 w-5 h-5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path clip-rule="evenodd" fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
-            </button>
+            </div>          
             
             <!-- Dropdown menu -->
             <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
@@ -277,21 +244,33 @@
                 <th scope="col" class="px-6 py-3">
                     Descripción
                 </th>
+                <th scope="col" class="px-6 py-3">
+                    Fecha de Creación
+                </th>
                 <th scope="col" class="px-6 py-3 pl-16">
                     Acción 
                 </th>
             </tr>
+            <!-- Si hay búsqueda y no hay resultados, muestra mensaje -->
+                    <tr *ngIf="resultadosBusqueda !== null && resultadosBusqueda.length === 0">
+                    <td colspan="12" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                    No se encontraron resultados para "{{ searchTerm }}"
+                    </td>
+                    </tr>
         </thead>
         <tbody>
-<tr *ngFor="let tarea of tareasPaginadas; let i = index">
+<tr  *ngFor="let tarea of (resultadosBusqueda !== null ? resultadosBusqueda : tareasPaginadas); let i = index">
     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
         #{{ i + 1 }}
     </th>
-    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16">
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-3">
         {{ tarea.titulo }}
     </td>
-    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16">
+    <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-3">
         {{ tarea.descripcion }}
+    </td>
+        <td class="px-6 py-4 max-w-xs w-64 whitespace-normal overflow-y-auto max-h-16 pl-16">
+        {{ tarea.fecha_creacion| date:'dd/MM/yyyy' }}
     </td>
     <td class="px-6 py-4">
         <div class="flex justify-start items-center gap-4">
@@ -447,7 +426,7 @@
         </div>
     </div>
 </div>
-    <nav aria-label="Page navigation" class="flex justify-center mt-4">
+    <nav *ngIf="resultadosBusqueda === null" aria-label="Page navigation" class="flex justify-center mt-4">
 <ul class="flex items-center -space-x-px h-8 text-sm">
     <li>
     <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1"
