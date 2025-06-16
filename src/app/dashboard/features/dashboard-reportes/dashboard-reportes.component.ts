@@ -55,6 +55,11 @@ export class DashboardReportesComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
+  //Motor de búsqueda
+  searchTerm: string = '';
+  ventasPaginadas: any;
+  resultadosBusqueda: null | any[] = null;
+
   constructor(
     private reportesService: ReporteService,
     private router: Router,
@@ -345,6 +350,18 @@ async obtenerAvatarUrl(event: any) {
     if (pagina < 1 || pagina > this.totalPages) return;
     this.currentPage = pagina;
   }
+
+    buscar() {
+  const term = this.searchTerm.trim().toLowerCase();
+  if (!term) {
+    this.resultadosBusqueda = null; // Usa null para distinguir "sin búsqueda"
+    return;
+  }
+  this.resultadosBusqueda = this.reportes.filter(item =>
+    (item.titulo && item.titulo.toLowerCase().includes(term)) ||
+    (item.descripcion && item.descripcion.toLowerCase().includes(term))
+  );
+}
 
   //Se actualiza el avatar del usuario
   private async cargarDatosUsuario() {

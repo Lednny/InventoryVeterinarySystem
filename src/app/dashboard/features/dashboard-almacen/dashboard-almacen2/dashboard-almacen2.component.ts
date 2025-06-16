@@ -58,6 +58,11 @@ export class DashboardAlmacen2Component implements OnInit {
 
     // Variable para la ventas
   cantidadVenta: number = 0;
+  
+  //Motor de búsqueda
+  searchTerm: string = '';
+  ventasPaginadas: any;
+  resultadosBusqueda: null | any[] = null;
 
   constructor(
     private almacen2Service: Almacen2Service,
@@ -403,6 +408,23 @@ async guardarActualizacionAlmacen2() {
       console.error('Error al actualizar almacen2:', error);
     }
   }
+}
+
+//Barra de búsqueda
+
+buscar() {
+  const term = this.searchTerm.trim().toLowerCase();
+  if (!term) {
+    this.resultadosBusqueda = null; // Usa null para distinguir "sin búsqueda"
+    return;
+  }
+  this.resultadosBusqueda = this.almacen2.filter(item =>
+    (item.producto && item.producto.toLowerCase().includes(term)) ||
+    (item.marca && item.marca.toLowerCase().includes(term)) ||
+    (item.categoria && item.categoria.toLowerCase().includes(term)) ||
+    (item.lote && item.lote.toLowerCase().includes(term)) ||
+    (item.codigo && item.codigo.toLowerCase().includes(term))
+  );
 }
 
 async realizarVenta() {

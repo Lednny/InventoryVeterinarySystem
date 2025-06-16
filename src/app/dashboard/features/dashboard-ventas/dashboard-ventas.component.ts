@@ -58,6 +58,10 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
+  //Motoro de búsqueda
+  searchTerm: string = '';
+  resultadosBusqueda: null | any[] = null;
+
   constructor(
     private ventasService: VentasService,
     private router: Router,
@@ -366,6 +370,22 @@ async obtenerAvatarUrl(event: any) {
       console.error('Error al actualizar almacen2:', error);
     }
   }
+}
+//Barra de búsqueda
+
+buscar() {
+  const term = this.searchTerm.trim().toLowerCase();
+  if (!term) {
+    this.resultadosBusqueda = null; // Usa null para distinguir "sin búsqueda"
+    return;
+  }
+  this.resultadosBusqueda = this.ventas.filter(item =>
+    (item.producto && item.producto.toLowerCase().includes(term)) ||
+    (item.marca && item.marca.toLowerCase().includes(term)) ||
+    (item.categoria && item.categoria.toLowerCase().includes(term)) ||
+    (item.lote && item.lote.toLowerCase().includes(term)) ||
+    (item.codigo && item.codigo.toLowerCase().includes(term))
+  );
 }
 }
 

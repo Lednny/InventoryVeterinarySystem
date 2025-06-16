@@ -59,6 +59,11 @@ export class DashboardAlmacenComponent implements OnInit {
   // Variable para la ventas
   cantidadVenta: number = 0;
 
+  //Motoro de búsqueda
+  searchTerm: string = '';
+  ventasPaginadas: any;
+  resultadosBusqueda: null | any[] = null;
+
   constructor(
     private almacen1Service: Almacen1Service,
     private ventasService: VentasService,
@@ -382,6 +387,22 @@ async obtenerAvatarUrl(event: any) {
   }
 }
 
+//Barra de búsqueda
+
+buscar() {
+  const term = this.searchTerm.trim().toLowerCase();
+  if (!term) {
+    this.resultadosBusqueda = null; // Usa null para distinguir "sin búsqueda"
+    return;
+  }
+  this.resultadosBusqueda = this.almacen1.filter(item =>
+    (item.producto && item.producto.toLowerCase().includes(term)) ||
+    (item.marca && item.marca.toLowerCase().includes(term)) ||
+    (item.categoria && item.categoria.toLowerCase().includes(term)) ||
+    (item.lote && item.lote.toLowerCase().includes(term)) ||
+    (item.codigo && item.codigo.toLowerCase().includes(term))
+  );
+}
 async realizarVenta() {
   if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen1Actualizar.cantidad) return;
 
