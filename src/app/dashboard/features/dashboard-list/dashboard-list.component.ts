@@ -8,8 +8,7 @@ import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AfterViewInit} from '@angular/core';
 import { InventarioService } from '../../../services/inventario.service';
 import Chart from 'chart.js/auto';
-import { Almacen1Service } from '../../../services/almacen1.services';
-import { Almacen2Service } from '../../../services/almacen2.services';
+
 @Component({
   selector: 'app-dashboard-list',
   standalone: true,
@@ -47,6 +46,12 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
   notificaciones1: any[] = [];
   supabase: any[] = [];
 
+  // Variables para el gráfico de ventas
+  ventas: any[] = [];
+totalProductosVendidosAnio = 0;
+porcentajeCrecimientoProductos = 0;
+totalVentasAnio = 0;
+
     constructor(
     private router: Router,
     private authService: AuthService,
@@ -56,11 +61,32 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
 async ngOnInit() {
   const session = await this.authService.session();
   const user = session.data.session?.user;
+  this.ventas = (await this.inventarioService.getVentas())
+    .sort((a, b) => new Date(b.fecha_ingreso).getTime() - new Date(a.fecha_ingreso).getTime());
   if (!user) {
     console.error('No se encontró el usuario en la sesión');
     window.location.href = '/auth/log-in';
     return;
   }
+
+    // Total del año actual
+  const anioActual = new Date().getFullYear();
+  this.totalProductosVendidosAnio = this.ventas
+    .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual)
+    .reduce((sum, v) => sum + v.cantidad, 0);
+
+  this.totalVentasAnio = this.ventas
+    .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual)
+      .reduce((sum, v) => sum + (v.precio_venta * v.cantidad), 0);
+
+  const totalAnterior = this.ventas
+    .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual - 1)
+    .reduce((sum, v) => sum + v.cantidad, 0);
+
+  this.porcentajeCrecimientoProductos = totalAnterior === 0
+    ? 100
+    : ((this.totalProductosVendidosAnio - totalAnterior) / totalAnterior) * 100;
+
 
     // Usa el método ensureUsuario
     const data = await this.ensureUsuario(user);
@@ -228,47 +254,74 @@ async signOut() {
   }).filter(Boolean);
 }
 
-      ngAfterViewInit() {
-    new Chart('salesAreaChart', {
-      type: 'line',
-      data: {
-        labels: ['01 Feb', '02 Feb', '03 Feb', '04 Feb', '05 Feb', '06 Feb', '07 Feb'],
-        datasets: [{
-          label: 'Revenue',
-          data: [6300, 6200, 6250, 6550, 6356, 6200, 6050],
-          fill: true,
-          backgroundColor: 'rgba(6, 182, 212, 0.2)', 
-          borderColor: '#06b6d4', 
-          tension: 0.4,
-          pointBackgroundColor: '#06b6d4',
-          pointBorderColor: '#fff',
-          pointRadius: 5,
-        }]
+ngAfterViewInit() {
+  const anioActual = new Date().getFullYear();
+  const ventasAnio = this.ventas
+    .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual);
+
+  const diasAMostrar = 7;
+  const hoy = new Date();
+  const labels: string[] = [];
+  const data: number[] = [];
+
+  for (let i = diasAMostrar - 1; i >= 0; i--) {
+    const fecha = new Date(hoy);
+    fecha.setDate(hoy.getDate() - i);
+    const label = fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }); // "01 feb"
+    labels.push(label);
+
+    // Suma productos vendidos ese día
+    const totalDia = ventasAnio
+      .filter(v => {
+        const vFecha = new Date(v.fecha_ingreso);
+        return vFecha.getDate() === fecha.getDate() &&
+              vFecha.getMonth() === fecha.getMonth() &&
+              vFecha.getFullYear() === fecha.getFullYear();
+      })
+      .reduce((sum, v) => sum + v.cantidad, 0);
+
+    data.push(totalDia);
+  }
+
+  new Chart('salesAreaChart', {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Productos vendidos',
+        data,
+        fill: true,
+        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+        borderColor: '#06b6d4',
+        tension: 0.4,
+        pointBackgroundColor: '#06b6d4',
+        pointBorderColor: '#fff',
+        pointRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
       },
-      options: {
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return ` Revenue: $${context.parsed.y}`;
-              }
-            }
-          }
+      scales: {
+        x: {
+          grid: { display: true, color: '#334155' },
+          ticks: { color: '#94a3b8' }
         },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: '#94a3b8' }
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 20,
+          ticks: {
+            stepSize: 2,
+            color: '#94a3b8'
           },
-          y: {
-            beginAtZero: false,
-            ticks: { color: '#94a3b8' },
-            grid: { color: '#334155' }
-          }
+          grid: { color: '#334155' }
         }
       }
-    });
-  }
+    }
+  });
+}
 }
 

@@ -150,11 +150,15 @@
                 <div class="bg-gray-800 shadow rounded-lg p-4 sm:p-6 xl:p-8 flex flex-col">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex-shrink-0">
-                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">$45,385</span>
+                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">{{ totalProductosVendidosAnio }}</span>
                             <h3 class="text-base font-normal text-white">Ventas del año</h3>
                         </div>
+                        <div class="flex-shrink-0 items-center justify-end flex-1 font-bold">
+                            <span class="text-2xl sm:text-3xl leading-none font-bold text-white">{{ totalVentasAnio | currency:'$':'symbol':'1.2-2' }}</span>
+                            <h3 class="text-base font-normal text-white">Ventas Totales</h3>
+                        </div>
                         <div class="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
-                            12.5%
+                            {{ porcentajeCrecimientoProductos | number:'1.1-2' }}%
                             <svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                             </svg>
@@ -171,7 +175,7 @@
                             <h3 class="text-xl font-bold text-white mb-1 text-left uppercase">Últimas ventas de la semana</h3>
                         </div>
                         <div class="flex-shrink-0">
-                            <a href="#" class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2">Visualizar todas</a>
+                            <a class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg p-2"></a>
                         </div>
                     </div>
                     <div class="flex flex-col mt-4">
@@ -186,31 +190,22 @@
                                                 <th class="px-4 py-2 text-center text-xs font-medium text-gray-200 uppercase">Monto</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-gray-700">
-                                            <tr>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
-                                                    Payment from <span class="font-semibold">John Doe</span>
-                                                </td>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
-                                                    Apr 21, 2021
-                                                </td>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
-                                                    $1500
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
-                                                    Payment from <span class="font-semibold">Bonnie Green</span>
-                                                </td>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
-                                                    Apr 23, 2021
-                                                </td>
-                                                <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
-                                                    $2300
-                                                </td>
-                                            </tr>
-                                            <!-- Más filas aquí -->
-                                        </tbody>
+                                    <tbody class="divide-y divide-gray-700">
+                                      <tr *ngFor="let venta of ventas | slice:0:5">
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-white">
+                                        Venta de <span class="font-semibold">{{ venta.producto }}</span>
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-normal text-gray-300">
+                                        {{ venta.fecha_ingreso | date:'dd/MM/yyyy' }}
+                                        </td>
+                                        <td class="px-4 py-2 whitespace-nowrap text-sm font-semibold text-white">
+                                          {{ venta.precio_venta * venta.cantidad | currency:'$':'symbol':'1.2-2' }}
+                                        </td>
+                                    </tr>
+                                      <tr *ngIf="ventas.length === 0">
+                                        <td colspan="3" class="text-center text-gray-400 py-4">No hay ventas registradas</td>
+                                    </tr>
+                                    </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -220,4 +215,3 @@
             </div>
         </div>
     </div>
-</section>

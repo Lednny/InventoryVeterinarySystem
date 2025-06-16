@@ -96,4 +96,12 @@ async getProductosAlmacen2() {
   if (error) throw error;
   return data;
 }
+
+async getVentas() {
+  const { data, error } = await this.supabase
+    .from('ventas')
+    .select('*');
+  if (error) throw error;
+  return data;
+}
 }
