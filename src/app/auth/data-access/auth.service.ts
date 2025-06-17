@@ -35,4 +35,13 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
             redirectTo: window.location.origin + '/auth/reset'
         })
     }
+
+        signInWithGoogle() {
+        return this._supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: window.location.origin + '/dashboard' // o la ruta que prefieras después de login
+        }
+        });
+    }
 }
