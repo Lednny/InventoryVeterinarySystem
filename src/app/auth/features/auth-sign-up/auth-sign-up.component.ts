@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../data-access/auth.service';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SupabaseService } from '../../../services/supabase.service';
 
 interface SignUpForm {
   email: FormControl<null | string>;
@@ -17,6 +18,7 @@ interface SignUpForm {
   styleUrl: './auth-sign-up.component.css'
 })
 export default class AuthSignUpComponent {
+  constructor(private supabase: SupabaseService) {}
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthService);
 
@@ -41,5 +43,9 @@ export default class AuthSignUpComponent {
     } catch (error) {
       console.error('Error during sign up:', error);
     }
+  }
+
+    loginWithGoogle() {
+    this.supabase.signInWithGoogle();
   }
 }

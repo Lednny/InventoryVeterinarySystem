@@ -14,4 +14,13 @@ export class SupabaseService {
             .from('profiles') // Asegúrate de tener una tabla llamada 'profiles'
             .insert({ id: userId, username });
     }
+
+        signInWithGoogle() {
+        return this.supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: window.location.origin // 
+        }
+        });
     }
+}
