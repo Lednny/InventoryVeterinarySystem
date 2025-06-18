@@ -234,6 +234,9 @@
                             Fecha De Venta
                         </th>
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Factura:
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
                             Almacén:
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
                             Acciones
@@ -292,6 +295,13 @@
                         
                         <td class="px-4 py-4 text-center text-sm font-medium text-gray-600 dark:text-gray-400">
                             {{ ventas.fecha_ingreso | date:'dd/MM/yyyy' }}
+                        </td>
+                            <td class="px-4 py-4 text-center">
+                        <span [ngClass]="ventas.facturado ? 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-300'"
+                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold cursor-pointer"
+                            (click)="toggleFacturado(ventas)">
+                            {{ ventas.facturado ? 'Sí' : 'No' }}
+                            </span>
                         </td>
                         <td class="px-4 py-4 text-center">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">

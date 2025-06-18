@@ -18,6 +18,7 @@ interface Ventas {
     vendido: boolean;
     fecha_ingreso: Date;
     almacen?: String;
+    facturado?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -39,6 +40,7 @@ export class VentasService {
         user_id: string;
         vendido?: boolean;
         fecha_ingreso?: Date;
+        facturado?: boolean;
     }) {
         const { data, error } = await this.supabaseClient
             .from('ventas')
@@ -72,6 +74,7 @@ export class VentasService {
         vendido?: boolean;
         fecha_ingreso?: Date;
         almacen?: String;
+        facturado?: boolean;
     }) {
         const { data, error } = await this.supabaseClient
             .from('ventas')

@@ -147,7 +147,8 @@ async cargarVentas() {
         caducidad: new Date(),
         user_id: this.userId,
         vendido: false,
-        fecha_ingreso: new Date()
+        fecha_ingreso: new Date(),
+        facturado: false
       });
       await this.cargarVentas();
     } catch (error) {
@@ -362,7 +363,8 @@ async obtenerAvatarUrl(event: any) {
         lote: this.ventasActualizar.lote,
         caducidad: this.ventasActualizar.caducidad,
         vendido: this.ventasActualizar.vendido,
-        fecha_ingreso: this.ventasActualizar.fecha_ingreso
+        fecha_ingreso: this.ventasActualizar.fecha_ingreso,
+        facturado: this.ventasActualizar.facturado,
       });
       await this.cargarVentas();
       this.cerrarModalActualizar();
@@ -386,6 +388,18 @@ buscar() {
     (item.lote && item.lote.toLowerCase().includes(term)) ||
     (item.codigo && item.codigo.toLowerCase().includes(term))
   );
+}
+
+
+async toggleFacturado(ventas: any) {
+  try {
+    const nuevoEstado = !ventas.facturado;
+    await this.ventasService.updateVentas(ventas.id, { facturado: nuevoEstado });
+    ventas.facturado = nuevoEstado; // Actualiza en la vista sin recargar todo
+  } catch (error) {
+    console.error('Error al actualizar facturación:', error);
+    alert('No se pudo actualizar el estado de facturación.');
+  }
 }
 }
 
