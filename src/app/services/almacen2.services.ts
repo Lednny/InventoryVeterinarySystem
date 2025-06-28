@@ -49,12 +49,11 @@ export class Almacen2Service {
     }
 
     // LEER
-    async getAlmacen2ByUserId(userId: string): Promise<Almacen2[]> {
-        const { data, error } = await this.supabaseClient
-            .from('almacen2')
-            .select('*')
-            .eq('user_id', userId)
-            .order('created_at', { ascending: false });
+    async getAlmacen2Global(): Promise<Almacen2[]> {
+    const { data, error } = await this.supabaseClient
+        .from('almacen2')
+        .select('*')
+        .order('fecha_ingreso', { ascending: false });
 
         if (error) throw error;
         return data || [];

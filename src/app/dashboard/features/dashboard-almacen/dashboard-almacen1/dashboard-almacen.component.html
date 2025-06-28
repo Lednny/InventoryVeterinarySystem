@@ -118,6 +118,18 @@
     routerLinkActive="text-blue-400 border-blue-400"
     [routerLinkActiveOptions]="{ exact: false }"
     >Ventas</a>
+    <a
+    routerLink="/dashboard/clientes"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
+    >Clientes</a>
+    <a
+    routerLink="/dashboard/proveedores"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
+    >Proveedores</a>
 </div>
 </div>
 <!-- Contenido Principal -->
@@ -157,64 +169,6 @@
             </svg>
             Añadir Producto
         </button>
-        <!-- Dropdown para acciones -->
-        <div class="flex items-center w-full space-x-3 md:w-auto relative">
-            <div
-            *ngIf="mostrarDropdownActions"
-            #actionsDropdown
-            class="absolute top-full left-0 mt-0 border-white divide-y divide-gray-100 rounded-lg shadow w-56 z-50 dark:bg-gray-700 dark:divide-gray-100"
-            >
-            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200 ">
-                <li>
-                    <a href="#" (click)="abrirModalEdicionMasiva(); $event.preventDefault()" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-black rounded-lg">
-                        Edición Masiva
-                    </a>
-                </li>
-            </ul>
-            <div class="py-1">
-                <a href="#" (click)="abrirModalEliminarTodas(); $event.preventDefault()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-lg">
-                    Eliminación Masiva
-                </a>
-            </div>
-            </div>
-            
-            <!-- Dropdown menu -->
-            <div id="filterDropdown" class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700">
-            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
-                Category
-            </h6>
-            <ul class="space-y-2 text-sm" aria-labelledby="dropdownDefault">
-                <li class="flex items-center">
-                <input id="apple" type="checkbox" value=""
-                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                <label for="apple" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    Apple (56)
-                </label>
-                </li>
-                <li class="flex items-center">
-                <input id="fitbit" type="checkbox" value=""
-                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                <label for="fitbit" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    Fitbit (56)
-                </label>
-                </li>
-                <li class="flex items-center">
-                <input id="dell" type="checkbox" value=""
-                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                <label for="dell" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    Dell (56)
-                </label>
-                </li>
-                <li class="flex items-center">
-                <input id="asus" type="checkbox" value="" checked
-                    class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
-                <label for="asus" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100">
-                    Asus (97)
-                </label>
-                </li>
-            </ul>
-            </div>
-        </div>
         </div>
     </div>
     </div>
@@ -548,42 +502,61 @@
                                 >
                                 <span class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">✅ Vendido</span>
                             </label>
-                            
                         </div>
                     </div>
                 </div>
                 
+    <div class="space-y-2">
+        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Cliente
+        </label>
+        <select
+            [(ngModel)]="clienteSeleccionadoId"
+            name="clienteSeleccionadoId"
+            class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            required>
+            <option [ngValue]="null" disabled selected>Selecciona un cliente</option>
+            <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">
+                {{ cliente.nombre }}
+            </option>
+        </select>
+    </div>
                 <!-- Botones del modal mejorados -->
-                <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <button type="button" 
-                        (click)="cerrarModalActualizar()"
-                        class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200">
-                        Cancelar
-                    </button>
-                    <button type="submit" 
-                        class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
-                        Guardar Cambios
-                    </button>
-                      <div class="space-y-2">
-    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-      Ventas por:
+                <div class="flex flex-col items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                    <div class="space-y-2 ">
+    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mt-4">
+        Ventas por:
     </label>
     <input
-      type="number"
-      min="1"
-      [max]="almacen1Actualizar.cantidad"
-      [(ngModel)]="cantidadVenta"
-      name="cantidadVenta"
-      class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl p-3"
-      placeholder="Cantidad a vender"
-    />
-    <button type="button"
-      class="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg"
-      (click)="realizarVenta()"
-      [disabled]="!cantidadVenta || cantidadVenta < 1 || cantidadVenta > almacen1Actualizar.cantidad">
-      Vender
+        type="number"
+        min="1"
+        [max]="almacen1Actualizar.cantidad"
+        [(ngModel)]="cantidadVenta"
+        name="cantidadVenta"
+        class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl p-3"
+        placeholder="Cantidad a vender"/>
+    <button
+        type="button"
+        class="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg"
+        (click)="realizarVenta()"
+        [disabled]="
+            !cantidadVenta ||
+            cantidadVenta < 1 ||
+            cantidadVenta > almacen1Actualizar.cantidad ||
+            !clienteSeleccionadoId "> Vender 
                         </button>
                     </div>
+                    <div class="space-y-4 space-x-[530px] gap-6">
+                    <button type="submit" 
+                        class="min-w-[20px] px-6 py-2 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
+                        Guardar Cambios
+                    </button>
+                    <button type="button" 
+                        (click)="cerrarModalActualizar()"
+                        class="min-w-[20px] px-6 py-2 text-base font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-100">
+                        Cancelar
+                    </button>
+                </div>
                 </div>
             </form>
         </div>

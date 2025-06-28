@@ -119,11 +119,11 @@ export class DashboardTareasComponent implements OnInit {
 
   async cargarTareas() {
     try {
-      this.tareas = await this.tareasService.getTareasByUserId(this.userId);
-    } catch (error) {
-      console.error('Error al cargar tareas:', error);
-    }
+    this.tareas = await this.tareasService.getTareasGlobal();
+  } catch (error) {
+    console.error('Error al cargar tarea:', error);
   }
+}
 
   async agregarTarea() {
     try {

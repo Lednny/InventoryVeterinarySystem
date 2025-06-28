@@ -27,13 +27,12 @@ export class TareaService {
     }
 
     // LEER
-    async getTareasByUserId(userId: string): Promise<Tarea[]> {
-        const { data, error } = await this.supabaseClient
-            .from('tareas')
-            .select('*')
-            .eq('user_id', userId)
-            .order('fecha_creacion', { ascending: false });
-        
+    async getTareasGlobal(): Promise<Tarea[]> {
+    const { data, error } = await this.supabaseClient
+        .from('tareas')
+        .select('*')
+        .order('fecha_creacion', { ascending: false });
+
         if (error) throw error;
         return data || [];
     }

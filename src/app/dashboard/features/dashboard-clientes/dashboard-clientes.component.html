@@ -132,7 +132,6 @@
     >Proveedores</a>
 </div>
 </div>
-
 <!-- Contenido Principal -->
 <section class="bg-gray-50 dark:bg-gray-900 py-14">
 <div class="max-w-md px-4 mx-auto lg:px-6 w-full">
@@ -153,166 +152,89 @@
             id="simple-search"
             name="searchTerm"
             class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Buscar producto, marca, categoría, etc."
-            [(ngModel)]="searchTerm"
-            (keyup.enter)="buscar()"
+            placeholder="Buscar cliente por nombre, teléfono o email"
+            [(ngModel)]="searchTermClientes"
+            (keyup.enter)="buscarClientes()"
             />
             </div>
-            <button type="button" (click)="buscar()" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+            <button type="button" (click)="buscarClientes()" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
             Buscar
             </button>
         </form>
         </div>
     </div>
-        <!-- Dropdown para acciones -->
-            
-            <!-- Dropdown menu -->
         </div>
     </div>
 <!-- Contenedor principal mejorado -->
 <div class="container mx-auto px-4 py-6">
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-        <!-- Header de la tabla -->
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white text-center">
-                Ventas Registradas
-            </h2>
-        </div>
+<!-- Header de la tabla -->
+<div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+<h2 class="text-xl font-semibold text-gray-900 dark:text-white text-center">
+    Clientes
+</h2>
+</div>
 
-        <!-- Contenedor de la tabla con scroll horizontal --> 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-gray-700 dark:text-gray-300 min-w-[1200px]">
-                <thead class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">
-                    <tr>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            ID
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[150px]">
-                            Producto
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[120px]">
-                            Marca
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[100px]">
-                            Categoría
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Cantidad
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-0 dark:border-gray-500">
-                            Venta Total:
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Lote
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Codigo de Producto
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Fecha De Venta
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Factura:
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Almacén:
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Cliente
-                        </th>
-                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
-                            Acciones
-                        </tr>
-                        
-                        
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                     <tr *ngFor="let ventas of (resultadosBusqueda !== null ? resultadosBusqueda : ventasPaginadas); let i = index"
-                        class="hover:bg-gray-600 transition-all duration-300 hover:shadow-md">
-                        
-                        <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">
-                            #{{ getNumeroProducto(i) }}
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center">
-                            <div class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]" 
-                                [title]="ventas.producto">
-                                {{ ventas.producto }}
-                            </div>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <div class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" 
-                                [title]="ventas.marca">
-                                {{ ventas.marca }}
-                            </div>
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900       dark:text-purple-300">
-                                {{ ventas.categoria }}
-                            </span>
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                {{ ventas.cantidad }}
-                            </span>
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center">
-                            <span class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]">
-                                {{ ventas.precio_venta * ventas.cantidad | currency:'$':'symbol':'1.2-2' }}
-                            </span>
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center">
-                            <code class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">
-                                {{ ventas.lote }}
-                            </code>
-                        </td>
+<!-- Formulario para registrar un nuevo cliente -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden mb-8 p-6">
+<h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Registrar nuevo cliente</h2>
+<form (ngSubmit)="agregarCliente()" #clienteForm="ngForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <input [(ngModel)]="nuevoCliente.nombre" name="nombreCliente" placeholder="Nombre" class="p-2 rounded border dark:bg-gray-700 dark:text-white" required />
+    <input [(ngModel)]="nuevoCliente.telefono" name="telefonoCliente" placeholder="Teléfono" class="p-2 rounded border dark:bg-gray-700 dark:text-white" />
+    <input [(ngModel)]="nuevoCliente.email" name="emailCliente" placeholder="Email" class="p-2 rounded border dark:bg-gray-700 dark:text-white" />
+    <div class="col-span-1 md:col-span-3 flex justify-end">
+    <button type="submit" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5">Agregar cliente</button>
+    </div>
+</form>
+</div>
+
+
+
+<!-- Tabla de clientes registrados -->
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-gray-700 dark:text-gray-300 min-w-[1200px]">
+    <thead class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">
+        <tr>
+        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">ID</th>
+        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">Nombre</th>
+        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">Teléfono</th>
+        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">Email</th>
+        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+<tr *ngFor="let cliente of (resultadosBusquedaClientes !== null ? resultadosBusquedaClientes : clientesPaginados)">
+  <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">#{{ cliente.id }}</td>
+  <td class="px-4 py-4 text-center">{{ cliente.nombre }}</td>
+  <td class="px-4 py-4 text-center">{{ cliente.telefono }}</td>
+  <td class="px-4 py-4 text-center">{{ cliente.email }}</td>
 
                         <td class="px-4 py-4 text-center">
-                            <code class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" >
-                                {{ ventas.codigo }}
-                            </code>
-                        </td>
-                        
-                        <td class="px-4 py-4 text-center text-sm font-medium text-gray-600 dark:text-gray-400">
-                            {{ ventas.fecha_ingreso | date:'dd/MM/yyyy' }}
-                        </td>
-                            <td class="px-4 py-4 text-center">
-                        <span [ngClass]="ventas.facturado ? 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-300'"
-                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold cursor-pointer"
-                            (click)="toggleFacturado(ventas)">
-                            {{ ventas.facturado ? 'Sí' : 'No' }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 gap-10">
-                                {{ ventas.almacen }}
-                            </span>
-                            <td>
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 gap-10 cursor-pointer"
-                                [title]="ventas.clientes?.nombre"
-                                (click)="mostrarNombreCompleto(ventas.clientes?.nombre)">
-                                {{ ventas.clientes?.nombre?.split(' ')[0] || 'Sin Cliente' }}
-                            </span>
-                            </td>
-                        <td class="px-4 py-4 text-center">
-                            <div class="flex justify-center items-center gap-2 ">
+                            <div class="flex justify-center items-center gap-2">
+                                <button
+                                    class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5"
+                                    (click)="abrirModalActualizarClientes(cliente)"
+                                    title="Modificar producto">
+                                    Modificar
+                                </button>
                                 <button 
                                     class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 hover:shadow-lg hover:transform hover:-translate-y-0.5"
-                                    (click)="abrirModalEliminar(ventas.id)"
+                                    (click)="abrirModalEliminarClientes(cliente.id)"
                                     title="Eliminar producto">
                                     Eliminar
                                 </button>
                             </div>
                         </td>
                     </tr>
+                    <tr *ngIf="clientes.length === 0">
+            <td colspan="5" class="text-center py-4 text-gray-500 dark:text-gray-400">
+                        No hay clientes registrados.
+                </td>
+            </tr>
                     <!-- Si hay búsqueda y no hay resultados, muestra mensaje -->
-                    <tr *ngIf="resultadosBusqueda !== null && resultadosBusqueda.length === 0">
+                    <tr *ngIf="resultadosBusquedaClientes !== null && resultadosBusquedaClientes.length === 0">
                     <td colspan="12" class="text-center py-6 text-gray-500 dark:text-gray-400">
-                    No se encontraron resultados para "{{ searchTerm }}"
+                    No se encontraron resultados para "{{ searchTermClientes }}"
                     </td>
                     </tr>
                 </tbody>
@@ -321,8 +243,90 @@
     </div>
 </div>
 
+<!-- Modal de actualización mejorado -->
+<div *ngIf="mostrarModalActualizar" 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="relative bg-white rounded-2xl shadow-2xl dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <!-- Modal header mejorado -->
+            <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-t-2xl">
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    ✏️ Modificar Cliente
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-full text-sm w-10 h-10 flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white transition-all duration-200"
+                    (click)="cerrarModalActualizarClientes()">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Modal body mejorado -->
+<form class="p-6 space-y-6" (ngSubmit)="actualizarClientes(clientesActualizar.id, clientesActualizar.nombre, clientesActualizar.telefono, clientesActualizar.email)">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="space-y-2">
+            <label for="nombre" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Nombre
+            </label>
+            <input
+                type="text"
+                id="nombre"
+                [(ngModel)]="clientesActualizar.nombre"
+                name="nombre"
+                class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                placeholder="Nombre del cliente"
+                required>
+        </div>
+        <div class="space-y-2">
+            <label for="telefono" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Teléfono
+            </label>
+            <input
+                type="text"
+                id="telefono"
+                [(ngModel)]="clientesActualizar.telefono"
+                name="telefono"
+                class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                placeholder="Teléfono del cliente"
+                required>
+        </div>
+        <div class="space-y-2">
+            <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+                Email
+            </label>
+            <input
+                type="email"
+                id="email"
+                [(ngModel)]="clientesActualizar.email"
+                name="email"
+                class="w-full bg-gray-50 border-2 border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition-all duration-200"
+                placeholder="Email del cliente"
+                required>
+        </div>
+    </div>
+                
+                <!-- Botones del modal mejorados -->
+                <div class="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" 
+                        (click)="cerrarModalActualizarClientes()"
+                        class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                        class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <!-- Modal de confirmación para eliminar mejorado -->
-<div *ngIf="mostrarModalEliminar" 
+<div *ngIf="mostrarModalEliminarClientes" 
     class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-200 dark:border-gray-700">
         <div class="text-center">
@@ -339,12 +343,12 @@
             </p>
             <div class="flex justify-center gap-4">
                 <button 
-                    (click)="confirmarEliminarVentas()" 
+                    (click)="confirmarEliminarClientes()" 
                     class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 rounded-xl hover:from-red-700 hover:to-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5">
                     Sí, eliminar
                 </button>
                 <button 
-                    (click)="mostrarModalEliminar = false" 
+                    (click)="mostrarModalEliminarClientes = false" 
                     class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200">
                     Cancelar
                 </button>
@@ -352,10 +356,12 @@
         </div>
     </div>
 </div>
-    <nav *ngIf="resultadosBusqueda === null" aria-label="Page navigation" class="flex justify-center mt-4">
+
+<!--Paginación para agregado de clientes-->
+<nav *ngIf="totalPagesClientes > 1" aria-label="Page navigation" class="flex justify-center mt-4">
 <ul class="flex items-center -space-x-px h-8 text-sm">
     <li>
-    <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1"
+    <button (click)="cambiarPaginaClientes(currentPageClientes - 1)" [disabled]="currentPageClientes === 1"
         class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Previous</span>
         <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
@@ -363,16 +369,16 @@
         </svg>
     </button>
     </li>
-    <li *ngFor="let page of [].constructor(totalPages); let idx = index">
-    <button (click)="cambiarPagina(idx + 1)"
-        [ngClass]="{'z-10 text-blue-600 border-blue-300 bg-blue-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white': currentPage === idx + 1,
-                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': currentPage !== idx + 1}"
+    <li *ngFor="let page of [].constructor(totalPagesClientes); let idx = index">
+    <button (click)="cambiarPaginaClientes(idx + 1)"
+        [ngClass]="{'z-10 text-blue-600 border-blue-300 bg-blue-50 dark:border-gray-700 dark:bg-gray-700 dark:text-white': currentPageClientes === idx + 1,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': currentPageClientes !== idx + 1}"
         class="flex items-center justify-center px-3 h-8 leading-tight border">
         {{ idx + 1 }}
     </button>
     </li>
     <li>
-    <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages"
+    <button (click)="cambiarPaginaClientes(currentPageClientes + 1)" [disabled]="currentPageClientes === totalPagesClientes"
         class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
         <span class="sr-only">Next</span>
         <svg class="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" fill="none" viewBox="0 0 6 10">
@@ -382,5 +388,4 @@
     </li>
 </ul>
 </nav>
-
 

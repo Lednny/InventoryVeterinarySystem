@@ -2,7 +2,9 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../data-access/auth.service';
+import { SupabaseService } from '../../../services/supabase.service';
 import { inject } from '@angular/core';
+import { UserRoleService } from '../../../services/rol.services';
 
 interface LogInForm {
   email: FormControl<null | string>;
@@ -22,6 +24,8 @@ export default class AuthLogInComponent {
   private _formBuilder = inject(FormBuilder);
   private _authService = inject(AuthService);
   private _router = inject(Router);
+  private supabaseClient = inject(SupabaseService).supabaseClient;
+  private userRoleService = inject(UserRoleService);
 
   form = this._formBuilder.group<LogInForm>({
     email: this._formBuilder.control(null, [Validators.required, Validators.email]),
@@ -39,6 +43,24 @@ export default class AuthLogInComponent {
 
       if (error) throw error;
       console.log('Login successful:', data);
+
+      const session = await this._authService.session();
+      const userId = session.data.session?.user?.id;
+      if (!userId) {
+        throw new Error('Sesión de usuario no encontrada.');
+      }
+      const { data: perfil } = await this.supabaseClient
+        .from('usuarios')
+        .select('rol')
+        .eq('user_id', userId)
+        .single();
+
+      if (!perfil || !perfil.rol) {
+        alert('No tienes un rol asignado. Contacta al administrador.');
+        return;
+      }
+
+      this.userRoleService.setRole(perfil.rol);
 
       this._router.navigateByUrl('/dashboard');
       } catch (error) {

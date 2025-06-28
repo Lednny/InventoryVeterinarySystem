@@ -54,13 +54,28 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   mostrarNotificaciones = false;
   mostrarMenuGrid = false;
 
-  //Variables para la paginación 
+  //Variables para la paginación de ventas 
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
-  //Motoro de búsqueda
+  //Motor de búsqueda
   searchTerm: string = '';
   resultadosBusqueda: null | any[] = null;
+
+  //Motor de búsqueda de clientes
+  searchTermClientes: string = '';
+  resultadosBusquedaClientes: null | any[] = null;
+
+  // Variables para agregar clientes a las ventas
+  clientes: any[] = [];
+  nuevoCliente = { nombre: '', telefono: '', email: '' };
+  clienteSeleccionadoId: number | null = null;
+
+
+  //Variables para la paginación de clientes
+  currentPageClientes: number = 1;
+  itemsPerPageClientes: number = 5;
+  cliente: any;
 
   constructor(
     private ventasService: VentasService,
@@ -77,6 +92,7 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     this.cargarVentas();
     this.ventasSub = this.ventasService.ventasActualizadas$.subscribe(() => {
     this.cargarVentas();
+    this.cargarClientes();
     });
   }
 
@@ -126,6 +142,15 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     }
   }
 
+  async cargarClientes() {
+    try {
+      this.clientes = await this.ventasService.getClientes();
+          this.cambiarPaginaClientes(this.currentPageClientes);
+    } catch (error) {
+      console.error('Error al cargar clientes:', error);
+    }
+  }
+
 async cargarVentas() {
   try {
     this.ventas = await this.ventasService.getTodasLasVentas();
@@ -134,27 +159,32 @@ async cargarVentas() {
   }
 }
 
-  async agregarVentas() {
-    try {
-      await this.ventasService.addVentas({
-        producto: 'Nuevo Producto',
-        categoria: '',
-        codigo: '',
-        marca: '',
-        cantidad: 0,
-        precio_venta: 0,
-        lote: '',
-        caducidad: new Date(),
-        user_id: this.userId,
-        vendido: false,
-        fecha_ingreso: new Date(),
-        facturado: false
-      });
-      await this.cargarVentas();
-    } catch (error) {
-      console.error('Error al agregar producto nuevo:', error);
+async agregarVentas() {
+  try {
+    const nuevaVenta: any = {
+      producto: 'Nuevo Producto',
+      categoria: '',
+      codigo: '',
+      marca: '',
+      cantidad: 0,
+      precio_venta: 0,
+      lote: '',
+      caducidad: new Date(),
+      user_id: this.userId,
+      vendido: false,
+      fecha_ingreso: new Date(),
+      facturado: false,
+    };
+    if (this.clienteSeleccionadoId !== null) {
+      nuevaVenta.cliente_id = this.clienteSeleccionadoId; // Asigna el cliente seleccionado solo si no es null
     }
+    await this.ventasService.addVentas(nuevaVenta);
+    await this.cargarVentas();
+  } catch (error) {
+    console.error('Error al agregar producto nuevo:', error);
   }
+}
+
   async toggleDropdownActions() {
     this.mostrarDropdownActions = !this.mostrarDropdownActions;
   }
@@ -235,7 +265,7 @@ onDocumentClick(event: MouseEvent) {
 }
 
   // ...
-  async actualizarVentas(id: number, ventas: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date}) {
+  async actualizarVentas(id: number, ventas: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date, cliente_id?: number}) {
     try {
       await this.ventasService.updateVentas(id, ventas);
       await this.cargarVentas();
@@ -318,6 +348,21 @@ async obtenerAvatarUrl(event: any) {
     this.currentPage = pagina;
   }
 
+  //Funciones para la paginación de clientes
+  get totalPagesClientes(): number {
+    return Math.ceil(this.clientes.length / this.itemsPerPageClientes);
+  }
+
+  get clientesPaginados(): any[] {
+    const startIndex = (this.currentPageClientes - 1) * this.itemsPerPageClientes;
+    return this.clientes.slice(startIndex, startIndex + this.itemsPerPageClientes);
+  }
+
+  cambiarPaginaClientes(pagina: number) {
+    if (pagina < 1 || pagina > this.totalPagesClientes) return;
+    this.currentPageClientes = pagina;
+  }
+
   //Se actualiza el avatar del usuario
   private async cargarDatosUsuario() {
     const session = await this.authService.session();
@@ -373,6 +418,11 @@ async obtenerAvatarUrl(event: any) {
     }
   }
 }
+
+mostrarNombreCompleto(nombre: string) {
+  alert('Nombre completo: ' + nombre);
+}
+
 //Barra de búsqueda
 
 buscar() {
@@ -390,6 +440,18 @@ buscar() {
   );
 }
 
+buscarClientes() {
+  const term = this.searchTermClientes.trim().toLowerCase();
+  if (!term) {
+    this.resultadosBusquedaClientes = null; // Usa null para distinguir "sin búsqueda"
+    return;
+  }
+  this.resultadosBusquedaClientes = this.clientes.filter(cliente =>
+    (cliente.nombre && cliente.nombre.toLowerCase().includes(term)) ||
+    (cliente.telefono && cliente.telefono.toLowerCase().includes(term)) ||
+    (cliente.email && cliente.email.toLowerCase().includes(term))
+  );
+}
 
 async toggleFacturado(ventas: any) {
   try {
@@ -400,6 +462,12 @@ async toggleFacturado(ventas: any) {
     console.error('Error al actualizar facturación:', error);
     alert('No se pudo actualizar el estado de facturación.');
   }
+}
+
+async agregarCliente() {
+  const cliente = await this.ventasService.addCliente(this.nuevoCliente);
+  this.clientes.push(cliente);
+  this.nuevoCliente = { nombre: '', telefono: '', email: '' };
 }
 }
 

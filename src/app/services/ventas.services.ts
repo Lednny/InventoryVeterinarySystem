@@ -19,6 +19,7 @@ interface Ventas {
     fecha_ingreso: Date;
     almacen?: String;
     facturado?: boolean;
+    cliente_id?: number; 
 }
 
 @Injectable({ providedIn: 'root' })
@@ -41,25 +42,31 @@ export class VentasService {
         vendido?: boolean;
         fecha_ingreso?: Date;
         facturado?: boolean;
-    }) {
+        cliente_id?: number; 
+}) {
         const { data, error } = await this.supabaseClient
             .from('ventas')
             .insert([ventas])
-            .select()
+            .select('*, cliente_id(nombre)')
             .single();
         if (error) throw error;
         return data;
     }
 
     // LEER
-    async getTodasLasVentas(): Promise<Ventas[]> {
-    const { data, error } = await this.supabaseClient
-    .from('ventas')
-    .select('*')
-    .order('created_at', { ascending: false });
-    if (error) throw error;
-    return data || [];
-}
+         async getTodasLasVentas(): Promise<Ventas[]> {
+          const { data, error } = await this.supabaseClient
+            .from('ventas')
+            .select(`
+              *,
+              clientes:cliente_id (
+                nombre
+              )
+            `)
+            .order('created_at', { ascending: false });
+          if (error) throw error;
+          return data || [];
+        }
 
     // ACTUALIZAR
     async updateVentas(id: number, ventas: {
@@ -75,16 +82,17 @@ export class VentasService {
         fecha_ingreso?: Date;
         almacen?: String;
         facturado?: boolean;
-    }) {
-        const { data, error } = await this.supabaseClient
-            .from('ventas')
-            .update(ventas)
-            .eq('id', id)
-            .select()
-            .single();
-        if (error) throw error;
-        return data;
-    }
+        cliente_id?: number; 
+}) {
+    const { data, error } = await this.supabaseClient
+        .from('ventas')
+        .update(ventas)
+        .eq('id', id)
+        .select()
+        .single();
+    if (error) throw error;
+    return data;
+}
 
         // ELIMINAR
 async deleteVentas(id: number) {
@@ -111,5 +119,45 @@ const { error } = await this.supabaseClient
     if (error) throw error;
     this.notificarActualizacion();
     return data;
+    }
+
+
+    // Obtener los clientes 
+
+    async getClientes(): Promise<any[]> {
+        const { data, error } = await this.supabaseClient
+            .from('clientes')
+            .select('*');
+    if (error) throw error;
+    return data || [];
+    }
+
+    async addCliente(cliente: any) {
+        const { data, error } = await this.supabaseClient
+    .from('clientes')
+    .insert([cliente])
+    .select()
+    .single();
+        if (error) throw error;
+        return data;
+    }
+
+    async deleteCliente(id: number) {
+        const { error } = await this.supabaseClient
+            .from('clientes')
+            .delete()
+            .eq('id', id);
+        if (error) throw error;
+    }
+
+    async updateCliente(id: number, cliente: any) {
+        const { data, error } = await this.supabaseClient
+            .from('clientes')
+            .update(cliente)
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
     }
 }

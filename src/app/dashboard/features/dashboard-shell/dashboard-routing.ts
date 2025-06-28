@@ -26,6 +26,14 @@ export default [
     loadComponent: () => import('../dashboard-ventas/dashboard-ventas.component').then(m => m.DashboardVentasComponent),
 },
 {
+    path: 'clientes',
+    loadComponent: () => import('../dashboard-clientes/dashboard-clientes.component').then(m => m.DashboardClientesComponent),
+},
+{
+    path: 'proveedores',
+    loadComponent: () => import('../dashboard-proveedores/dashboard-proveedores.component').then(m => m.DashboardProveedoresComponent)
+},
+{
     path: 'profile',
     loadComponent: () => import('../menu-grid/menu-profile/menu-profile.component').then(m => m.MenuProfileComponent)
 },

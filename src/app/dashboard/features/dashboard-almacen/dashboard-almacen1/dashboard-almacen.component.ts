@@ -64,6 +64,12 @@ export class DashboardAlmacenComponent implements OnInit {
   ventasPaginadas: any;
   resultadosBusqueda: null | any[] = null;
 
+  // Variables parala asignación de clientes a las ventas 
+  clientes: any[] = [];
+  clienteSeleccionadoId: number | null = null;
+
+
+
   constructor(
     private almacen1Service: Almacen1Service,
     private ventasService: VentasService,
@@ -77,6 +83,7 @@ export class DashboardAlmacenComponent implements OnInit {
     await this.ensureUsuario();
     await this.init();
     await this.cargarDatosUsuario();
+    this.clientes = await this.ventasService.getClientes();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -121,13 +128,13 @@ export class DashboardAlmacenComponent implements OnInit {
     }
   }
 
-  async cargarAlmacen1() {
-    try {
-      this.almacen1 = await this.almacen1Service.getAlmacen1ByUserId(this.userId);
-    } catch (error) {
-      console.error('Error al cargar tareas:', error);
-    }
+async cargarAlmacen1() {
+  try {
+    this.almacen1 = await this.almacen1Service.getAlmacen1Global();
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
   }
+}
 
   async agregarAlmacen1() {
     try {
@@ -247,6 +254,8 @@ async eliminarAlmacen1(id: number) {
 cerrarModalActualizar() {
   this.almacen1Actualizar = null;
   this.mostrarModalActualizar = false;
+  this.cantidadVenta = 0;
+  this.clienteSeleccionadoId = null;
 }
 
 abrirModalEdicionMasiva(){
@@ -404,7 +413,11 @@ buscar() {
   );
 }
 async realizarVenta() {
-  if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen1Actualizar.cantidad) return;
+  if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen1Actualizar.cantidad || !this.clienteSeleccionadoId) 
+    {
+      alert('Por favor, ingrese una cantidad válida y seleccione un cliente.');
+      return;
+    }
 
   // 1. Restar la cantidad vendida
   this.almacen1Actualizar.cantidad -= this.cantidadVenta;
@@ -427,11 +440,13 @@ async realizarVenta() {
     fecha_ingreso: new Date(),
     vendido: true,
     almacen: 'Central',
+    cliente_id: this.clienteSeleccionadoId
   });
 
   // 4. Refrescar datos y limpiar campo
   await this.cargarAlmacen1();
   this.cantidadVenta = 0;
+  this.clienteSeleccionadoId = null; 
   alert('Venta registrada correctamente');
 }
 }

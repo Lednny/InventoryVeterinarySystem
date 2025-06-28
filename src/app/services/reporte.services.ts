@@ -27,16 +27,16 @@ export class ReporteService {
     }
 
     // LEER
-    async getReportesByUserId(userId: string): Promise<Reporte[]> {
-        const { data, error } = await this.supabaseClient
-            .from('reportes')
-            .select('*')
-            .eq('user_id', userId)
-            .order('fecha_creacion', { ascending: false });
-        
+    async getReportesGlobal(): Promise<Global[]> {
+    const { data, error } = await this.supabaseClient
+        .from('reportes')
+        .select('*')
+        .order('fecha_creacion', { ascending: false });
+
         if (error) throw error;
         return data || [];
     }
+
 
     // ACTUALIZAR
     async updateReporte(id: number, reporte: { titulo?: string; descripcion?: string }) {

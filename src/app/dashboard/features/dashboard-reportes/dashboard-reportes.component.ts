@@ -117,12 +117,12 @@ export class DashboardReportesComponent implements OnInit {
   }
 
   async cargarReportes() {
-    try {
-      this.reportes = await this.reportesService.getReportesByUserId(this.userId);
-    } catch (error) {
-      console.error('Error al cargar reportes:', error);
-    }
+  try {
+    this.reportes = await this.reportesService.getReportesGlobal();
+  } catch (error) {
+    console.error('Error al cargar reportes:', error);
   }
+}
 
   async agregarReporte() {
     try {

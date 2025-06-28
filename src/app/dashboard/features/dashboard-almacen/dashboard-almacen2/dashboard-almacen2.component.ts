@@ -64,6 +64,13 @@ export class DashboardAlmacen2Component implements OnInit {
   ventasPaginadas: any;
   resultadosBusqueda: null | any[] = null;
 
+  
+  // Variables parala asignación de clientes a las ventas 
+  clientes: any[] = [];
+  clienteSeleccionadoId: number | null = null;
+
+
+
   constructor(
     private almacen2Service: Almacen2Service,
     private router: Router,
@@ -77,6 +84,7 @@ export class DashboardAlmacen2Component implements OnInit {
     await this.ensureUsuario();
     await this.init();
     await this.cargarDatosUsuario();
+    this.clientes = await this.ventasService.getClientes();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -123,11 +131,11 @@ export class DashboardAlmacen2Component implements OnInit {
 
   async cargarAlmacen2() {
     try {
-      this.almacen2 = await this.almacen2Service.getAlmacen2ByUserId(this.userId);
-    } catch (error) {
-      console.error('Error al cargar tareas:', error);
-    }
+      this.almacen2 = await this.almacen2Service.getAlmacen2Global();
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
   }
+}
 
   async agregarAlmacen2() {
     try {
@@ -247,6 +255,8 @@ async eliminarAlmacen2(id: number) {
 cerrarModalActualizar() {
   this.almacen2Actualizar = null;
   this.mostrarModalActualizar = false;
+  this.cantidadVenta = 0;
+  this.clienteSeleccionadoId = null;
 }
 
 abrirModalEdicionMasiva(){
@@ -428,7 +438,11 @@ buscar() {
 }
 
 async realizarVenta() {
-  if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen2Actualizar.cantidad) return;
+  if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen2Actualizar.cantidad || !this.clienteSeleccionadoId)
+        {
+      alert('Por favor, ingrese una cantidad válida y seleccione un cliente.');
+      return;
+    }
 
   // 1. Restar la cantidad vendida
   this.almacen2Actualizar.cantidad -= this.cantidadVenta;
@@ -451,11 +465,13 @@ async realizarVenta() {
     fecha_ingreso: new Date(),
     vendido: true,
     almacen: 'Operativo',
+    cliente_id: this.clienteSeleccionadoId
   });
 
   // 4. Refrescar datos y limpiar campo
   await this.cargarAlmacen2();
   this.cantidadVenta = 0;
+  this.clienteSeleccionadoId = null; 
   alert('Venta registrada correctamente');
 }
 }

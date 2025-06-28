@@ -109,6 +109,18 @@
     class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
     routerLinkActive="text-blue-400 border-blue-400"
     >Ventas</a>
+    <a
+    routerLink="/dashboard/clientes"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
+    >Clientes</a>
+    <a
+    routerLink="/dashboard/proveedores"
+    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+    routerLinkActive="text-blue-400 border-blue-400"
+    [routerLinkActiveOptions]="{ exact: false }"
+    >Proveedores</a>
 </div>
 </div>
 <!-- Contenido Principal de las alertas y gráficas sobre el estados de las ventas en el mes, o en el día -->
