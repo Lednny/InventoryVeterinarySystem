@@ -6,8 +6,6 @@ import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
-
 @Component({
   selector: 'app-dashboard-clientes',
   imports: [RouterModule, CommonModule, FormsModule],

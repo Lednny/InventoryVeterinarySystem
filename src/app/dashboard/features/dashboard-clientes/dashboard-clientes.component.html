@@ -203,8 +203,8 @@
     </tr>
     </thead>
     <tbody>
-<tr *ngFor="let cliente of (resultadosBusquedaClientes !== null ? resultadosBusquedaClientes : clientesPaginados)">
-  <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">#{{ cliente.id }}</td>
+<tr *ngFor="let cliente of (resultadosBusquedaClientes !== null ? resultadosBusquedaClientes : clientesPaginados) let i = index">
+  <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">#{{i + 1 }}</td>
   <td class="px-4 py-4 text-center">{{ cliente.nombre }}</td>
   <td class="px-4 py-4 text-center">{{ cliente.telefono }}</td>
   <td class="px-4 py-4 text-center">{{ cliente.email }}</td>

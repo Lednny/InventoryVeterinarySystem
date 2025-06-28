@@ -193,6 +193,9 @@
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[120px]">
                             Marca
                         </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[120px]">
+                            Proveedor
+                        </th>
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[100px]">
                             Categoría
                         </th>
@@ -245,7 +248,12 @@
                                 {{ ventas.marca }}
                             </div>
                         </td>
-                        
+                        <td class="px-4 py-4 text-center">
+                            <div class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" 
+                                [title]="ventas.proveedor">
+                        {{ ventas.proveedor?.nombre || 'Sin proveedor' }}
+                            </div>
+                            </td>
                         <td class="px-4 py-4 text-center">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900       dark:text-purple-300">
                                 {{ ventas.categoria }}

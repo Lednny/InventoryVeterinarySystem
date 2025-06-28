@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { VentasService } from '../../../services/ventas.services';
+import { ProveedoresService } from '../../../services/proveedores.services';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -77,8 +78,12 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   itemsPerPageClientes: number = 5;
   cliente: any;
 
+  // Variables para asiganar proveedores a los productos
+  proveedores: any[] = [];
+
   constructor(
     private ventasService: VentasService,
+    private proveedoresService: ProveedoresService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -90,6 +95,7 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     await this.init();
     await this.cargarDatosUsuario();
     this.cargarVentas();
+    this.proveedores = await this.proveedoresService.getProveedores();
     this.ventasSub = this.ventasService.ventasActualizadas$.subscribe(() => {
     this.cargarVentas();
     this.cargarClientes();
@@ -392,7 +398,6 @@ async obtenerAvatarUrl(event: any) {
 
   async guardarActualizacionVentas() {
   if (this.ventasActualizar && this.ventasActualizar.id) {
-    // Validación: solo permitir marcar como vendido si cantidad es 0
     if (this.ventasActualizar.vendido && this.ventasActualizar.cantidad > 0) {
       alert('No puedes marcar como vendido si la cantidad no es 0.');
       return;
@@ -410,6 +415,7 @@ async obtenerAvatarUrl(event: any) {
         vendido: this.ventasActualizar.vendido,
         fecha_ingreso: this.ventasActualizar.fecha_ingreso,
         facturado: this.ventasActualizar.facturado,
+        proveedores_id: this.ventasActualizar.proveedores_id || null,
       });
       await this.cargarVentas();
       this.cerrarModalActualizar();

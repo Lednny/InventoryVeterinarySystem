@@ -17,6 +17,7 @@ interface Almacen1 {
     vendido: boolean;
     fecha_ingreso: Date;
     almacen?: String;
+    proveedores_id?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -37,6 +38,7 @@ export class Almacen1Service {
         vendido?: boolean;
         fecha_ingreso?: Date;
         almacen?: String;
+        proveedores_id?: number;
     }) {
         const { data, error } = await this.supabaseClient
             .from('almacen1')
@@ -53,12 +55,12 @@ export class Almacen1Service {
     async getAlmacen1Global(): Promise<Almacen1[]> {
         const { data, error } = await this.supabaseClient
             .from('almacen1')
-            .select('*')
+            .select(`*, proveedor:proveedores_id (nombre)`)
             .order('fecha_ingreso', { ascending: false });
-
         if (error) throw error;
         return data || [];
     }
+
 
     // ACTUALIZAR
     async updateAlmacen1(id: number, almacen1: {
@@ -73,6 +75,7 @@ export class Almacen1Service {
         vendido?: boolean;
         fecha_ingreso?: Date;
         almacen?: String;
+        proveedores_id?: number;
     }) {
         const { data, error } = await this.supabaseClient
             .from('almacen1')

@@ -20,6 +20,7 @@ interface Ventas {
     almacen?: String;
     facturado?: boolean;
     cliente_id?: number; 
+    proveedores_id?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -43,6 +44,7 @@ export class VentasService {
         fecha_ingreso?: Date;
         facturado?: boolean;
         cliente_id?: number; 
+        proveedores_id?: number;
 }) {
         const { data, error } = await this.supabaseClient
             .from('ventas')
@@ -54,18 +56,13 @@ export class VentasService {
     }
 
     // LEER
-         async getTodasLasVentas(): Promise<Ventas[]> {
-          const { data, error } = await this.supabaseClient
+        async getTodasLasVentas(): Promise<Ventas[]> {
+        const { data, error } = await this.supabaseClient
             .from('ventas')
-            .select(`
-              *,
-              clientes:cliente_id (
-                nombre
-              )
-            `)
+            .select(`*,clientes:cliente_id (nombre), proveedor:proveedores_id (nombre)`)
             .order('created_at', { ascending: false });
-          if (error) throw error;
-          return data || [];
+        if (error) throw error;
+        return data || [];
         }
 
     // ACTUALIZAR
@@ -83,6 +80,7 @@ export class VentasService {
         almacen?: String;
         facturado?: boolean;
         cliente_id?: number; 
+        proveedores_id?: number;
 }) {
     const { data, error } = await this.supabaseClient
         .from('ventas')

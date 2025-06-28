@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { Almacen2Service } from '../../../../services/almacen2.services';
 import { VentasService } from '../../../../services/ventas.services';
+import { ProveedoresService } from '../../../../services/proveedores.services';
 import { AuthService } from '../../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -69,12 +70,17 @@ export class DashboardAlmacen2Component implements OnInit {
   clientes: any[] = [];
   clienteSeleccionadoId: number | null = null;
 
+  // Variables para asiganar proveedores a los productos
+  proveedores: any[] = [];
+
+
 
 
   constructor(
     private almacen2Service: Almacen2Service,
     private router: Router,
     private ventasService: VentasService,
+    private proveedoresService: ProveedoresService,
     private authService: AuthService
   ) {}
 
@@ -85,6 +91,7 @@ export class DashboardAlmacen2Component implements OnInit {
     await this.init();
     await this.cargarDatosUsuario();
     this.clientes = await this.ventasService.getClientes();
+    this.proveedores = await this.proveedoresService.getProveedores();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -394,7 +401,6 @@ async obtenerAvatarUrl(event: any) {
 
 async guardarActualizacionAlmacen2() {
   if (this.almacen2Actualizar && this.almacen2Actualizar.id) {
-    // Validación: solo permitir marcar como vendido si cantidad es 0
     if (this.almacen2Actualizar.vendido && this.almacen2Actualizar.cantidad > 0) {
       alert('No puedes marcar como vendido si la cantidad no es 0.');
       return;
@@ -410,7 +416,8 @@ async guardarActualizacionAlmacen2() {
         lote: this.almacen2Actualizar.lote,
         caducidad: this.almacen2Actualizar.caducidad,
         vendido: this.almacen2Actualizar.vendido,
-        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso
+        fecha_ingreso: this.almacen2Actualizar.fecha_ingreso,
+        proveedores_id: this.almacen2Actualizar.proveedores_id || null
       });
       await this.cargarAlmacen2();
       this.cerrarModalActualizar();
@@ -448,9 +455,9 @@ async realizarVenta() {
   this.almacen2Actualizar.cantidad -= this.cantidadVenta;
 
   // 2. Guardar cambios en el almacén
-  await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, {
-    ...this.almacen2Actualizar
-  });
+  const datosAlmacen = { ...this.almacen2Actualizar };
+  delete datosAlmacen.proveedor; // Elimina el campo ext
+  await this.almacen2Service.updateAlmacen2(this.almacen2Actualizar.id, datosAlmacen);
 
   // 3. Registrar la venta en la tabla de ventas
   await this.ventasService.addVenta({
@@ -465,7 +472,8 @@ async realizarVenta() {
     fecha_ingreso: new Date(),
     vendido: true,
     almacen: 'Operativo',
-    cliente_id: this.clienteSeleccionadoId
+    cliente_id: this.clienteSeleccionadoId,
+    proveedores_id: this.almacen2Actualizar.proveedores_id || null
   });
 
   // 4. Refrescar datos y limpiar campo

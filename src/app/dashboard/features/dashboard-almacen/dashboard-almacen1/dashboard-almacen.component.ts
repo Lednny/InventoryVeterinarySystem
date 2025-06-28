@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { Almacen1Service } from '../../../../services/almacen1.services';
 import { VentasService } from '../../../../services/ventas.services';
+import { ProveedoresService } from '../../../../services/proveedores.services';
 import { AuthService } from '../../../../auth/data-access/auth.service';
 import { SupabaseService } from '../../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
@@ -64,15 +65,19 @@ export class DashboardAlmacenComponent implements OnInit {
   ventasPaginadas: any;
   resultadosBusqueda: null | any[] = null;
 
-  // Variables parala asignación de clientes a las ventas 
+  // Variables para la asignación de clientes a las ventas 
   clientes: any[] = [];
   clienteSeleccionadoId: number | null = null;
+
+  // Variables para asiganar proveedores a los productos
+  proveedores: any[] = [];
 
 
 
   constructor(
     private almacen1Service: Almacen1Service,
     private ventasService: VentasService,
+    private proveedoresService: ProveedoresService,
     private router: Router,
     private authService: AuthService
   ) {}
@@ -84,6 +89,7 @@ export class DashboardAlmacenComponent implements OnInit {
     await this.init();
     await this.cargarDatosUsuario();
     this.clientes = await this.ventasService.getClientes();
+    this.proveedores = await this.proveedoresService.getProveedores();
   }
 
   // Asegura que el usuario exista en la tabla 'usuarios'
@@ -370,7 +376,6 @@ async obtenerAvatarUrl(event: any) {
 
   async guardarActualizacionAlmacen1() {
   if (this.almacen1Actualizar && this.almacen1Actualizar.id) {
-    // Validación: solo permitir marcar como vendido si cantidad es 0
     if (this.almacen1Actualizar.vendido && this.almacen1Actualizar.cantidad > 0) {
       alert('No puedes marcar como vendido si la cantidad no es 0.');
       return;
@@ -386,12 +391,13 @@ async obtenerAvatarUrl(event: any) {
         lote: this.almacen1Actualizar.lote,
         caducidad: this.almacen1Actualizar.caducidad,
         vendido: this.almacen1Actualizar.vendido,
-        fecha_ingreso: this.almacen1Actualizar.fecha_ingreso
+        fecha_ingreso: this.almacen1Actualizar.fecha_ingreso,
+        proveedores_id: this.almacen1Actualizar.proveedores_id || null
       });
       await this.cargarAlmacen1();
       this.cerrarModalActualizar();
     } catch (error) {
-      console.error('Error al actualizar almacen2:', error);
+      console.error('Error al actualizar almacen:', error);
     }
   }
 }
@@ -423,9 +429,9 @@ async realizarVenta() {
   this.almacen1Actualizar.cantidad -= this.cantidadVenta;
 
   // 2. Guardar cambios en el almacén
-  await this.almacen1Service.updateAlmacen1(this.almacen1Actualizar.id, {
-    ...this.almacen1Actualizar
-  });
+  const datosAlmacen = { ...this.almacen1Actualizar };
+  delete datosAlmacen.proveedor; // Elimina el campo ext
+  await this.almacen1Service.updateAlmacen1(this.almacen1Actualizar.id, datosAlmacen);
 
   // 3. Registrar la venta en la tabla de ventas
   await this.ventasService.addVenta({
@@ -440,7 +446,8 @@ async realizarVenta() {
     fecha_ingreso: new Date(),
     vendido: true,
     almacen: 'Central',
-    cliente_id: this.clienteSeleccionadoId
+    cliente_id: this.clienteSeleccionadoId,
+    proveedores_id: this.almacen1Actualizar.proveedores_id,
   });
 
   // 4. Refrescar datos y limpiar campo
