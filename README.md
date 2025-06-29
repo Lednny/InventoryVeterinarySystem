@@ -50,9 +50,9 @@ A **Progressive Web App** for comprehensive management of **inventory, sales, cl
 
 ----------------------------------------------------------------------------------------------------------------
 
-```markdown
- ![Image Alt](https://github.com/Lednny/InventoryVeterinarySystem/blob/master/InventoryApp.png?raw=true)
-```
+
+ ![Image Alt](https://github.com/Lednny/InventoryVeterinarySystem/blob/de43e7ca0b2981d4058df1e0a327238012995280/InventoryApp.png)
+
 ----------------------------------------------------------------------------------------------------------------
 
 ⚡ Local Installation
@@ -62,7 +62,6 @@ cd inventario-veterinario
 npm install
 ng serve
 ```
-Open [http://localhost:4200](http://localhost:4200)
 
 🙋‍♂️ Questions or Suggestions?
 Open an issue or reach out via LinkedIn [LinkedIn](https://www.linkedin.com/in/leonardo-danniel-rodr%C3%ADguez-nava-469a6234b/)
