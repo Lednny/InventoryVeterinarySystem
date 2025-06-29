@@ -4,7 +4,7 @@
         <!-- Logo -->
         <div class="flex-1 flex items-center gap-3">
             <img src="https://cdn-icons-png.flaticon.com/512/10986/10986551.png" alt="logo de invenatario" class="w-15 h-16" />
-            <span class="font-bold text-2xl text-white ml-2">Sistema <br> De Inventario </span>
+            <span class="font-bold text-lg sm:text-xl md:text-2xl text-white ml-6"> Sistema <br> De Inventario</span>
         </div>
         <!-- Icons -->
         <div class="flex-1 flex items-center justify-end gap-6 relative">
@@ -69,68 +69,62 @@
     </nav>
 
 <!-- Tabs -->
-<div class="flex items center justify-center mt-4">
-    <div class="flex gap-10 border-b border-gray-700 w-[700px] justify-center">
+<!-- Tabs -->
+<div class="flex items-center justify-center mt-4">
+  <div class="flex flex-wrap gap-6 sm:gap-8 border-b border-gray-700 w-full max-w-5xl justify-center">
     <a
-    routerLink="/dashboard"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: true }"
-    >Overview</a>
-    <div class="relative group ">
-    <button
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition rounded-lg"     
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }">
-    Almacén</button>
-    <!-- Submenú -->
-    <div
-    class="absolute top-full left-0 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-lg w-40 z-10">
-    <a
-    routerLink="/dashboard/almacen1"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }">
-    Almacén Central</a>
-    <a
-    routerLink="/dashboard/almacen2"
-    class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg" 
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }">
-    Almacén Operativo</a>
-    </div>
-    </div>
-    <a
-    routerLink="/dashboard/tareas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }"
-    >Tareas</a>
-    <a
-    routerLink="/dashboard/reportes"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }"
-    >Reportes</a>
+      routerLink="/dashboard"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      >Overview</a>
+    <div class="relative group">
+      <button
+        class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent group-hover:border-blue-400 transition rounded-lg"
+        routerLinkActive="text-blue-400 border-blue-400"
+        >Almacén</button>
+      <!-- Submenú -->
+      <div
+        class="absolute top-full left-1/2 -translate-x-1/2 mt-0 hidden group-hover:flex flex-col bg-gray-800 border border-gray-700 rounded-lg w-40 z-10">
         <a
-    routerLink="/dashboard/ventas"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }"
-    >Ventas</a>
+          routerLink="/dashboard/almacen1"
+          class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+          routerLinkActive="text-blue-400 border-blue-400"
+          >Almacén Central</a>
+        <a
+          routerLink="/dashboard/almacen2"
+          class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg"
+          routerLinkActive="text-blue-400 border-blue-400"
+          >Almacén Operativo</a>
+      </div>
+    </div>
     <a
-    routerLink="/dashboard/clientes"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }"
-    >Clientes</a>
+      routerLink="/dashboard/tareas"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      >Tareas</a>
     <a
-    routerLink="/dashboard/proveedores"
-    class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
-    routerLinkActive="text-blue-400 border-blue-400"
-    [routerLinkActiveOptions]="{ exact: false }"
-    >Proveedores</a>
-</div>
+      routerLink="/dashboard/reportes"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      >Reportes</a>
+    <a
+      routerLink="/dashboard/ventas"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      >Ventas</a>
+    <a
+      routerLink="/dashboard/clientes"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      [routerLinkActiveOptions]="{ exact: false }"
+      >Clientes</a>
+    <a
+      routerLink="/dashboard/proveedores"
+      class="py-2 text-sm text-gray-300 hover:text-blue-400 border-b-2 border-transparent hover:border-blue-400 transition rounded-lg"
+      routerLinkActive="text-blue-400 border-blue-400"
+      [routerLinkActiveOptions]="{ exact: false }"
+      >Proveedores</a>
+  </div>
 </div>
 <!-- Contenido Principal -->
 <section class="bg-gray-50 dark:bg-gray-900 py-14">

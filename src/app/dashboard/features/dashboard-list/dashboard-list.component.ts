@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../../auth/data-access/auth.service';
+import { VentasService } from '../../../services/ventas.services';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { AfterViewInit} from '@angular/core';
-import { InventarioService } from '../../../services/inventario.service';
 import Chart from 'chart.js/auto';
 
 @Component({
@@ -55,19 +55,20 @@ totalVentasAnio = 0;
     constructor(
     private router: Router,
     private authService: AuthService,
-    private inventarioService: InventarioService
+    private ventasService: VentasService,
   ) {}
 
 async ngOnInit() {
   const session = await this.authService.session();
   const user = session.data.session?.user;
-  this.ventas = (await this.inventarioService.getVentas())
+  this.ventas = (await this.ventasService.getTodasLasVentas())
     .sort((a, b) => new Date(b.fecha_ingreso).getTime() - new Date(a.fecha_ingreso).getTime());
   if (!user) {
     console.error('No se encontró el usuario en la sesión');
     window.location.href = '/auth/log-in';
     return;
   }
+  this.dibujarGraficaVentas();
 
     // Total del año actual
   const anioActual = new Date().getFullYear();
@@ -77,15 +78,7 @@ async ngOnInit() {
 
   this.totalVentasAnio = this.ventas
     .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual)
-      .reduce((sum, v) => sum + (v.precio_venta * v.cantidad), 0);
-
-  const totalAnterior = this.ventas
-    .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual - 1)
-    .reduce((sum, v) => sum + v.cantidad, 0);
-
-  this.porcentajeCrecimientoProductos = totalAnterior === 0
-    ? 100
-    : ((this.totalProductosVendidosAnio - totalAnterior) / totalAnterior) * 100;
+    .reduce((sum, v) => sum + (v.precio_venta * v.cantidad), 0);
 
 
     // Usa el método ensureUsuario
@@ -101,8 +94,8 @@ async ngOnInit() {
 
 try {
     // Obtén productos de ambos almacenes
-    const almacen1 = await this.inventarioService.getProductos();
-    const almacen2 = await this.inventarioService.getProductosAlmacen2();
+    const almacen1 = await this.ventasService.getTodasLasVentas();
+    const almacen2 = await this.ventasService.getTodasLasVentas();
 
     // Genera alertas para ambos almacenes
     const alertasAlmacen1 = this.getAlertasPorTiempo(almacen1);
@@ -254,7 +247,10 @@ async signOut() {
   }).filter(Boolean);
 }
 
-ngAfterViewInit() {
+  ngAfterViewInit() {
+  }
+
+dibujarGraficaVentas() {
   const anioActual = new Date().getFullYear();
   const ventasAnio = this.ventas
     .filter(v => new Date(v.fecha_ingreso).getFullYear() === anioActual);
@@ -266,23 +262,27 @@ ngAfterViewInit() {
 
   for (let i = diasAMostrar - 1; i >= 0; i--) {
     const fecha = new Date(hoy);
+    fecha.setHours(0, 0, 0, 0);
     fecha.setDate(hoy.getDate() - i);
-    const label = fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }); // "01 feb"
+
+    const label = fecha.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
     labels.push(label);
 
-    // Suma productos vendidos ese día
     const totalDia = ventasAnio
       .filter(v => {
         const vFecha = new Date(v.fecha_ingreso);
-        return vFecha.getDate() === fecha.getDate() &&
-              vFecha.getMonth() === fecha.getMonth() &&
-              vFecha.getFullYear() === fecha.getFullYear();
+        return (
+          vFecha.getFullYear() === fecha.getFullYear() &&
+          vFecha.getMonth() === fecha.getMonth() &&
+          vFecha.getDate() === fecha.getDate()
+        );
       })
       .reduce((sum, v) => sum + v.cantidad, 0);
 
     data.push(totalDia);
   }
 
+  const maxY = Math.max(...data, 5);
   new Chart('salesAreaChart', {
     type: 'line',
     data: {
@@ -312,9 +312,9 @@ ngAfterViewInit() {
         y: {
           beginAtZero: true,
           min: 0,
-          max: 20,
+          max: maxY,
           ticks: {
-            stepSize: 2,
+            stepSize: Math.ceil(maxY / 5),
             color: '#94a3b8'
           },
           grid: { color: '#334155' }

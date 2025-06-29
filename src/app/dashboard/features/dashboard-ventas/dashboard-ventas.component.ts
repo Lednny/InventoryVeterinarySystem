@@ -416,6 +416,7 @@ async obtenerAvatarUrl(event: any) {
         fecha_ingreso: this.ventasActualizar.fecha_ingreso,
         facturado: this.ventasActualizar.facturado,
         proveedores_id: this.ventasActualizar.proveedores_id || null,
+        cliente_id: this.ventasActualizar.cliente_id || null
       });
       await this.cargarVentas();
       this.cerrarModalActualizar();
@@ -442,20 +443,9 @@ buscar() {
     (item.marca && item.marca.toLowerCase().includes(term)) ||
     (item.categoria && item.categoria.toLowerCase().includes(term)) ||
     (item.lote && item.lote.toLowerCase().includes(term)) ||
-    (item.codigo && item.codigo.toLowerCase().includes(term))
-  );
-}
-
-buscarClientes() {
-  const term = this.searchTermClientes.trim().toLowerCase();
-  if (!term) {
-    this.resultadosBusquedaClientes = null; // Usa null para distinguir "sin búsqueda"
-    return;
-  }
-  this.resultadosBusquedaClientes = this.clientes.filter(cliente =>
-    (cliente.nombre && cliente.nombre.toLowerCase().includes(term)) ||
-    (cliente.telefono && cliente.telefono.toLowerCase().includes(term)) ||
-    (cliente.email && cliente.email.toLowerCase().includes(term))
+    (item.codigo && item.codigo.toLowerCase().includes(term)) ||
+    (item.cliente_id && this.clientes.find(c => c.id === item.cliente_id && c.nombre.toLowerCase().includes(term))) ||
+    (item.proveedores_id && this.proveedores.find(p => p.id === item.proveedores_id && p.nombre.toLowerCase().includes(term)))
   );
 }
 

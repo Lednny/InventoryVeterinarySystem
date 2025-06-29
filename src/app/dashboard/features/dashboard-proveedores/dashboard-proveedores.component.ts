@@ -287,8 +287,7 @@ buscarProveedores() {
   this.resultadosBusquedaProveedores = this.proveedores.filter(proveedor =>
     (proveedor.nombre && proveedor.nombre.toLowerCase().includes(term)) ||
     (proveedor.telefono && proveedor.telefono.toLowerCase().includes(term)) ||
-    (proveedor.email && proveedor
-      .email.toLowerCase().includes(term))
+    (proveedor.email && proveedor.email.toLowerCase().includes(term))
   );
 }
 

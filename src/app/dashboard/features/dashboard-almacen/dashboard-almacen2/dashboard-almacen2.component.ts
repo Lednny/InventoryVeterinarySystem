@@ -440,7 +440,8 @@ buscar() {
     (item.marca && item.marca.toLowerCase().includes(term)) ||
     (item.categoria && item.categoria.toLowerCase().includes(term)) ||
     (item.lote && item.lote.toLowerCase().includes(term)) ||
-    (item.codigo && item.codigo.toLowerCase().includes(term))
+    (item.codigo && item.codigo.toLowerCase().includes(term)) ||
+    (item.proveedores_id && this.proveedores.find(p => p.id === item.proveedores_id && p.nombre.toLowerCase().includes(term)))
   );
 }
 
