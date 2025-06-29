@@ -51,6 +51,7 @@ A **Progressive Web App** for comprehensive management of **inventory, sales, cl
 ----------------------------------------------------------------------------------------------------------------
 
 ```markdown
+![image alt](https://github.com/Lednny/InventoryVeterinarySystem/blob/de43e7ca0b2981d4058df1e0a327238012995280/InventoryApp.png)
 ```
 ----------------------------------------------------------------------------------------------------------------
 
