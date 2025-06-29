@@ -51,7 +51,6 @@ A **Progressive Web App** for comprehensive management of **inventory, sales, cl
 ----------------------------------------------------------------------------------------------------------------
 
 ```markdown
-![Image](https://github.com/user-attachments/assets/7cc0eeb7-71e6-4851-ba8b-94edad2cade8)
 ```
 ----------------------------------------------------------------------------------------------------------------
 
