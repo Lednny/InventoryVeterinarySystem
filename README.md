@@ -51,18 +51,7 @@ A **Progressive Web App** for comprehensive management of **inventory, sales, cl
 ----------------------------------------------------------------------------------------------------------------
 
 ```markdown
-![image](https://github.com/user-attachments/assets/2362539e-923d-424c-ba8a-cd48b66fe75a)
-![image](https://github.com/user-attachments/assets/468b51d9-c71d-4b91-9d4d-5fa13bde8445)
-![image](https://github.com/user-attachments/assets/1ca62de9-38c0-4ebb-9746-46dba08b2373)
-![image](https://github.com/user-attachments/assets/4127b9b5-e458-4571-b4e1-c4f1fbe78f4f)
-![image](https://github.com/user-attachments/assets/7efca797-2c1f-4dcf-b35d-720ba1df1d06)
-![image](https://github.com/user-attachments/assets/d5aa096b-ebdd-4d02-a81c-cb5477d24123)
-![image](https://github.com/user-attachments/assets/f5035784-9db0-4a81-b611-4a73b34db09a)
-![image](https://github.com/user-attachments/assets/ba643c18-66e4-4cd3-971b-9f6d66bde445)
-![image](https://github.com/user-attachments/assets/3fa2e7a4-4cea-4bef-857f-384cbc857e51)
-![image](https://github.com/user-attachments/assets/ad2e045f-877d-414f-98ed-e84599d2d1b0)
-![image](https://github.com/user-attachments/assets/644e66f2-205d-4c2f-a8d9-bca059ceff68)
-![image](https://github.com/user-attachments/assets/476ba85d-f1d2-41af-80de-e32979c0953e)
+![Image](https://github.com/user-attachments/assets/7cc0eeb7-71e6-4851-ba8b-94edad2cade8)
 ```
 ----------------------------------------------------------------------------------------------------------------
 
