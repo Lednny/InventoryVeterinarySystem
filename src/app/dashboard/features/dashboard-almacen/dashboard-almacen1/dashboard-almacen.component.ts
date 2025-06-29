@@ -439,6 +439,7 @@ async realizarVenta() {
     producto: this.almacen1Actualizar.producto,
     categoria: this.almacen1Actualizar.categoria,
     marca: this.almacen1Actualizar.marca,
+    codigo: this.almacen1Actualizar.codigo,
     cantidad: this.cantidadVenta,
     precio_venta: this.almacen1Actualizar.precio_venta,
     lote: this.almacen1Actualizar.lote,

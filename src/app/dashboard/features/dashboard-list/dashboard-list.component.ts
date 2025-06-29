@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService } from '../../../auth/data-access/auth.service';
 import { VentasService } from '../../../services/ventas.services';
+import { InventarioService } from '../../../services/inventario.service';
 import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
@@ -48,14 +49,14 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
 
   // Variables para el gráfico de ventas
   ventas: any[] = [];
-totalProductosVendidosAnio = 0;
-porcentajeCrecimientoProductos = 0;
-totalVentasAnio = 0;
+  totalProductosVendidosAnio = 0;
+  porcentajeCrecimientoProductos = 0;
+  totalVentasAnio = 0;
 
     constructor(
-    private router: Router,
     private authService: AuthService,
     private ventasService: VentasService,
+    private inventarioService: InventarioService
   ) {}
 
 async ngOnInit() {
@@ -92,10 +93,11 @@ async ngOnInit() {
       this.avatarUrl = data.avatar_url || '';
     }
 
+
 try {
     // Obtén productos de ambos almacenes
-    const almacen1 = await this.ventasService.getTodasLasVentas();
-    const almacen2 = await this.ventasService.getTodasLasVentas();
+    const almacen1 = await this.inventarioService.getProductos();
+    const almacen2 = await this.inventarioService.getProductosAlmacen2();
 
     // Genera alertas para ambos almacenes
     const alertasAlmacen1 = this.getAlertasPorTiempo(almacen1);

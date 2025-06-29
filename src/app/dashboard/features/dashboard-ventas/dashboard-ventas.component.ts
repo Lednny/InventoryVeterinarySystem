@@ -271,7 +271,7 @@ onDocumentClick(event: MouseEvent) {
 }
 
   // ...
-  async actualizarVentas(id: number, ventas: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date, cliente_id?: number}) {
+  async actualizarVentas(id: number, ventas: {created_at?: Date, producto: string, categoria: string, marca: string, codigo: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date, cliente_id?: number}) {
     try {
       await this.ventasService.updateVentas(id, ventas);
       await this.cargarVentas();
