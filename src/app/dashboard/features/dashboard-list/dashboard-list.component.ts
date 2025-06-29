@@ -101,7 +101,7 @@ try {
 
     // Genera alertas para ambos almacenes
     const alertasAlmacen1 = this.getAlertasPorTiempo(almacen1);
-    const alertasAlmacen2 = this.getAlertasPorTiempo(almacen2);
+    const alertasAlmacen2 = this.getAlertas1PorTiempo(almacen2);
 
     // Une ambos arrays de notificaciones
     this.notificaciones = [...alertasAlmacen1, ...alertasAlmacen2];
