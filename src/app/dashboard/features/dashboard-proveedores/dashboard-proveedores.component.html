@@ -197,8 +197,8 @@
     </tr>
     </thead>
     <tbody>
-<tr *ngFor="let proveedor of (resultadosBusquedaProveedores !== null ? resultadosBusquedaProveedores : proveedoresPaginados)">
-  <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">#{{ proveedor.id }}</td>
+<tr *ngFor="let proveedor of (resultadosBusquedaProveedores !== null ? resultadosBusquedaProveedores : proveedoresPaginados); let i = index">
+  <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">#{{i + 1 }}</td>
   <td class="px-4 py-4 text-center">{{ proveedor.nombre }}</td>
   <td class="px-4 py-4 text-center">{{ proveedor.telefono }}</td>
   <td class="px-4 py-4 text-center">{{ proveedor.email }}</td>
