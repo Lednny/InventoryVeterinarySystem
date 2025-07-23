@@ -16,6 +16,9 @@
             "outputPath": "dist/inventario-veterinario",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "ws"
+            ],
             "polyfills": [
               "zone.js"
             ],
