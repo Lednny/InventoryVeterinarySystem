@@ -45,3 +45,6 @@ Thumbs.db
 src/environments/environment.secret.ts
 src/environments/environment.ts
 src/environments/environment.prod.ts
+
+# Geeración de archvios de versión
+src/version.ts
