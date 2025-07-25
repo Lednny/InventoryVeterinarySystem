@@ -294,7 +294,7 @@ cerrarModalActualizar() {
 
   async signOut() {    // Cierra el menú de acciones si está abierto
     await this.authService.signOut();
-    this.router.navigate(['auth/log-in']);
+    window.location.href = '/auth/log-in'; // Fuerza recarga y navegación limpia
   }
 
 async obtenerAvatarUrl(event: any) {

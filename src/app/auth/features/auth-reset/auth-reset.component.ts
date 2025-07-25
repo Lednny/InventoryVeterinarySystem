@@ -78,7 +78,7 @@ async actualizarUsuario() {
       password: this.password
     });
     await this.supabaseClient.auth.signOut();
-    this.router.navigate(['/auth/log-in']);
+    window.location.href = '/auth/log-in'; // Fuerza recarga y navegación limpia
   }
 }
 }

@@ -26,8 +26,12 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
             return this._supabaseClient.auth.signInWithPassword(credentials)
     }
 
-    signOut(){
-        return this._supabaseClient.auth.signOut()
+    async signOut(){
+        const result = await this._supabaseClient.auth.signOut();
+        // Limpiar cualquier estado local si es necesario
+        localStorage.removeItem('supabase.auth.token');
+        sessionStorage.clear();
+        return result;
     }
 
     resetPassword(email: string){

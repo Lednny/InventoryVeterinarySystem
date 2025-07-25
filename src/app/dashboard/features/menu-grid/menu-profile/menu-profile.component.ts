@@ -341,11 +341,9 @@ async confirmarEliminarCuenta() {
     alert('Error al eliminar usuario: ' + error.message);
   } else {
     alert('Usuario eliminado correctamente');
-            // 3. Cierra sesión
-  await this.supabaseClient.auth.signOut();
-    this.router.navigate(['auth/log-in']);
-        // 3. Cierra sesión
-  await this.supabaseClient.auth.signOut();
+    // 3. Cierra sesión
+    await this.supabaseClient.auth.signOut();
+    window.location.href = '/auth/log-in'; // Fuerza recarga y navegación limpia
   }
 }
 }
