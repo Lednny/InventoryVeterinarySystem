@@ -4,10 +4,17 @@ import { environment } from '../../environments/environment';
 
 @Injectable({providedIn: "root"})
 export class SupabaseService {
-    supabaseClient: SupabaseClient;
+    private static instance: SupabaseClient;
+    
+    get supabaseClient(): SupabaseClient {
+        if (!SupabaseService.instance) {
+            SupabaseService.instance = createClient(environment.SUPABASE_URL, environment.SUPABASE_ANON_KEY);
+        }
+        return SupabaseService.instance;
+    }
 
     constructor() {
-        this.supabaseClient = createClient(environment.SUPABASE_URL, environment.SUPABASE_ANON_KEY);
+        // El cliente se inicializa solo cuando se necesita
     }
         async saveUsername(userId: string, username: string) {
         return this.supabaseClient

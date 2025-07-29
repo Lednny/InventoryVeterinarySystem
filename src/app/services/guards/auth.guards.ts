@@ -9,11 +9,15 @@ const authService = () => inject(AuthService);
 export const privateGuard: CanActivateFn = async () => {
     const router = routerInjection();
     try {
-        const { data } = await authService().session();
+        const { data, error } = await authService().session();
         console.log('privateGuard session:', data);
-        if (!data.session) {
+        console.log('privateGuard error:', error);
+        
+        if (error || !data.session) {
+            console.log('No session found, redirecting to login');
             return router.createUrlTree(['/auth/log-in']);
         }
+        
         return true;
     } catch (e) {
         console.error('privateGuard error:', e);
@@ -23,10 +27,16 @@ export const privateGuard: CanActivateFn = async () => {
 
 export const publicGuard: CanActivateFn = async () =>  {
     const router = routerInjection();
-    const { data } = await authService().session();
+    try {
+        const { data } = await authService().session();
 
-    if (data.session) {
-        return router.createUrlTree(['/dashboard']);
+        if (data.session) {
+            console.log('User already logged in, redirecting to dashboard');
+            return router.createUrlTree(['/dashboard']);
+        }
+        return true;
+    } catch (e) {
+        console.error('publicGuard error:', e);
+        return true;
     }
-    return true 
 }; 

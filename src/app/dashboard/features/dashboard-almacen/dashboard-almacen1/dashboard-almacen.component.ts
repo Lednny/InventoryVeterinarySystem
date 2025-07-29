@@ -289,9 +289,17 @@ async confirmarEliminarTodas() {
   }
 }
 
-  async signOut() {    // Cierra el menú de acciones si está abierto
-    await this.authService.signOut();
-    window.location.href = '/auth/log-in'; // Fuerza recarga y navegación limpia
+  async signOut() {
+    try {
+      console.log('Iniciando proceso de logout...');
+      await this.authService.signOut();
+      console.log('Logout completado, redirigiendo...');
+      this.router.navigate(['/auth/log-in']);
+    } catch (error) {
+      console.error('Error durante logout:', error);
+      // Forzar navegación incluso si hay error
+      this.router.navigate(['/auth/log-in']);
+    }
   }
 
 async obtenerAvatarUrl(event: any) {

@@ -56,7 +56,8 @@ export default class DashboardListComponent implements OnInit , AfterViewInit {
     constructor(
     private authService: AuthService,
     private ventasService: VentasService,
-    private inventarioService: InventarioService
+    private inventarioService: InventarioService,
+    private router: Router
   ) {}
 
 async ngOnInit() {
@@ -183,8 +184,16 @@ onDocumentClick(event: MouseEvent) {
 }
 
 async signOut() {
-  await this.authService.signOut();
-  window.location.href = '/auth/log-in'; // Fuerza recarga y navegación limpia
+  try {
+    console.log('Iniciando proceso de logout...');
+    await this.authService.signOut();
+    console.log('Logout completado, redirigiendo...');
+    this.router.navigate(['/auth/log-in']);
+  } catch (error) {
+    console.error('Error durante logout:', error);
+    // Forzar navegación incluso si hay error
+    this.router.navigate(['/auth/log-in']);
+  }
 }
 
   toggleNotificaciones() {
