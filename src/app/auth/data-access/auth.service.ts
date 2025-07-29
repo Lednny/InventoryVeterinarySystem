@@ -1,6 +1,7 @@
 import { inject, Injectable } from "@angular/core";
 import { SupabaseService } from "../../services/supabase.service";
 import { SignInWithPasswordCredentials, SignUpWithPasswordCredentials} from "@supabase/supabase-js";
+import { environment } from "../../../environments/environment";
 
 @Injectable({providedIn: "root"})
 export class AuthService {
@@ -36,16 +37,16 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
 
     resetPassword(email: string){
         return this._supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + '/auth/reset'
+            redirectTo: environment.BASE_URL + '/auth/reset'
         })
     }
 
-        signInWithGoogle() {
+    signInWithGoogle() {
         return this._supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-            redirectTo: window.location.origin + '/dashboard' // o la ruta que prefieras después de login
-        }
+            provider: 'google',
+            options: {
+                redirectTo: environment.BASE_URL + '/dashboard'
+            }
         });
     }
 }
