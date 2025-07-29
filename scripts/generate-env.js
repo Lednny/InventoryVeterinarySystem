@@ -16,7 +16,7 @@ export const environment = {
   production: true,
   SUPABASE_URL: '${process.env.SUPABASE_URL}',
   SUPABASE_ANON_KEY: '${process.env.SUPABASE_ANON_KEY}',
-  BASE_URL: 'https://inventory-veterinary-system-qnup.vercel.app'
+  BASE_URL: 'https://vetinventory.net'
 };
 `;
 
