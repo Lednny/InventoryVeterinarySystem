@@ -36,8 +36,10 @@ private _supabaseClient = inject(SupabaseService).supabaseClient;
     }
 
     resetPassword(email: string){
+        const resetUrl = environment.BASE_URL + '/auth/reset';
+        console.log('Reset URL being used:', resetUrl);
         return this._supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: environment.BASE_URL + '/auth/reset'
+            redirectTo: resetUrl
         })
     }
 
