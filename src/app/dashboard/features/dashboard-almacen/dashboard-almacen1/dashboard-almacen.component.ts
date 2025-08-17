@@ -28,12 +28,16 @@ export class DashboardAlmacenComponent implements OnInit {
   
   // Variables para las operaciones CRUD de tareas
   almacen1: any[] = [];
+  totalProductos: number = 0; 
   userId: string = '';
   showDropdown = false;
   private supabaseClient = inject(SupabaseService).supabaseClient;
+  private readonly MAX_ITEMS_PER_LOAD = 1000;
   mostrarModalEliminar = false;
   almacen1Eliminar: number | null = null;
   almacen1Actualizar: any = null;
+  isLoading: boolean = false;
+  
 
   //Variables para función de botón de Acciones
   mostrarModalActualizar = false;
@@ -55,7 +59,8 @@ export class DashboardAlmacenComponent implements OnInit {
 
   //Variables para la paginación 
   currentPage: number = 1;
-  itemsPerPage: number = 15;
+  itemsPerPage: number = 50;
+  Math = Math;
 
   // Variable para la ventas
   cantidadVenta: number = 0;
@@ -63,7 +68,7 @@ export class DashboardAlmacenComponent implements OnInit {
   //Motoro de búsqueda
   searchTerm: string = '';
   ventasPaginadas: any;
-  resultadosBusqueda: null | any[] = null;
+  searchTimeout: any;
 
   // Variables para la asignación de clientes a las ventas 
   clientes: any[] = [];
@@ -134,37 +139,49 @@ export class DashboardAlmacenComponent implements OnInit {
     }
   }
 
-async cargarAlmacen1() {
+async cargarAlmacen1(page: number = 1, searchTerm: string = '') {
   try {
-    this.almacen1 = await this.almacen1Service.getAlmacen1Global();
+    this.isLoading = true;
+    const result = await this.almacen1Service.getAlmacen1Paginado(page, this.itemsPerPage, searchTerm);
+    this.almacen1 = result.data;
+    this.totalProductos = result.count;
+    this.currentPage = page;
   } catch (error) {
     console.error('Error al cargar productos:', error);
+  } finally {
+    this.isLoading = false;
   }
 }
 
-  async agregarAlmacen1() {
-    try {
-      await this.almacen1Service.addAlmacen1({
-        producto: 'Nuevo Producto',
-        categoria: '',
-        codigo: '',
-        marca: '',
-        cantidad: 0,
-        precio_venta: 0,
-        lote: '',
-        caducidad: new Date(),
-        user_id: this.userId,
-        vendido: false,
-        fecha_ingreso: new Date()
-      });
-      await this.cargarAlmacen1();
-    } catch (error) {
-      console.error('Error al agregar producto nuevo:', error);
+async agregarAlmacen1() {
+  try {
+    const nuevoProducto = await this.almacen1Service.addAlmacen1({
+      producto: 'Nuevo Producto',
+      categoria: '',
+      costo: '',
+      marca: '',
+      cantidad: 0,
+      precio_venta: 0,
+      lote: '',
+      caducidad: new Date(),
+      user_id: this.userId,
+      vendido: false,
+      fecha_ingreso: new Date(),
+      almacen: 'Central',
+    });
+
+    // Recargar la página actual
+    await this.cargarAlmacen1(this.currentPage, this.searchTerm);
+    
+  } catch (error) {
+    console.error('Error al agregar producto nuevo:', error);
+    if (error instanceof Error) {
+      alert('Error al crear el producto: ' + error.message);
+    } else {
+      alert('Error al crear el producto: ' + JSON.stringify(error));
     }
   }
-  async toggleDropdownActions() {
-    this.mostrarDropdownActions = !this.mostrarDropdownActions;
-  }
+}
 
 @HostListener('document:click', ['$event'])
 onDocumentClick(event: MouseEvent) {
@@ -234,7 +251,7 @@ onDocumentClick(event: MouseEvent) {
 async eliminarAlmacen1(id: number) {
   try {
     await this.almacen1Service.deleteAlmacen1(id);
-    await this.cargarAlmacen1();
+    await this.cargarAlmacen1(this.currentPage, this.searchTerm);
   } catch (error: any) {
     console.error('Error al eliminar producto:', error?.message || error);
     alert('Error al eliminar: ' + (error?.message || JSON.stringify(error)));
@@ -242,10 +259,10 @@ async eliminarAlmacen1(id: number) {
 }
 
   // ...
-  async actualizarAlmacen1(id: number, almacen1: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date}) {
+  async actualizarAlmacen1(id: number, almacen1: {created_at?: Date, producto: string, categoria: string, marca: string, cantidad: number, precio_venta: number, lote: string, caducidad: Date, user_id: string, vendido?: boolean, fecha_ingreso?: Date, costo?: string | number}) {
     try {
       await this.almacen1Service.updateAlmacen1(id, almacen1);
-      await this.cargarAlmacen1();
+      await this.cargarAlmacen1(this.currentPage, this.searchTerm);
     } catch (error) {
       console.error('Error al actualizar producto:', error);
     }
@@ -282,7 +299,7 @@ abrirModalEliminarTodas() {
 async confirmarEliminarTodas() {
   try {
     await this.almacen1Service.deleteAllAlmacen1(this.userId);
-    await this.cargarAlmacen1();
+    await this.cargarAlmacen1(1, this.searchTerm);
     this.mostrarModalEliminarTodas = false;
   } catch (error) {
     console.error('Error al eliminar todos los productos:', error);
@@ -346,18 +363,29 @@ async obtenerAvatarUrl(event: any) {
   // Funciones para la paginación
 
   get totalPages(): number {
-    return Math.ceil(this.almacen1.length / this.itemsPerPage);
+    return Math.ceil(this.totalProductos / this.itemsPerPage);
   }
 
   get almacen1Paginadas(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.almacen1.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.almacen1; // Los datos ya vienen paginados del servidor
   }
 
-  cambiarPagina(pagina: number) {
-    if (pagina < 1 || pagina > this.totalPages) return;
-    this.currentPage = pagina;
+  async cambiarPagina(pagina: number) {
+    if (pagina < 1 || pagina > this.totalPages || this.isLoading) return;
+    await this.cargarAlmacen1(pagina, this.searchTerm);
   }
+
+  getPaginasVisibles(): number[] {
+  const paginas: number[] = [];
+  const inicio = Math.max(1, this.currentPage - 2);
+  const fin = Math.min(this.totalPages, this.currentPage + 2);  
+  
+  for (let i = inicio; i <= fin; i++) {
+    paginas.push(i);
+  }
+  
+  return paginas;
+}
 
   //Se actualiza el avatar del usuario
   private async cargarDatosUsuario() {
@@ -391,7 +419,7 @@ async obtenerAvatarUrl(event: any) {
     try {
       await this.almacen1Service.updateAlmacen1(this.almacen1Actualizar.id, {
         producto: this.almacen1Actualizar.producto,
-        codigo: this.almacen1Actualizar.codigo,
+        costo: this.almacen1Actualizar.costo,
         categoria: this.almacen1Actualizar.categoria,
         marca: this.almacen1Actualizar.marca,
         cantidad: this.almacen1Actualizar.cantidad,
@@ -402,7 +430,7 @@ async obtenerAvatarUrl(event: any) {
         fecha_ingreso: this.almacen1Actualizar.fecha_ingreso,
         proveedores_id: this.almacen1Actualizar.proveedores_id || null
       });
-      await this.cargarAlmacen1();
+      await this.cargarAlmacen1(this.currentPage, this.searchTerm);
       this.cerrarModalActualizar();
     } catch (error) {
       console.error('Error al actualizar almacen:', error);
@@ -412,20 +440,16 @@ async obtenerAvatarUrl(event: any) {
 
 //Barra de búsqueda
 
-buscar() {
-  const term = this.searchTerm.trim().toLowerCase();
-  if (!term) {
-    this.resultadosBusqueda = null; // Usa null para distinguir "sin búsqueda"
-    return;
-  }
-  this.resultadosBusqueda = this.almacen1.filter(item =>
-    (item.producto && item.producto.toLowerCase().includes(term)) ||
-    (item.marca && item.marca.toLowerCase().includes(term)) ||
-    (item.categoria && item.categoria.toLowerCase().includes(term)) ||
-    (item.lote && item.lote.toLowerCase().includes(term)) ||
-    (item.codigo && item.codigo.toLowerCase().includes(term)) ||
-    (item.proveedores_id && this.proveedores.find(p => p.id === item.proveedores_id && p.nombre.toLowerCase().includes(term)))
-  );
+async buscar() {
+  this.currentPage = 1; // Resetear a la primera página
+  await this.cargarAlmacen1(1, this.searchTerm);
+}
+
+onSearchInput() {
+  clearTimeout(this.searchTimeout);
+  this.searchTimeout = setTimeout(() => {
+    this.buscar();
+  }, 500); // Esperar 500ms después de que el usuario deje de escribir
 }
 async realizarVenta() {
   if (!this.cantidadVenta || this.cantidadVenta < 1 || this.cantidadVenta > this.almacen1Actualizar.cantidad || !this.clienteSeleccionadoId) 
@@ -447,7 +471,6 @@ async realizarVenta() {
     producto: this.almacen1Actualizar.producto,
     categoria: this.almacen1Actualizar.categoria,
     marca: this.almacen1Actualizar.marca,
-    codigo: this.almacen1Actualizar.codigo,
     cantidad: this.cantidadVenta,
     precio_venta: this.almacen1Actualizar.precio_venta,
     lote: this.almacen1Actualizar.lote,
@@ -461,7 +484,7 @@ async realizarVenta() {
   });
 
   // 4. Refrescar datos y limpiar campo
-  await this.cargarAlmacen1();
+  await this.cargarAlmacen1(this.currentPage, this.searchTerm);
   this.cantidadVenta = 0;
   this.clienteSeleccionadoId = null; 
   alert('Venta registrada correctamente');

@@ -4,7 +4,7 @@ import { SupabaseService } from "./supabase.service";
 //Define la interfaz Almacen2
 interface Almacen2 {
     id?: number;
-    codigo?: string;
+    costo?: string | number;
     created_at?: string;
     producto: string;
     categoria: string;
@@ -27,7 +27,7 @@ export class Almacen2Service {
     // CREAR
     async addAlmacen2(almacen2: {
         producto: string;
-        codigo?: string;
+        costo?: string | number;
         categoria: string;
         marca: string;
         cantidad: number;
@@ -50,12 +50,40 @@ export class Almacen2Service {
         return data;
     }
 
+
+        // LEER PAGINADO
+    async getAlmacen2Paginado(
+        page: number = 1, 
+        pageSize: number = 50, 
+        searchTerm: string = ''
+    ): Promise<{data: Almacen2[], count: number}> {
+        let query = this.supabaseClient
+            .from('almacen2')
+            .select(`*, proveedor:proveedores_id (nombre)`, { count: 'exact' });
+
+        // Aplicar filtro de búsqueda si existe
+        if (searchTerm) {
+            query = query.or(`producto.ilike.%${searchTerm}%,marca.ilike.%${searchTerm}%,categoria.ilike.%${searchTerm}%,lote.ilike.%${searchTerm}%`);
+        }
+
+        // Calcular rango para paginación
+        const from = (page - 1) * pageSize;
+        const to = from + pageSize - 1;
+
+        const { data, error, count } = await query
+            .order('created_at', { ascending: false })
+            .range(from, to);
+
+        if (error) throw error;
+        return { data: data || [], count: count || 0 };
+    }
+
         // LEER
     async getAlmacen2Global(): Promise<any[]> {
         const { data, error } = await this.supabaseClient
             .from('almacen2')
             .select(`*,proveedor:proveedores_id (nombre)`)
-            .order('fecha_ingreso', { ascending: false });
+            .order('created_at', { ascending: false });
         if (error) throw error;
         return data || [];
     }
@@ -63,7 +91,7 @@ export class Almacen2Service {
     // ACTUALIZAR
     async updateAlmacen2(id: number, almacen2: {
         producto?: string;
-        codigo?: string;
+        costo?: string | number;
         categoria?: string;
         marca?: string;
         cantidad?: number;
