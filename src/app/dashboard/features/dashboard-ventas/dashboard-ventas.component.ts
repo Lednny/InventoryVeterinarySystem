@@ -8,6 +8,7 @@ import { SupabaseService } from '../../../services/supabase.service';
 import { FormsModule } from '@angular/forms';
 import { ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { PdfService, NotaVentaCompleta, VentaParaNota } from '../../../services/pdf.services';
 
 @Component({
   selector: 'app-dashboard-ventas',
@@ -81,11 +82,29 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   // Variables para asiganar proveedores a los productos
   proveedores: any[] = [];
 
+  // Variables para generar los PDF
+  totalVentas: number = 0;
+  isLoading: boolean = false;
+  searchTimeout: any;
+
+  // Variables para generar notas PDF
+  mostrarModalNota = false;
+  ventasSeleccionadas: Set<number> = new Set();
+  todasSeleccionadas = false;
+  observacionesNota = '';
+  clienteNota = '';
+  generandoPDF = false;
+  configNota = {
+    cliente: '',
+    observaciones: ''
+  };
+
   constructor(
     private ventasService: VentasService,
     private proveedoresService: ProveedoresService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private pdfService: PdfService
   ) {}
 
   
@@ -157,13 +176,26 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     }
   }
 
-async cargarVentas() {
-  try {
-    this.ventas = await this.ventasService.getTodasLasVentas();
-  } catch (error) {
-    console.error('Error al cargar ventas:', error);
+  async cargarVentas(page: number = 1, searchTerm: string = '') {
+    try {
+      this.isLoading = true;
+      const result = await this.ventasService.getVentasPaginadas(page, this.itemsPerPage, searchTerm);
+      this.ventas = result.data;
+      this.totalVentas = result.count;
+      this.currentPage = page;
+      
+      // Debug temporal para verificar proveedores
+      if (this.ventas.length > 0) {
+        console.log('Primera venta con proveedores:', this.ventas[0]);
+        console.log('¿Tiene proveedores?:', this.ventas[0].proveedores);
+      }
+      
+    } catch (error) {
+      console.error('Error al cargar ventas:', error);
+    } finally {
+      this.isLoading = false;
+    }
   }
-}
 
 async agregarVentas() {
   try {
@@ -340,19 +372,194 @@ async obtenerAvatarUrl(event: any) {
 
   // Funciones para la paginación
 
-  get totalPages(): number {
-    return Math.ceil(this.ventas.length / this.itemsPerPage);
+get totalPages(): number {
+  return Math.ceil(this.totalVentas / this.itemsPerPage); // Usar totalVentas en lugar de ventas.length
+}
+
+get ventasPaginadas(): any[] {
+  // Como ya viene paginado del servidor, solo devolvemos las ventas actuales
+  return this.ventas;
+}
+
+async cambiarPagina(pagina: number) {
+  if (pagina < 1 || pagina > this.totalPages || this.isLoading) return;
+  await this.cargarVentas(pagina, this.searchTerm);
+}
+
+onSearchInput() {
+  clearTimeout(this.searchTimeout);
+  this.searchTimeout = setTimeout(() => {
+    this.buscar();
+  }, 500);
+}
+
+getNumeroVenta(index: number): number {
+  return (this.currentPage - 1) * this.itemsPerPage + index + 1;
+}
+
+getPaginasVisibles(): number[] {
+  const paginas: number[] = [];
+  const inicio = Math.max(1, this.currentPage - 2);
+  const fin = Math.min(this.totalPages, this.currentPage + 2);
+  
+  for (let i = inicio; i <= fin; i++) {
+    paginas.push(i);
+  }
+  
+  return paginas;
+}
+
+// Funciones para selección de ventas
+toggleVenta(venta: any) {
+  console.log('Toggle venta:', venta);
+  const ventaId = venta.id;
+  if (this.ventasSeleccionadas.has(ventaId)) {
+    this.ventasSeleccionadas.delete(ventaId);
+  } else {
+    this.ventasSeleccionadas.add(ventaId);
+  }
+  this.actualizarEstadoSeleccionTodas();
+  console.log('Ventas seleccionadas:', Array.from(this.ventasSeleccionadas));
+}
+
+isVentaSeleccionada(ventaId: number): boolean {
+  return this.ventasSeleccionadas.has(ventaId);
+}
+
+toggleTodasLasVentas() {
+  if (this.todasSeleccionadas) {
+    this.ventasSeleccionadas.clear();
+  } else {
+    this.ventas.forEach(venta => {
+      this.ventasSeleccionadas.add(venta.id);
+    });
+  }
+  this.todasSeleccionadas = !this.todasSeleccionadas;
+}
+
+private actualizarEstadoSeleccionTodas() {
+  this.todasSeleccionadas = this.ventas.length > 0 && 
+    this.ventas.every(venta => this.ventasSeleccionadas.has(venta.id));
+}
+
+// Funciones para generar nota PDF
+abrirModalNota() {
+  if (this.ventasSeleccionadas.size === 0) {
+    alert('Selecciona al menos una venta para generar la nota');
+    return;
+  }
+  this.mostrarModalNota = true;
+}
+
+  cerrarModalNota() {
+    this.mostrarModalNota = false;
+    this.observacionesNota = '';
+    this.clienteNota = '';
+    this.configNota = {
+      cliente: '',
+      observaciones: ''
+    };
+    this.generandoPDF = false;
+  }async generarNotaPDF() {
+  if (this.ventasSeleccionadas.size === 0) {
+    alert('Selecciona al menos una venta');
+    return;
   }
 
-  get ventasPaginadas(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.ventas.slice(startIndex, startIndex + this.itemsPerPage);
-  }
+  this.generandoPDF = true;
+  
+  try {
+    // Obtener las ventas seleccionadas
+    const ventasParaNota = this.ventas.filter(venta => 
+      this.ventasSeleccionadas.has(venta.id)
+    );
 
-  cambiarPagina(pagina: number) {
-    if (pagina < 1 || pagina > this.totalPages) return;
-    this.currentPage = pagina;
+    // Convertir a formato para PDF
+    const ventasFormateadas: VentaParaNota[] = ventasParaNota.map(venta => {
+      // Buscar el nombre del cliente - probando diferentes campos
+      let nombreCliente = 'Sin Cliente';
+      
+      // Verificar si viene el cliente en la relación de Supabase
+      if (venta.clientes && venta.clientes.nombre) {
+        nombreCliente = venta.clientes.nombre;
+      } else if (venta.cliente_id && this.clientes) {
+        const cliente = this.clientes.find(c => c.id === venta.cliente_id);
+        nombreCliente = cliente ? cliente.nombre : 'Cliente no especificado';
+      }
+
+      const subtotal = (venta.cantidad || 1) * (venta.precio_venta || 0);
+
+      return {
+        id: venta.id,
+        producto: venta.producto || 'Producto no especificado',
+        marca: venta.marca || 'Sin marca',
+        categoria: venta.categoria || 'Sin categoría',
+        cantidad_vendida: venta.cantidad || 1,
+        precio_venta: venta.precio_venta || 0,
+        subtotal: subtotal,
+        fecha_venta: new Date(venta.created_at || venta.fecha_ingreso || Date.now()),
+        cliente: nombreCliente,
+        lote: venta.lote || 'Sin lote'
+      };
+    });
+
+    console.log('Ventas formateadas:', ventasFormateadas);
+
+    // Calcular totales (sin IVA)
+    const subtotal = ventasFormateadas.reduce((sum, venta) => sum + venta.subtotal, 0);
+    const iva = 0; // IVA en 0%
+    const total = subtotal; // Total igual al subtotal
+
+    // Determinar cliente principal
+    const clientesUnicos = [...new Set(ventasFormateadas.map(v => v.cliente))];
+    const clientePrincipal = this.configNota.cliente || 
+      (clientesUnicos.length === 1 ? clientesUnicos[0] : 'Varios clientes');
+
+    const notaVenta: NotaVentaCompleta = {
+      numeroNota: this.generarNumeroNota(),
+      fecha: new Date(),
+      cliente: clientePrincipal,
+      ventas: ventasFormateadas,
+      subtotal: subtotal,
+      iva: iva,
+      total: total,
+      observaciones: this.configNota.observaciones || undefined
+    };
+
+    await this.pdfService.generarNotaVentasSeleccionadas(notaVenta);
+    this.cerrarModalNota();
+    alert('PDF generado correctamente');
+    
+  } catch (error) {
+    console.error('Error al generar nota PDF:', error);
+    alert('Error al generar la nota PDF: ' + (error instanceof Error ? error.message : JSON.stringify(error)));
+  } finally {
+    this.generandoPDF = false;
   }
+}
+
+private generarNumeroNota(): string {
+  const fecha = new Date();
+  const timestamp = fecha.getTime();
+  return `NV-${timestamp.toString().slice(-8)}`;
+}
+
+limpiarSeleccion() {
+  this.ventasSeleccionadas.clear();
+  this.todasSeleccionadas = false;
+}
+
+get ventasSeleccionadasArray(): any[] {
+  return this.ventas.filter(venta => this.ventasSeleccionadas.has(venta.id));
+}
+
+get totalSeleccionado(): number {
+  return this.ventasSeleccionadasArray.reduce((sum, venta) => {
+    const cantidad = venta.cantidad || 1;
+    const precio = venta.precio_venta || 0;
+    return sum + (cantidad * precio);
+  }, 0);
+}
 
   //Funciones para la paginación de clientes
   get totalPagesClientes(): number {

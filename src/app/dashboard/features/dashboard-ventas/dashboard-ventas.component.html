@@ -69,7 +69,6 @@
     </nav>
 
 <!-- Tabs -->
-<!-- Tabs -->
 <div class="flex items-center justify-center mt-4">
   <div class="flex flex-wrap gap-6 sm:gap-8 border-b border-gray-700 w-full max-w-5xl justify-center">
     <a
@@ -178,6 +177,9 @@
                 <thead class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600">
                     <tr>
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
+                            Seleccionar
+                        </th>
+                        <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500">
                             ID
                         </th>
                         <th class="px-4 py-4 text-center font-semibold text-gray-900 dark:text-gray-100 border-b-2 border-gray-300 dark:border-gray-500 min-w-[150px]">
@@ -222,12 +224,20 @@
                      <tr *ngFor="let ventas of (resultadosBusqueda !== null ? resultadosBusqueda : ventasPaginadas); let i = index"
                         class="hover:bg-gray-600 transition-all duration-300 hover:shadow-md">
                         
+                        <td class="px-4 py-4 text-center">
+                            <input
+                                type="checkbox"
+                                [checked]="ventasSeleccionadas.has(ventas.id)"
+                                (change)="toggleVenta(ventas)"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        </td>
+                        
                         <td class="px-4 py-4 text-center font-bold text-blue-600 dark:text-blue-400">
                             #{{ getNumeroProducto(i) }}
                         </td>
                         
                         <td class="px-4 py-4 text-center">
-                            <div class="font-medium text-gray-900 dark:text-white truncate max-w-[150px]" 
+                            <div class="font-medium text-gray-900 dark:text-white break-words max-w-[150px]" 
                                 [title]="ventas.producto">
                                 {{ ventas.producto }}
                             </div>
@@ -239,9 +249,9 @@
                             </div>
                         </td>
                         <td class="px-4 py-4 text-center">
-                            <div class="text-gray-700 dark:text-gray-300 font-medium truncate max-w-[100px]" 
-                                [title]="ventas.proveedor">
-                        {{ ventas.proveedor?.nombre || 'Sin proveedor' }}
+                            <div class="text-gray-700 dark:text-gray-300 font-medium break-words x-w-[100px]" 
+                                [title]="ventas.proveedores?.nombre">
+                        {{ ventas.proveedores?.nombre || 'Sin proveedor' }}
                             </div>
                             </td>
                         <td class="px-4 py-4 text-center">
@@ -303,12 +313,57 @@
                     </tr>
                     <!-- Si hay búsqueda y no hay resultados, muestra mensaje -->
                     <tr *ngIf="resultadosBusqueda !== null && resultadosBusqueda.length === 0">
-                    <td colspan="12" class="text-center py-6 text-gray-500 dark:text-gray-400">
+                    <td colspan="13" class="text-center py-6 text-gray-500 dark:text-gray-400">
                     No se encontraron resultados para "{{ searchTerm }}"
                     </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Controles para generar notas PDF -->
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600" *ngIf="ventas.length > 0">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <label class="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="todasSeleccionadas"
+                  (change)="toggleTodasLasVentas()"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                <span class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Seleccionar todas ({{ ventas.length }})
+                </span>
+              </label>
+              
+              <div class="text-sm text-gray-600 dark:text-gray-400" *ngIf="ventasSeleccionadas.size > 0">
+                {{ ventasSeleccionadas.size }} ventas seleccionadas
+                <span class="font-semibold ml-2 text-green-600">
+                  Total: {{ totalSeleccionado | currency:'$':'symbol':'1.2-2' }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+              <button
+                (click)="limpiarSeleccion()"
+                [disabled]="ventasSeleccionadas.size === 0"
+                [class.opacity-50]="ventasSeleccionadas.size === 0"
+                [class.cursor-not-allowed]="ventasSeleccionadas.size === 0"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg border border-gray-300 hover:bg-gray-200 transition-colors">
+                🗑️ Limpiar Selección
+              </button>
+              
+              <button
+                (click)="abrirModalNota()"
+                [disabled]="ventasSeleccionadas.size === 0"
+                [class.opacity-50]="ventasSeleccionadas.size === 0"
+                [class.cursor-not-allowed]="ventasSeleccionadas.size === 0"
+                class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl">
+                📄 Generar Nota PDF ({{ ventasSeleccionadas.size }})
+              </button>
+            </div>
+          </div>
         </div>
     </div>
 </div>
@@ -374,5 +429,97 @@
     </li>
 </ul>
 </nav>
+
+<!-- Modal para configurar nota PDF -->
+<div *ngIf="mostrarModalNota" 
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-lg border border-gray-200 dark:border-gray-700">
+        <div class="text-center mb-6">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 mb-4">
+                <svg class="h-8 w-8 text-green-600 dark:text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">
+                Configurar Nota de Ventas
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                Configura los detalles para generar la nota PDF de las {{ ventasSeleccionadas.size }} ventas seleccionadas
+            </p>
+        </div>
+
+        <form (ngSubmit)="generarNotaPDF()" class="space-y-6">
+            <!-- Información del cliente -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Cliente
+                </label>
+                <input
+                    type="text"
+                    [(ngModel)]="configNota.cliente"
+                    name="cliente"
+                    placeholder="Nombre del cliente (opcional)"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+            </div>
+
+            <!-- Observaciones -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Observaciones
+                </label>
+                <textarea
+                    [(ngModel)]="configNota.observaciones"
+                    name="observaciones"
+                    rows="3"
+                    placeholder="Observaciones adicionales (opcional)"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
+            </div>
+
+            <!-- Resumen de ventas seleccionadas -->
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Resumen</h4>
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <p>Ventas seleccionadas: {{ ventasSeleccionadas.size }}</p>
+                    <p class="font-bold text-green-600 dark:text-green-400 text-lg mt-1">
+                        Total: {{ totalSeleccionado | currency:'$':'symbol':'1.2-2' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Indicador de generación -->
+            <div *ngIf="generandoPDF" class="text-center py-4">
+                <div class="inline-flex items-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-blue-500 font-medium">Generando PDF...</span>
+                </div>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="flex justify-end gap-4 pt-4">
+                <button 
+                    type="button"
+                    (click)="cerrarModalNota()" 
+                    [disabled]="generandoPDF"
+                    class="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl border-2 border-gray-300 hover:bg-gray-200 hover:border-gray-400 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Cancelar
+                </button>
+                <button 
+                    type="submit"
+                    [disabled]="generandoPDF || ventasSeleccionadas.size === 0"
+                    class="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl hover:from-green-700 hover:to-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg hover:shadow-xl transition-all duration-200 hover:transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Generar PDF
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 

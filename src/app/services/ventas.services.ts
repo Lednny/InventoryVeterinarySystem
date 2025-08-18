@@ -59,7 +59,7 @@ export class VentasService {
         async getTodasLasVentas(): Promise<Ventas[]> {
         const { data, error } = await this.supabaseClient
             .from('ventas')
-            .select(`*,clientes:cliente_id (nombre), proveedor:proveedores_id (nombre)`)
+            .select(`*,clientes:cliente_id (nombre), proveedores:proveedores_id (nombre)`)
             .order('created_at', { ascending: false });
         if (error) throw error;
         return data || [];
@@ -158,4 +158,41 @@ const { error } = await this.supabaseClient
         if (error) throw error;
         return data;
     }
+
+    async getVentasPaginadas(
+  page: number = 1, 
+  pageSize: number = 50, 
+  searchTerm: string = ''
+): Promise<{data: any[], count: number}> {
+  let query = this.supabaseClient
+    .from('ventas')
+    .select(`
+      *, 
+      clientes:cliente_id (id, nombre, telefono, email),
+      proveedores:proveedores_id (id, nombre)
+    `, { count: 'exact' });
+
+  // Aplicar filtro de búsqueda si existe
+  if (searchTerm) {
+    query = query.or(`
+      producto.ilike.%${searchTerm}%,
+      marca.ilike.%${searchTerm}%,
+      categoria.ilike.%${searchTerm}%,
+      codigo.ilike.%${searchTerm}%,
+      lote.ilike.%${searchTerm}%,
+      clientes.nombre.ilike.%${searchTerm}%
+    `);
+  }
+
+  // Calcular rango para paginación
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  const { data, error, count } = await query
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (error) throw error;
+  return { data: data || [], count: count || 0 };
+}
 }
