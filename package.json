@@ -27,6 +27,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
+    "@vercel/speed-insights": "^1.2.0",
     "chart.js": "^4.4.9",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
