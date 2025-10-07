@@ -1,6 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
+    <style>
+    /* Estilos críticos inline para evitar flash */
+    html, body {
+      background-color: #111827 !important;
+      color: white !important;
+    }
+
+    body {
+      visibility: hidden;
+    }
+  </style>
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#111827">
   <meta charset="UTF-8" name="robots" content="noindex, nofollow">
   <title>VeterinaryPoint</title>
   <base href="/" />
@@ -10,7 +23,14 @@
   <meta name="theme-color" content="#23272f">
 </head>
 <body>
+  <body class="bg-gray-900 text-white"></body>
   <app-root></app-root>
-  <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <script>
+    // Mostrar el body una vez que el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      document.body.style.visibility = 'visible';
+      document.body.classList.add('loaded');
+    });
+  </script>
 </body>
 </html>

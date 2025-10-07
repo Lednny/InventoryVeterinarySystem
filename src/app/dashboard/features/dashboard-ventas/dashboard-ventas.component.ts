@@ -27,7 +27,7 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   @ViewChild('UserDropdown') UserDropdown!: ElementRef;
   @ViewChild('UserBtn') UserBtn!: ElementRef;
   //Varriables para Funcionalidades de la aplicación
-  
+
   // Variables para las operaciones CRUD de tareas
   ventas: any[] = [];
   private ventasSub!: Subscription;
@@ -56,7 +56,7 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
   mostrarNotificaciones = false;
   mostrarMenuGrid = false;
 
-  //Variables para la paginación de ventas 
+  //Variables para la paginación de ventas
   currentPage: number = 1;
   itemsPerPage: number = 15;
 
@@ -99,6 +99,19 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     observaciones: ''
   };
 
+  // Variables para historial de notas
+  mostrarModalHistorial = false;
+  historialNotas: any[] = [];
+  loadingHistorial = false;
+  filtroHistorial = {
+    numeroNota: '',
+    fechaInicio: '',
+    fechaFin: '',
+    cliente: ''
+  };
+  currentPageHistorial = 1;
+  itemsPerPageHistorial = 10;
+
   constructor(
     private ventasService: VentasService,
     private proveedoresService: ProveedoresService,
@@ -107,7 +120,7 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
     private pdfService: PdfService
   ) {}
 
-  
+
 
   async ngOnInit() {
     await this.ensureUsuario();
@@ -183,13 +196,13 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
       this.ventas = result.data;
       this.totalVentas = result.count;
       this.currentPage = page;
-      
+
       // Debug temporal para verificar proveedores
       if (this.ventas.length > 0) {
         console.log('Primera venta con proveedores:', this.ventas[0]);
         console.log('¿Tiene proveedores?:', this.ventas[0].proveedores);
       }
-      
+
     } catch (error) {
       console.error('Error al cargar ventas:', error);
     } finally {
@@ -401,11 +414,11 @@ getPaginasVisibles(): number[] {
   const paginas: number[] = [];
   const inicio = Math.max(1, this.currentPage - 2);
   const fin = Math.min(this.totalPages, this.currentPage + 2);
-  
+
   for (let i = inicio; i <= fin; i++) {
     paginas.push(i);
   }
-  
+
   return paginas;
 }
 
@@ -438,7 +451,7 @@ toggleTodasLasVentas() {
 }
 
 private actualizarEstadoSeleccionTodas() {
-  this.todasSeleccionadas = this.ventas.length > 0 && 
+  this.todasSeleccionadas = this.ventas.length > 0 &&
     this.ventas.every(venta => this.ventasSeleccionadas.has(venta.id));
 }
 
@@ -467,10 +480,10 @@ abrirModalNota() {
   }
 
   this.generandoPDF = true;
-  
+
   try {
     // Obtener las ventas seleccionadas
-    const ventasParaNota = this.ventas.filter(venta => 
+    const ventasParaNota = this.ventas.filter(venta =>
       this.ventasSeleccionadas.has(venta.id)
     );
 
@@ -478,7 +491,7 @@ abrirModalNota() {
     const ventasFormateadas: VentaParaNota[] = ventasParaNota.map(venta => {
       // Buscar el nombre del cliente - probando diferentes campos
       let nombreCliente = 'Sin Cliente';
-      
+
       // Verificar si viene el cliente en la relación de Supabase
       if (venta.clientes && venta.clientes.nombre) {
         nombreCliente = venta.clientes.nombre;
@@ -499,7 +512,8 @@ abrirModalNota() {
         subtotal: subtotal,
         fecha_venta: new Date(venta.created_at || venta.fecha_ingreso || Date.now()),
         cliente: nombreCliente,
-        lote: venta.lote || 'Sin lote'
+        lote: venta.lote || 'Sin lote',
+        fecha_caducidad: venta.caducidad ? new Date(venta.caducidad) : new Date()
       };
     });
 
@@ -512,11 +526,14 @@ abrirModalNota() {
 
     // Determinar cliente principal
     const clientesUnicos = [...new Set(ventasFormateadas.map(v => v.cliente))];
-    const clientePrincipal = this.configNota.cliente || 
+    const clientePrincipal = this.configNota.cliente ||
       (clientesUnicos.length === 1 ? clientesUnicos[0] : 'Varios clientes');
 
+    // Generar número de nota
+    const numeroNota = await this.generarNumeroNota();
+
     const notaVenta: NotaVentaCompleta = {
-      numeroNota: this.generarNumeroNota(),
+      numeroNota: numeroNota,
       fecha: new Date(),
       cliente: clientePrincipal,
       ventas: ventasFormateadas,
@@ -526,10 +543,18 @@ abrirModalNota() {
       observaciones: this.configNota.observaciones || undefined
     };
 
-    await this.pdfService.generarNotaVentasSeleccionadas(notaVenta);
+    // Generar PDF como blob
+    const pdf = this.pdfService.generarBlob(notaVenta);
+
+    // Guardar la nota en la base de datos con el PDF
+    await this.pdfEnDb(notaVenta, pdf.blob, pdf.filename);
+
+    // Descargar el PDF
+    this.pdfService.descargar(pdf.blob, pdf.filename);
+
     this.cerrarModalNota();
     alert('PDF generado correctamente');
-    
+
   } catch (error) {
     console.error('Error al generar nota PDF:', error);
     alert('Error al generar la nota PDF: ' + (error instanceof Error ? error.message : JSON.stringify(error)));
@@ -538,10 +563,119 @@ abrirModalNota() {
   }
 }
 
-private generarNumeroNota(): string {
-  const fecha = new Date();
-  const timestamp = fecha.getTime();
-  return `NV-${timestamp.toString().slice(-8)}`;
+private async pdfEnDb(notaVenta: NotaVentaCompleta, pdfBlob: Blob, filename: string): Promise<void> {
+  try {
+    // Convertir blob a base64 para almacenamiento seguro
+    const arrayBuffer = await pdfBlob.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    // Convertir a base64 para almacenamiento más confiable
+    const base64String = btoa(String.fromCharCode.apply(null, Array.from(uint8Array)));
+
+    const { error } = await this.supabaseClient
+      .from('notas_ventas')
+      .insert([{
+        numero_nota: notaVenta.numeroNota,
+        user_id: this.userId,
+        total: notaVenta.total,
+        cliente: notaVenta.cliente,
+        observaciones: notaVenta.observaciones || null,
+        fecha_creacion: notaVenta.fecha,
+        pdf_data: base64String, // Guardar como base64
+        pdf_filename: filename,
+        pdf_size: pdfBlob.size
+      }]);
+
+    if (error) {
+      console.error('Error al guardar nota con PDF en BD:', error);
+    } else {
+      console.log('PDF guardado exitosamente en BD');
+    }
+  } catch (error) {
+    console.error('Error al guardar nota con PDF:', error);
+  }
+}
+
+private async guardarNotaEnBD(notaVenta: NotaVentaCompleta): Promise<void> {
+  try {
+    // 1. Guardar la nota principal
+    const { data: notaGuardada, error: errorNota } = await this.supabaseClient
+      .from('notas_ventas')
+      .insert([{
+        numero_nota: notaVenta.numeroNota,
+        user_id: this.userId,
+        total: notaVenta.total,
+        cliente: notaVenta.cliente,
+        observaciones: notaVenta.observaciones || null,
+        fecha_creacion: notaVenta.fecha
+      }])
+      .select()
+      .single();
+
+    if (errorNota) {
+      console.error('Error al guardar nota en BD:', errorNota);
+      return;
+    }
+
+    // 2. Guardar los detalles de los productos
+    if (notaGuardada && notaVenta.ventas.length > 0) {
+      const detallesParaGuardar = notaVenta.ventas.map(venta => ({
+        nota_venta_id: notaGuardada.id,
+        producto: venta.producto,
+        marca: venta.marca,
+        categoria: venta.categoria,
+        lote: venta.lote,
+        cantidad_vendida: venta.cantidad_vendida,
+        precio_venta: venta.precio_venta,
+        subtotal: venta.subtotal,
+        fecha_caducidad: venta.fecha_caducidad,
+        fecha_venta: venta.fecha_venta,
+        cliente: venta.cliente
+      }));
+
+      const { error: errorDetalles } = await this.supabaseClient
+        .from('notas_ventas_detalle')
+        .insert(detallesParaGuardar);
+
+      if (errorDetalles) {
+        console.error('Error al guardar detalles de nota:', errorDetalles);
+      }
+    }
+  } catch (error) {
+    console.error('Error al guardar nota:', error);
+  }
+}
+
+private async generarNumeroNota(): Promise<string> {
+  try {
+    // Obtener el último número de nota de la base de datos
+    const { data, error } = await this.supabaseClient
+      .from('notas_ventas')
+      .select('numero_nota')
+      .order('id', { ascending: false })
+      .limit(1);
+
+    let siguienteNumero = 1;
+
+    if (data && data.length > 0 && data[0].numero_nota) {
+      // Extraer el número de la nota (formato: NV-001, NV-002, etc.)
+      const match = data[0].numero_nota.match(/NV-(\d+)/);
+      if (match) {
+        siguienteNumero = parseInt(match[1]) + 1;
+      }
+    }
+
+    // Formatear con ceros a la izquierda (001, 002, 003...)
+    const numeroFormateado = siguienteNumero.toString().padStart(3, '0');
+    return `NV-${numeroFormateado}`;
+
+  } catch (error) {
+    console.error('Error al generar número de nota:', error);
+    // Fallback: usar timestamp si hay error
+    const fecha = new Date();
+    const timestamp = fecha.getTime();
+    return `NV-${timestamp.toString().slice(-8)}`;
+  }
 }
 
 limpiarSeleccion() {
@@ -671,6 +805,144 @@ async agregarCliente() {
   const cliente = await this.ventasService.addCliente(this.nuevoCliente);
   this.clientes.push(cliente);
   this.nuevoCliente = { nombre: '', telefono: '', email: '' };
+}
+
+// Métodos para historial de notas
+async abrirModalHistorial() {
+  this.mostrarModalHistorial = true;
+  await this.cargarHistorialNotas();
+}
+
+cerrarModalHistorial() {
+  this.mostrarModalHistorial = false;
+  this.filtroHistorial = {
+    numeroNota: '',
+    fechaInicio: '',
+    fechaFin: '',
+    cliente: ''
+  };
+  this.historialNotas = [];
+  this.currentPageHistorial = 1;
+}
+
+async cargarHistorialNotas() {
+  this.loadingHistorial = true;
+  try {
+    let query = this.supabaseClient
+      .from('notas_ventas')
+      .select('*')
+      .eq('user_id', this.userId)
+      .order('numero_nota', { ascending: false })
+      .order('fecha_creacion', { ascending: false });
+
+    // Aplicar filtros
+    if (this.filtroHistorial.numeroNota) {
+      query = query.ilike('numero_nota', `%${this.filtroHistorial.numeroNota}%`);
+    }
+
+    if (this.filtroHistorial.cliente) {
+      query = query.ilike('cliente', `%${this.filtroHistorial.cliente}%`);
+    }
+
+    if (this.filtroHistorial.fechaInicio) {
+      query = query.gte('fecha_creacion', this.filtroHistorial.fechaInicio);
+    }
+
+    if (this.filtroHistorial.fechaFin) {
+      const fechaFin = new Date(this.filtroHistorial.fechaFin);
+      fechaFin.setHours(23, 59, 59); // Incluir todo el día
+      query = query.lte('fecha_creacion', fechaFin.toISOString());
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error('Error al cargar historial:', error);
+      alert('Error al cargar el historial de notas');
+      return;
+    }
+
+    this.historialNotas = data || [];
+  } catch (error) {
+    console.error('Error al cargar historial:', error);
+    alert('Error al cargar el historial de notas');
+  } finally {
+    this.loadingHistorial = false;
+  }
+}
+
+async filtrarHistorial() {
+  this.currentPageHistorial = 1;
+  await this.cargarHistorialNotas();
+}
+
+async reimprimirNota(nota: any) {
+  try {
+    // Verificar si la nota tiene PDF guardado
+    if (nota.pdf_data && nota.pdf_filename) {
+      console.log('Recuperando PDF desde BD...');
+
+      // Convertir base64 de vuelta a blob
+      const base64String = nota.pdf_data;
+      const binaryString = atob(base64String);
+      const bytes = new Uint8Array(binaryString.length);
+
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+
+      const pdfBlob = new Blob([bytes], { type: 'application/pdf' });
+
+      // Descargar el PDF original
+      this.pdfService.descargar(pdfBlob, nota.pdf_filename);
+      alert('Nota reimpresa correctamente (PDF original)');
+    } else {
+      // Fallback: regenerar PDF (para notas anteriores sin PDF guardado)
+      alert('Esta nota no tiene PDF guardado. Se regenerará el PDF.');
+
+      const notaParaRegenerar: NotaVentaCompleta = {
+        numeroNota: nota.numero_nota,
+        fecha: new Date(nota.fecha_creacion),
+        cliente: nota.cliente,
+        ventas: [], // Sin productos específicos
+        subtotal: nota.total,
+        iva: 0,
+        total: nota.total,
+        observaciones: nota.observaciones
+      };
+
+      // Usar el método correcto renombrado
+      this.pdfService.generarPDF(notaParaRegenerar);
+    }
+  } catch (error) {
+    console.error('Error al reimprimir nota:', error);
+    alert('Error al reimprimir la nota');
+  }
+}
+
+get historialPaginado(): any[] {
+  const inicio = (this.currentPageHistorial - 1) * this.itemsPerPageHistorial;
+  const fin = inicio + this.itemsPerPageHistorial;
+  return this.historialNotas.slice(inicio, fin);
+}
+
+get totalPagesHistorial(): number {
+  return Math.ceil(this.historialNotas.length / this.itemsPerPageHistorial);
+}
+
+cambiarPaginaHistorial(pagina: number) {
+  if (pagina < 1 || pagina > this.totalPagesHistorial) return;
+  this.currentPageHistorial = pagina;
+}
+
+limpiarFiltrosHistorial() {
+  this.filtroHistorial = {
+    numeroNota: '',
+    fechaInicio: '',
+    fechaFin: '',
+    cliente: ''
+  };
+  this.cargarHistorialNotas();
 }
 }
 

@@ -2,6 +2,7 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts}",
   ],
+  darkMode: 'class', // Movido fuera del array content
   theme: {
     extend: {
       opacity: ['group-hover'],

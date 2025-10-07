@@ -10,3 +10,15 @@ input[type="password"]::-webkit-input-clear-button,
 input[type="password"]::-webkit-input-password-toggle-button {
 display: none !important;
 }
+
+html {
+  background-color: #111827 !important; /* gray-900 */
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-gray-900 text-white min-h-screen;
+}

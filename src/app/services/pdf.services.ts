@@ -13,6 +13,7 @@ export interface VentaParaNota {
   fecha_venta: Date;
   cliente: string;
   lote: string;
+  fecha_caducidad: Date;
 }
 
 export interface NotaVentaCompleta {
@@ -35,9 +36,46 @@ export class PdfService {
 
   constructor() { }
 
-  generarNotaVentasSeleccionadas(notaVenta: NotaVentaCompleta): void {
+  // Generar y descargar PDF directamente
+  generarPDF(notaVenta: NotaVentaCompleta): void {
+    const doc = this.crearDocumentoPDF(notaVenta);
+
+    // Guardar el PDF
+    const fileName = `nota-ventas-${notaVenta.numeroNota}-${this.formatearFechaArchivo(notaVenta.fecha)}.pdf`;
+    doc.save(fileName);
+  }
+
+  // Generar PDF como blob para base de datos
+  generarBlob(notaVenta: NotaVentaCompleta): { blob: Blob, filename: string } {
+    const doc = this.crearDocumentoPDF(notaVenta);
+
+    // Generar el nombre del archivo
+    const fileName = `nota-ventas-${notaVenta.numeroNota}-${this.formatearFechaArchivo(notaVenta.fecha)}.pdf`;
+
+    // Retornar como blob
+    const pdfBlob = doc.output('blob');
+
+    return {
+      blob: pdfBlob,
+      filename: fileName
+    };
+  }
+
+  // Descargar PDF desde blob
+  descargar(pdfBlob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  private crearDocumentoPDF(notaVenta: NotaVentaCompleta): jsPDF {
     const doc = new jsPDF();
-    
+
     // Configuración del documento
     const pageWidth = doc.internal.pageSize.width;
     const margin = 20;
@@ -47,9 +85,9 @@ export class PdfService {
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
     doc.text('COMERCIALIZADORA BIOFARMEX', pageWidth / 2, yPosition, { align: 'center' });
-    
+
     yPosition += 12;
-    
+
     // Información bancaria y contacto con mejor espaciado
     doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
@@ -66,12 +104,12 @@ export class PdfService {
     doc.text('R.F.C: GAOT711104A79', pageWidth / 2, yPosition, { align: 'center' });
 
     yPosition += 15;
-    
+
     // Subtítulo con separación
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     doc.text('Nota de Ventas Realizadas', pageWidth / 2, yPosition, { align: 'center' });
-    
+
     yPosition += 20;
 
     // Información de la nota con mejor espaciado
@@ -79,7 +117,7 @@ export class PdfService {
     doc.setFont('helvetica', 'bold');
     doc.text(`Nota No: ${notaVenta.numeroNota}`, margin, yPosition);
     doc.text(`Fecha: ${this.formatearFecha(notaVenta.fecha)}`, pageWidth - 80, yPosition);
-    
+
     yPosition += 18;
 
     // Información del cliente principal con espaciado mejorado
@@ -103,22 +141,26 @@ export class PdfService {
         venta.cantidad_vendida.toString(),
         venta.producto || 'Producto no especificado',
         venta.marca || 'Sin marca',
+        venta.lote || 'Sin lote',
+        venta.fecha_caducidad
+          ? this.formatearFechaCorta(new Date(venta.fecha_caducidad))
+          : 'Sin fecha',
         `$${venta.precio_venta.toFixed(2)}`,
         `$${venta.subtotal.toFixed(2)}`,
-        this.formatearFechaCorta(venta.fecha_venta)
+        this.formatearFechaCorta(new Date(venta.fecha_venta))
       ];
-      
+
       // Solo agregar cliente si hay múltiples clientes
       if (clientesUnicos.length > 1) {
-        row.splice(3, 0, venta.cliente || 'Sin cliente'); // Insertar cliente en posición 3
+        row.splice(4, 0, venta.cliente || 'Sin cliente'); // Insertar cliente en posición 4
       }
-      
+
       return row;
     });
 
-    const headers = clientesUnicos.length > 1 
-      ? [['Cant.', 'Producto', 'Marca', 'Cliente', 'Precio Unit.', 'Subtotal', 'Fecha']]
-      : [['Cant.', 'Producto', 'Marca', 'Precio Unit.', 'Subtotal', 'Fecha']];
+    const headers = clientesUnicos.length > 1
+      ? [['Cant.', 'Producto', 'Marca', 'Lote', 'Cliente', 'Caducidad de Producto', 'Precio Unit.', 'Subtotal', 'Fecha']]
+      : [['Cant.', 'Producto', 'Marca', 'Lote', 'Caducidad de Producto', 'Precio Unit.', 'Subtotal', 'Fecha']];
 
     autoTable(doc, {
       startY: yPosition,
@@ -135,29 +177,33 @@ export class PdfService {
         cellPadding: 3
       },
       bodyStyles: {
-        fontSize: 9,
+        fontSize: 7.5,
         textColor: 50,
         cellPadding: 3,
         halign: 'center',
         valign: 'middle'
       },
       columnStyles: clientesUnicos.length > 1 ? {
-        0: { halign: 'center', cellWidth: 20 },      // Cant.
-        1: { halign: 'left', cellWidth: 50 },        // Producto
-        2: { halign: 'center', cellWidth: 25 },      // Marca
-        3: { halign: 'center', cellWidth: 30 },      // Cliente
-        4: { halign: 'right', cellWidth: 25 },       // Precio Unit.
-        5: { halign: 'right', cellWidth: 25 },       // Subtotal
-        6: { halign: 'center', cellWidth: 22 }       // Fecha
+        0: { halign: 'center', cellWidth: 18 },      // Cant.
+        1: { halign: 'left', cellWidth: 30 },        // Producto
+        2: { halign: 'center', cellWidth: 22 },      // Marca
+        3: { halign: 'center', cellWidth: 20 },      // Lote
+        4: { halign: 'center', cellWidth: 25 },      // Cliente
+        5: { halign: 'center', cellWidth: 22 },      // Caducidad
+        6: { halign: 'right', cellWidth: 22 },       // Precio Unit.
+        7: { halign: 'right', cellWidth: 22 },       // Subtotal
+        8: { halign: 'center', cellWidth: 20 }       // Fecha
       } : {
         0: { halign: 'center', cellWidth: 20 },      // Cant.
-        1: { halign: 'left', cellWidth: 55 },        // Producto
-        2: { halign: 'center', cellWidth: 30 },      // Marca
-        3: { halign: 'right', cellWidth: 30 },       // Precio Unit.
-        4: { halign: 'right', cellWidth: 30 },       // Subtotal
-        5: { halign: 'center', cellWidth: 22 }       // Fecha
+        1: { halign: 'left', cellWidth: 40 },        // Producto
+        2: { halign: 'center', cellWidth: 20 },      // Marca
+        3: { halign: 'center', cellWidth: 22 },      // Lote
+        4: { halign: 'center', cellWidth: 25 },      // Caducidad
+        5: { halign: 'right', cellWidth: 25 },       // Precio Unit.
+        6: { halign: 'right', cellWidth: 25 },       // Subtotal
+        7: { halign: 'center', cellWidth: 22 }       // Fecha
       },
-      margin: { left: 15, right: 15 },
+      margin: { left: 6, right: 10 },
       alternateRowStyles: {
         fillColor: [248, 250, 252]
       },
@@ -169,12 +215,13 @@ export class PdfService {
     });
 
     // Obtener la posición Y después de la tabla
-    yPosition = (doc as any).lastAutoTable.finalY + 8;
+    yPosition = (doc as any).lastAutoTable.finalY + 10;
 
     // Totales (sin IVA) con mejor espaciado
-    const totalWidth = 60;
-    const totalX = pageWidth - 15 - totalWidth;
-    
+    const totalWidth = 30;
+    const totalX = pageWidth - 20 - totalWidth;
+
+    yPosition += 13;
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text(`Subtotal: $${notaVenta.subtotal.toFixed(2)}`, totalX, yPosition);
@@ -186,7 +233,7 @@ export class PdfService {
     doc.text(`Total: $${notaVenta.subtotal.toFixed(2)}`, totalX, yPosition);
 
     // Resumen de ventas con mejor espaciado
-    yPosition += 15;
+    yPosition += 5;
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.text('RESUMEN:', 15, yPosition);
@@ -214,9 +261,7 @@ export class PdfService {
     doc.text('Nota de ventas realizadas', pageWidth / 2, yPosition, { align: 'center' });
     doc.text(`Generado el ${this.formatearFecha(new Date())} - Sistema de Inventario Veterinario`, pageWidth / 2, yPosition + 8, { align: 'center' });
 
-    // Guardar el PDF
-    const fileName = `nota-ventas-${notaVenta.numeroNota}-${this.formatearFechaArchivo(notaVenta.fecha)}.pdf`;
-    doc.save(fileName);
+    return doc;
   }
 
   private formatearFecha(fecha: Date): string {
