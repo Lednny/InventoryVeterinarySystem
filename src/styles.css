@@ -19,7 +19,9 @@ html.dark {
 }
 
 body {
-  @apply bg-gray-900 text-white min-h-screen;
+  background-color: #111827;
+  color: white;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden; /* Evita scroll horizontal en móviles */

@@ -43,12 +43,7 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      visibility: hidden;
       overflow-x: hidden;
-    }
-
-    body.loaded {
-      visibility: visible;
     }
 
     /* Preloader para móviles */
@@ -89,37 +84,22 @@
   <app-root></app-root>
 
   <script>
-    // Detectar si es móvil
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-    // Función para mostrar la aplicación
-    function showApp() {
-      document.body.style.visibility = 'visible';
-      document.body.classList.add('loaded');
-
-      // Ocultar loader después de un momento
-      setTimeout(() => {
-        const loader = document.getElementById('mobile-loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 300);
-        }
-      }, 1000);
+    // Función simplificada para ocultar loader
+    function hideLoader() {
+      const loader = document.getElementById('mobile-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.remove(), 300);
+      }
     }
 
-    // Para móviles, esperar más tiempo
-    if (isMobile) {
-      // Esperar a que todo esté cargado
-      window.addEventListener('load', function() {
-        setTimeout(showApp, 500);
-      });
-    } else {
-      // Para desktop, cargar normalmente
-      document.addEventListener('DOMContentLoaded', showApp);
-    }
-
-    // Timeout de seguridad
-    setTimeout(showApp, 5000);
+    // Ocultar loader cuando Angular esté listo (timeout corto)
+    setTimeout(hideLoader, 1500);
+    
+    // Timeout de seguridad más corto
+    window.addEventListener('load', function() {
+      setTimeout(hideLoader, 500);
+    });
   </script>
 </body>
 </html>
