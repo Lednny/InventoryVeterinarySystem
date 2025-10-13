@@ -13,10 +13,8 @@ public authState$ = this._authState.asObservable();
 
     constructor(){
         this._supabaseClient.auth.onAuthStateChange((event, session) => {
-            console.log('Auth event:', event);
-            console.log('Session:', session);
             this._authState.next(session);
-            
+
             if (event === 'SIGNED_OUT') {
                 console.log('Usuario desconectado');
                 // Asegurar que el estado se limpie completamente
@@ -29,7 +27,6 @@ public authState$ = this._authState.asObservable();
     }
 
     signUp(credentials: SignUpWithPasswordCredentials & {username: string}){
-        console.log('Username', credentials.username)
         return this._supabaseClient.auth.signUp(credentials)
     }
 
@@ -40,19 +37,19 @@ public authState$ = this._authState.asObservable();
     async signOut(){
         try {
             console.log('Iniciando logout...');
-            
+
             // Primero limpiar el estado local
             localStorage.clear();
             sessionStorage.clear();
-            
+
             // Luego cerrar sesión en Supabase
             const { error } = await this._supabaseClient.auth.signOut();
-            
+
             if (error) {
                 console.error('Error al cerrar sesión:', error);
                 throw error;
             }
-            
+
             console.log('Logout exitoso');
             return { error: null };
         } catch (error) {
@@ -66,8 +63,6 @@ public authState$ = this._authState.asObservable();
 
     resetPassword(email: string){
         const resetUrl = (environment as any).BASE_URL + '/auth/reset';
-        console.log('Reset URL being used:', resetUrl);
-        console.log('Environment BASE_URL:', (environment as any).BASE_URL);
         return this._supabaseClient.auth.resetPasswordForEmail(email, {
             redirectTo: resetUrl
         })

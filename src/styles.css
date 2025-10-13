@@ -2,17 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-input-decoration-container,
-input[type="password"]::-webkit-input-clear-button,
-input[type="password"]::-webkit-input-password-toggle-button {
-display: none !important;
+/* Estilos base para móviles */
+* {
+  box-sizing: border-box;
 }
 
 html {
   background-color: #111827 !important; /* gray-900 */
+  font-size: 16px; /* Base font size para móviles */
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
 }
 
 html.dark {
@@ -21,4 +20,61 @@ html.dark {
 
 body {
   @apply bg-gray-900 text-white min-h-screen;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Evita scroll horizontal en móviles */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Estilos para móviles */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  /* Asegurar que los containers no excedan el ancho */
+  .container, .max-w-md, .max-w-lg, .max-w-xl, .max-w-2xl, .max-w-3xl, .max-w-4xl, .max-w-5xl, .max-w-6xl, .max-w-7xl {
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Tablas responsivas */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Botones más grandes para móvil */
+  button, .btn {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+  
+  /* Inputs más grandes para móvil */
+  input, select, textarea {
+    min-height: 44px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+}
+
+/* Estilos para inputs de contraseña */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-decoration-container,
+input[type="password"]::-webkit-input-clear-button,
+input[type="password"]::-webkit-input-password-toggle-button {
+  display: none !important;
+}
+
+/* Animaciones suaves para móviles */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

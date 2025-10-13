@@ -1,0 +1,120 @@
+/* Configuración específica para móviles */
+
+/* Media queries para diferentes tamaños */
+@media screen and (max-width: 480px) {
+  /* Móviles pequeños */
+  .container {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  /* Ocultar elementos no esenciales en móviles pequeños */
+  .hidden-mobile {
+    display: none !important;
+  }
+  
+  /* Tablas más compactas */
+  table {
+    font-size: 0.75rem;
+  }
+  
+  td, th {
+    padding: 0.25rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* Tablets y móviles */
+  
+  /* Menú de navegación más compacto */
+  nav {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  
+  /* Botones más grandes para touch */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Modales de pantalla completa en móvil */
+  .modal {
+    margin: 0 !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+  }
+  
+  /* Scroll horizontal para tablas */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Formularios más amigables */
+  input, select, textarea {
+    font-size: 16px; /* Previene zoom en iOS */
+    padding: 0.75rem;
+  }
+}
+
+/* Prevenir zoom en inputs en iOS */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  select, textarea, input[type="text"], input[type="password"], 
+  input[type="datetime"], input[type="datetime-local"], 
+  input[type="date"], input[type="month"], input[type="time"], 
+  input[type="week"], input[type="number"], input[type="email"], 
+  input[type="url"], input[type="search"], input[type="tel"] {
+    font-size: 16px;
+  }
+}
+
+/* Estilos para el splash screen de móvil */
+.mobile-splash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+.mobile-splash .logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 2rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.mobile-splash .text {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.mobile-splash .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #374151;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

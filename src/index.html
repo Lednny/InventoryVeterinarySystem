@@ -2,10 +2,16 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#111827">
+  
+  <!-- Optimizaciones para móvil -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
 
   <title>VeterinaryPoint</title>
   <base href="/" />
@@ -16,32 +22,104 @@
 
   <!-- Estilos críticos inline para evitar flash -->
   <style>
-    html, body {
+    * {
+      box-sizing: border-box;
+    }
+    
+    html {
+      background-color: #111827 !important;
+      color: white !important;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    
+    body {
       background-color: #111827 !important;
       color: white !important;
       margin: 0;
       padding: 0;
       min-height: 100vh;
-    }
-
-    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       visibility: hidden;
+      overflow-x: hidden;
     }
 
     body.loaded {
       visibility: visible;
     }
+    
+    /* Preloader para móviles */
+    #mobile-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #111827;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #374151;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-white">
+  <!-- Loader para móviles -->
+  <div id="mobile-loader">
+    <div class="spinner"></div>
+  </div>
+  
   <app-root></app-root>
 
   <script>
-    // Mostrar el body una vez que el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
+    // Detectar si es móvil
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Función para mostrar la aplicación
+    function showApp() {
       document.body.style.visibility = 'visible';
       document.body.classList.add('loaded');
-    });
+      
+      // Ocultar loader después de un momento
+      setTimeout(() => {
+        const loader = document.getElementById('mobile-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 300);
+        }
+      }, 1000);
+    }
+    
+    // Para móviles, esperar más tiempo
+    if (isMobile) {
+      // Esperar a que todo esté cargado
+      window.addEventListener('load', function() {
+        setTimeout(showApp, 500);
+      });
+    } else {
+      // Para desktop, cargar normalmente
+      document.addEventListener('DOMContentLoaded', showApp);
+    }
+    
+    // Timeout de seguridad
+    setTimeout(showApp, 5000);
   </script>
 </body>
 </html>

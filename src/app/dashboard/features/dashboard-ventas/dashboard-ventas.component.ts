@@ -197,12 +197,6 @@ export class DashboardVentasComponent implements OnInit, OnDestroy {
       this.totalVentas = result.count;
       this.currentPage = page;
 
-      // Debug temporal para verificar proveedores
-      if (this.ventas.length > 0) {
-        console.log('Primera venta con proveedores:', this.ventas[0]);
-        console.log('¿Tiene proveedores?:', this.ventas[0].proveedores);
-      }
-
     } catch (error) {
       console.error('Error al cargar ventas:', error);
     } finally {
@@ -424,7 +418,6 @@ getPaginasVisibles(): number[] {
 
 // Funciones para selección de ventas
 toggleVenta(venta: any) {
-  console.log('Toggle venta:', venta);
   const ventaId = venta.id;
   if (this.ventasSeleccionadas.has(ventaId)) {
     this.ventasSeleccionadas.delete(ventaId);
@@ -432,7 +425,6 @@ toggleVenta(venta: any) {
     this.ventasSeleccionadas.add(ventaId);
   }
   this.actualizarEstadoSeleccionTodas();
-  console.log('Ventas seleccionadas:', Array.from(this.ventasSeleccionadas));
 }
 
 isVentaSeleccionada(ventaId: number): boolean {
@@ -517,8 +509,6 @@ abrirModalNota() {
       };
     });
 
-    console.log('Ventas formateadas:', ventasFormateadas);
-
     // Calcular totales (sin IVA)
     const subtotal = ventasFormateadas.reduce((sum, venta) => sum + venta.subtotal, 0);
     const iva = 0; // IVA en 0%
@@ -587,9 +577,9 @@ private async pdfEnDb(notaVenta: NotaVentaCompleta, pdfBlob: Blob, filename: str
       }]);
 
     if (error) {
-      console.error('Error al guardar nota con PDF en BD:', error);
+      console.error('Error al guardar nota con PDF en la base de datos:', error);
     } else {
-      console.log('PDF guardado exitosamente en BD');
+      console.log('PDF guardado exitosamente en la base de datos');
     }
   } catch (error) {
     console.error('Error al guardar nota con PDF:', error);

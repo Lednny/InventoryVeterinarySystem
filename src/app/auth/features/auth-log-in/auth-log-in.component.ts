@@ -42,7 +42,7 @@ export default class AuthLogInComponent {
     });
 
       if (error) throw error;
-      console.log('Login successful:', data);
+      console.log('Login successful:');
 
       const session = await this._authService.session();
       const userId = session.data.session?.user?.id;
