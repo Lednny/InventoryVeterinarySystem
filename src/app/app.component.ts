@@ -1,8 +1,7 @@
-import { Component, OnInit, ErrorHandler, Inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { slideInAnimation } from './dashboard/animations/route-animations';
 import { APP_VERSION } from '../version';
-import { injectSpeedInsights } from '@vercel/speed-insights';
 import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'app-root',
@@ -21,9 +20,6 @@ export class AppComponent implements OnInit{
     try {
       // Aplicar tema oscuro de forma segura
       this.initializeDarkTheme();
-      
-      // Inicializar Speed Insights de forma segura
-      this.initializeSpeedInsights();
     } catch (error) {
       console.error('Error durante la inicialización de la aplicación:', error);
     }
@@ -40,32 +36,7 @@ export class AppComponent implements OnInit{
     }
   }
 
-  private initializeSpeedInsights() {
-    try {
-      // Verificar si estamos en un dispositivo móvil
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isProduction = typeof window !== 'undefined' && window.location.hostname !== 'localhost';
-      
-      // Solo inicializar en producción, en navegador, y NO en móviles (temporalmente)
-      if (isProduction && !isMobile) {
-        // Usar setTimeout para evitar bloquear la inicialización de Angular
-        setTimeout(() => {
-          try {
-            injectSpeedInsights();
-            console.log('Speed Insights initialized successfully');
-          } catch (error) {
-            console.warn('Speed Insights initialization failed:', error);
-          }
-        }, 2000);
-      } else if (isMobile) {
-        console.log('Speed Insights disabled on mobile devices');
-      }
-    } catch (error) {
-      console.warn('Speed Insights not available:', error);
-    }
-  }
-
-    getRouteAnimationData(outlet: RouterOutlet) {
+  getRouteAnimationData(outlet: RouterOutlet) {
     return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
   }
 }
